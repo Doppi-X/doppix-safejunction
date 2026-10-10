@@ -82,15 +82,15 @@
 <!-- 3 product -->
 <section class="s">
   <div class="k">Product</div>
-  <h2>A new camera is onboarded in about two minutes</h2>
+  <h2>From one camera to a city-wide risk ranking</h2>
   <div class="row" style="margin-top:22px;align-items:flex-start">
     <div style="flex:1.15">
       <img class="shot" src="img/zones_crop.jpg" style="width:100%;height:330px;object-fit:cover;object-position:50% 40%">
       <p class="small" style="margin-top:8px"><b class="amber">1 · Upload</b> a video or photo. <b class="amber">2 · Optionally draw</b> road, crossing, stop line and light while it processes.</p>
     </div>
     <div style="flex:1">
-      <img class="shot" src="img/report_crop.jpg" style="width:100%;height:330px;object-fit:contain;background:#0b1120">
-      <p class="small" style="margin-top:8px"><b class="amber">3 · Report:</b> events with time stamps, rates per hour, recommendations, CSV, and video with faces and plates blurred.</p>
+      <img class="shot" src="img/hotspot.jpg" style="width:100%;height:330px;object-fit:cover;object-position:50% 60%">
+      <p class="small" style="margin-top:8px"><b class="amber">3 · Report + hotspot map + PDF</b> for the engineer. <b class="amber">4 · City dashboard:</b> every camera ranked by risk, before/after comparison of a fix.</p>
     </div>
   </div>
   <div class="row" style="margin-top:18px">
@@ -126,9 +126,9 @@
   <div class="row" style="margin-top:28px;gap:12px;align-items:stretch">
     <div class="card" style="flex:1"><div class="step">1</div><h3>Detect + track</h3><p class="small">Our YOLO26m fine-tune: 6 road-user classes + light state. ByteTrack. ~10 fps.</p></div>
     <div class="card" style="flex:1"><div class="step">2</div><h3>Scene</h3><p class="small">Drawn zones, or known camera re-aligned (ORB + RANSAC), or learned flow field: drivable area + lane directions.</p></div>
-    <div class="card" style="flex:1"><div class="step">3</div><h3>Events</h3><p class="small">10 interpretable rules over tracks: red light, yielding, wrong-way (leave-one-out), near miss (time-to-collision)…</p></div>
+    <div class="card" style="flex:1"><div class="step">3</div><h3>Events + conflicts</h3><p class="small">10 interpretable rules (red light, yielding, wrong-way…) + <b class="amber">PET conflicts</b>, the measure city safety studies use.</p></div>
     <div class="card" style="flex:1"><div class="step">4</div><h3>Privacy</h3><p class="small">Plate detector run only inside each vehicle box + head blur, on the server.</p></div>
-    <div class="card" style="flex:1"><div class="step">5</div><h3>Report</h3><p class="small">Rates, safety index, recommendations that name the number behind them.</p></div>
+    <div class="card" style="flex:1"><div class="step">5</div><h3>Report + city</h3><p class="small">Hotspot map, PDF, recommendations; dashboard ranked per 1,000 pedestrians or by HSM Empirical Bayes.</p></div>
   </div>
   <div class="row" style="margin-top:22px">
     <div class="card" style="flex:1">
@@ -137,6 +137,7 @@
         <tr><td>Inference</td><td>on-premise GPU server next to the city's video archive (ours: RTX 3060)</td></tr>
         <tr><td>Speed, measured</td><td class="num">2× faster than real time at 10 fps · 1 photo in 0.5–0.7 s</td></tr>
         <tr><td>Capacity</td><td>5 fps loses no accuracy (ablation 0.828 → 0.827), so <b class="num">≈ 4 cameras per GPU</b></td></tr>
+        <tr><td>Night, rain, local vehicles</td><td>each camera auto-picks a detector: ours (Tashkent), our low-light fine-tune (synthetic night 0.39 → 0.92) or general COCO (night drone view: 3 → 137 detections); plates blurred, never read</td></tr>
         <tr><td>Cost per camera</td><td class="num amber">≈ $12.7 / month infrastructure (server + power; assumptions on slide 8)</td></tr>
       </table>
     </div>
@@ -152,7 +153,7 @@
     <div class="col" style="flex:1.1">
       <div class="card"><h3><span class="amber">Data:</span> 12,990 boxes labeled by us</h3><p class="small">Tashkent traffic: Cobalts, Damas, articulated buses, our traffic lights. We built our own labeling tool (event timeline, scene editor, YOLO pre-labels) to make it.</p></div>
       <div class="card"><h3><span class="amber">Pipeline:</span> zero-config scene learning</h3><p class="small">Lane directions learned per grid cell from traffic. A car is judged against the field with its own samples removed, so one wrong-way driver cannot teach the system its direction.</p></div>
-      <div class="card"><h3><span class="amber">Tested, not just prompted:</span> 4 videos labeled to the task's rules</h3><p class="small">Every rule was tuned and measured on our own labels; every number in this deck comes from them.</p></div>
+      <div class="card"><h3><span class="amber">Industry methods, measured:</span> PET conflicts, per-1,000 exposure, HSM Empirical Bayes</h3><p class="small">The metrics Miovision, Transoft/Brisk and Bellevue WA use, on any existing camera, checked against our own labels of 4 videos.</p></div>
     </div>
     <div style="flex:1">
       <img class="shot" src="img/labeler_bbox.jpg" style="width:100%">
@@ -175,20 +176,22 @@
         <tr><td>Wrong-way, zero-config</td><td>18 min real traffic</td><td class="num green">0 false alarms / h</td></tr>
         <tr><td>Wrong-way, zero-config</td><td>60 real cars played backwards</td><td class="num green">93 % caught</td></tr>
         <tr><td>Stopped / congestion, zero-config</td><td>our labels</td><td class="num red">F1 0.0–0.67</td></tr>
+        <tr><td>PET conflicts (new)</td><td>9 labeled failure-to-yield events</td><td class="num green">7/9 have PET &lt; 3 s</td></tr>
       </table>
       <p class="small" style="margin-top:8px">* Optimistic: tuned on the same videos. Zero-config congestion fires on red-light queues; drawing a stop line fixes it.</p>
     </div>
     <div class="card" style="flex:1">
       <h3>Detector under synthetic weather and light (mAP50)</h3>
-      <div class="col" style="gap:9px;margin-top:12px">
-        <div><div class="row" style="justify-content:space-between"><span>Day</span><span class="num">0.975</span></div><div class="bar"><div style="width:97.5%;background:#4ade80"></div></div></div>
-        <div><div class="row" style="justify-content:space-between"><span>Fog</span><span class="num">0.971</span></div><div class="bar"><div style="width:97.1%;background:#4ade80"></div></div></div>
-        <div><div class="row" style="justify-content:space-between"><span>540p low bit-rate</span><span class="num">0.881</span></div><div class="bar"><div style="width:88.1%;background:#a3e635"></div></div></div>
-        <div><div class="row" style="justify-content:space-between"><span>Rain</span><span class="num">0.793</span></div><div class="bar"><div style="width:79.3%;background:#fbbf24"></div></div></div>
-        <div><div class="row" style="justify-content:space-between"><span>Motion blur</span><span class="num">0.712</span></div><div class="bar"><div style="width:71.2%;background:#fbbf24"></div></div></div>
-        <div><div class="row" style="justify-content:space-between"><span>Night</span><span class="num red">0.390</span></div><div class="bar"><div style="width:39%;background:#f87171"></div></div></div>
-      </div>
-      <p class="small" style="margin-top:10px">Tried and rejected: brightening night frames (0.390 → 0.266). Fix: train on night data, and real night video is pilot month 1.</p>
+      <table style="margin-top:6px">
+        <tr><th>Condition</th><th>Daylight model</th><th>Low-light fine-tune (final)</th></tr>
+        <tr><td>Day</td><td class="num" style="color:#4ade80;">0.975 ✓</td><td class="num" style="color:#4ade80;opacity:.55">0.978</td></tr>
+        <tr><td>Fog</td><td class="num" style="color:#4ade80;">0.971 ✓</td><td class="num" style="color:#4ade80;opacity:.55">0.976</td></tr>
+        <tr><td>540p low bit-rate</td><td class="num" style="color:#a3e635;">0.881 ✓</td><td class="num" style="color:#a3e635;opacity:.55">0.857</td></tr>
+        <tr><td>Rain</td><td class="num" style="color:#fbbf24;">0.793 ✓</td><td class="num" style="color:#4ade80;opacity:.55">0.967</td></tr>
+        <tr><td>Motion blur</td><td class="num" style="color:#fbbf24;">0.712 ✓</td><td class="num" style="color:#4ade80;opacity:.55">0.959</td></tr>
+        <tr><td>Night</td><td class="num" style="color:#f87171;opacity:.55">0.390</td><td class="num" style="color:#4ade80;">0.916 ✓</td></tr>
+      </table>
+      <p class="small" style="margin-top:8px">Night <b class="red">0.39</b> → <b class="green">0.92</b> after fine-tuning on synthetic night/rain/blur copies. It lowered the daylight event score (0.83 → 0.77), so <b class="amber">each camera auto-picks its detector</b> (ours, low-light or general COCO) from 6 sample frames (✓ = expected). Brightening frames was tried and rejected (0.27). Caveat: synthetic night; real night video is pilot month 1.</p>
     </div>
   </div>
   <div class="foot"><span>All methods and raw results: eval/ in the repository</span><span>7</span></div>
@@ -237,11 +240,11 @@
   <div class="row" style="margin-top:24px">
     <div class="card" style="flex:1"><div class="step">Month 1</div><h3>Connect 8 cameras at 3 junctions</h3><p class="small">On-premise server at the city's video centre. Draw zones, start collecting, and record real night and rain footage.</p></div>
     <div class="card" style="flex:1"><div class="step">Month 2</div><h3>Label 2 weeks per site, retrain</h3><p class="small">Night and weather fine-tune; per-site precision checked by the engineer in the app.</p></div>
-    <div class="card" style="flex:1"><div class="step">Month 3</div><h3>One change, measured</h3><p class="small">For example a leading pedestrian interval: violations per hour before and after, from the same camera.</p></div>
+    <div class="card" style="flex:1"><div class="step">Month 3</div><h3>One change, measured</h3><p class="small">For example a leading pedestrian interval: violations per hour before and after, from the same camera, in the dashboard's before/after view.</p></div>
   </div>
   <div class="row" style="margin-top:18px">
     <div class="card" style="flex:1.1"><h3>Privacy and regulation</h3><ul class="small" style="margin-top:6px"><li>Video never leaves the city server; faces and plates are blurred before any frame is shown.</li><li>Only event metadata is stored; no identification of people or vehicles.</li><li>Uploaded videos are deleted after 6 hours.</li></ul></div>
-    <div class="card" style="flex:1"><h3>Next</h3><ul class="small" style="margin-top:6px"><li>Night model from real footage</li><li>Lane-level rules: illegal turns, solid lines</li><li>City dashboard across many junctions</li></ul></div>
+    <div class="card" style="flex:1"><h3>Next</h3><ul class="small" style="margin-top:6px"><li>Night model from real footage</li><li>Lane-level rules: illegal turns, solid lines</li><li>Live RTSP streams instead of uploaded clips</li></ul></div>
   </div>
   <div class="foot"><span></span><span>9</span></div>
 </section>
@@ -255,7 +258,7 @@
     <div class="card" style="flex:1;text-align:center"><img src="img/shohruh.jpg" style="width:150px;height:150px;border-radius:18px;object-fit:cover"><h3 style="margin-top:12px">Shohruh Gulmirodov</h3><p class="amber" style="font-size:15px">Web Developer</p></div>
     <div class="card" style="flex:1;text-align:center"><img src="img/ibodulla.jpg" style="width:150px;height:150px;border-radius:18px;object-fit:cover"><h3 style="margin-top:12px">Ibodulla Obidjonov</h3><p class="amber" style="font-size:15px">Cybersecurity Engineer</p></div>
   </div>
-  <p class="small" style="margin-top:26px">Before the final (declared in the README): detector, tracker, zone rules for one intersection. During the final: any-camera mode, privacy, report, robustness tests, CI/CD. Git history shows both. Built with an AI coding assistant; open source: Ultralytics, PyTorch, OpenCV, FastAPI, React.</p>
+  <p class="small" style="margin-top:26px">Before the final (declared in the README): detector, tracker, zone rules for one intersection. During the final: any-camera mode, privacy blur, city report with hotspot map and PDF, city dashboard with before/after, low-light model with day/night routing, robustness tests, CI/CD. Git history shows both. Built with an AI coding assistant; open source: Ultralytics, PyTorch, OpenCV, FastAPI, React.</p>
   <p class="num" style="margin-top:14px">Try it: giyos1212-safejunction.static.hf.space</p>
 </section>
 
