@@ -31,12 +31,11 @@ def blur_image(path: Path, dst: Path, model) -> tuple[int, int]:
     img = cv2.imread(str(path))
     r = model.predict(img, imgsz=config.IMGSZ, conf=0.25, verbose=False)[0]
     b, c = r.boxes.xyxy.cpu().numpy(), r.boxes.cls.cpu().numpy().astype(int)
-    heads = privacy.head_boxes(b[c == config.PERSON])
-    plates = privacy.find_plates(img, b[np.isin(c, config.VEHICLES)], min_w=12)
-    privacy.blur_regions(img, heads + plates)
+    regions, nh, npl = privacy.private_regions(img, b[c == config.PERSON], b[np.isin(c, config.VEHICLES)])
+    privacy.blur_regions(img, regions)
     dst.parent.mkdir(parents=True, exist_ok=True)
     cv2.imwrite(str(dst), img, [cv2.IMWRITE_JPEG_QUALITY, 90])
-    return len(heads), len(plates)
+    return nh, npl
 
 
 def main():

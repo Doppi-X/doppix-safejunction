@@ -1,15 +1,17 @@
-import { ArrowDown, ArrowRight, Check, X } from "lucide-react";
+import { Check, X } from "lucide-react";
 import Section from "./Section.jsx";
 import { eventColor } from "../lib/data.js";
 import Ablation from "../components/Ablation.jsx";
 
 const PIPE = [
-  { t: "Any camera", d: "Video or photo from existing CCTV. Uploaded over HTTPS to our GPU server; deleted after 6 h." },
-  { t: "YOLO26m + ByteTrack", d: "Our fine-tune on 12,990 Tashkent boxes: 6 road-user classes + traffic-light state. ~10 fps, 2× real time on an RTX 3060." },
-  { t: "Scene", d: "Zones drawn in the browser, or our known camera re-aligned (ORB+RANSAC), or learned from traffic: drivable area + lane directions." },
-  { t: "Events", d: "Zone rules (red light, stop line, pedestrians, yielding) + zero-config rules (wrong-way, stopped, congestion, near miss)." },
-  { t: "Privacy", d: "Plate detector inside each vehicle box + head blur, before any frame leaves the server." },
-  { t: "Report", d: "Rates per hour, safety index and recommendations that name the number behind them." },
+  { t: "Any camera", d: "Video or photo from existing CCTV, over HTTPS to the GPU server next to the archive; deleted after 6 h." },
+  { t: "Detector choice", d: "6 sample frames scored by our Tashkent model, our low-light fine-tune and general COCO YOLO26m; the one that sees this camera best is used." },
+  { t: "Detect + track", d: "YOLO26m + ByteTrack at ~10 fps, 2× real time on an RTX 3060. 6 road-user classes + traffic-light state." },
+  { t: "Scene", d: "Zones drawn in the browser, our known camera re-aligned (ORB+RANSAC), or the road and lane directions learned from traffic." },
+  { t: "Events + conflicts", d: "10 inspectable rules (red light, yielding, wrong-way…) + post-encroachment-time conflicts with severity bins." },
+  { t: "Privacy", d: "Heads and plates blurred with two detectors, plates searched inside every vehicle box, before any frame leaves the server." },
+  { t: "Report", d: "Rates, PET conflicts per 1,000 pedestrians, hotspot map, recommendations naming their number, PDF." },
+  { t: "City dashboard", d: "Every camera ranked (risk index, conflicts per 1,000 pedestrians or Empirical Bayes) + before/after." },
 ];
 
 const RULES = [
@@ -55,26 +57,21 @@ const FAILED = [
 
 export default function Approach() {
   return (
-    <Section id="approach" kicker="Approach & technical report" title="How it works"
-      intro="Learned where there is data (our 12,990 labeled boxes), rules where there is not: every event can be checked against the video, and every number on this site is measured on data we labeled.">
+    <Section id="approach" kicker="Technology" title="How it works"
+      intro="A system, not one call to someone else's model: learned where there is data (our 12,990 labeled boxes), inspectable rules and the industry's own safety measures where there is not. Every event can be checked against the video.">
       {/* pipeline */}
-      <div className="flex flex-col items-stretch gap-2 lg:flex-row lg:items-center">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {PIPE.map((s, i) => (
-          <div key={s.t} className="contents">
-            <div className="card flex-1 p-3">
-              <div className="text-xs font-semibold text-amber-400">{i + 1}</div>
-              <div className="font-semibold text-white">{s.t}</div>
-              <p className="mt-1 text-xs leading-relaxed text-slate-400">{s.d}</p>
-            </div>
-            {i < PIPE.length - 1 && (
-              <div className="flex justify-center text-slate-600">
-                <ArrowDown className="lg:hidden" size={18} /><ArrowRight className="hidden lg:block" size={18} />
-              </div>
-            )}
+          <div key={s.t} className="card p-3">
+            <div className="text-xs font-semibold text-amber-400">{i + 1}</div>
+            <div className="font-semibold text-white">{s.t}</div>
+            <p className="mt-1 text-xs leading-relaxed text-slate-400">{s.d}</p>
           </div>
         ))}
       </div>
 
+      <details className="card mt-8 p-4">
+        <summary className="cursor-pointer font-semibold text-white">Reference-junction rules, ablations and failure cases <span className="font-normal text-slate-400">(rule set built in the elimination round; scores measured on our labels)</span></summary>
       <div className="mt-10 grid gap-4 lg:grid-cols-2">
         <div className="card p-4">
           <h3 className="font-semibold text-white">Learned vs. rule-based</h3>
@@ -191,6 +188,7 @@ export default function Approach() {
           </ul>
         </div>
       </div>
+      </details>
     </Section>
   );
 }

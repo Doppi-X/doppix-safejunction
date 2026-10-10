@@ -36,6 +36,19 @@ const PILOT = [
   ["Ultralytics licence: AGPL-3.0 (open source) during the pilot", 0],
 ];
 
+const PLAN = [
+  ["Month 1", "Connect", "8 existing cameras at 3 junctions, on a server at the city video centre. Draw zones, record real night and rain video."],
+  ["Month 2", "Label and retrain", "2 weeks of footage per site in our labeling tool; a night/weather fine-tune; the engineer checks precision in the app."],
+  ["Month 3", "One change, measured", "e.g. a leading pedestrian interval at the worst crossing in the ranking: conflicts per 1,000 pedestrians before vs after."],
+];
+
+const MARKET = [
+  ["Miovision (US/CA)", "Safety study per intersection on 48–60 h of video, plus a device", "~$8,000 per study + $6,795 per device", "https://hcaog.net/sites/default/files/Miovision%20Summary.pdf"],
+  ["Vivacity (UK)", "Data + dashboard on existing sensors", "~£650 per sensor per year (£26k for 20 sensors over 2 years)", "https://www.find-tender.service.gov.uk/Notice/020267-2026/PDF"],
+  ["Transoft / Brisk Synergies, Derq", "PET conflict studies, intersection monitoring (Bellevue, Toronto, Las Vegas)", "per project; US cities use federal SS4A grants", "https://bellevuewa.gov/sites/default/files/media/pdf_document/2020/ITS-World-Congress-Paper-20354.pdf"],
+  ["SafeJunction", "Continuous monitoring on the city's existing CCTV, on-premise, privacy built in", "$40 per camera per month = $480 per year (assumption)", null],
+];
+
 const fmt = (v) => `$${Math.round(v).toLocaleString("en-US")}`;
 
 export default function Business() {
@@ -99,6 +112,36 @@ export default function Business() {
           ))}
         </div>
       </details>
+      <div className="mt-4 grid gap-4 lg:grid-cols-2">
+        <div className="card p-4">
+          <h3 className="font-semibold text-white">3-month pilot, inside existing rules</h3>
+          <ol className="mt-2 space-y-2 text-sm text-slate-300">
+            {PLAN.map(([m, t, d]) => (
+              <li key={m} className="flex gap-3"><span className="w-16 shrink-0 font-display font-semibold text-amber-300">{m}</span>
+                <span><b className="text-white">{t}.</b> {d}</span></li>
+            ))}
+          </ol>
+          <p className="mt-2 text-xs text-slate-500">Success measure: the change in serious conflicts per 1,000 pedestrians at the treated crossing, before and after, in the dashboard. That is how Bellevue WA measured a 56 % drop after high-visibility crosswalks.</p>
+        </div>
+        <div className="card overflow-x-auto p-4">
+          <h3 className="font-semibold text-white">How others sell this, and our position</h3>
+          <table className="mt-2 w-full min-w-[420px] text-sm">
+            <thead className="text-left text-xs text-slate-500"><tr><th className="py-1">Who</th><th>Offer</th><th>Price (public, indicative)</th></tr></thead>
+            <tbody>
+              {MARKET.map(([a, b, c, url]) => (
+                <tr key={a} className="border-t border-white/5 align-top">
+                  <td className="py-1.5 pr-2 font-medium text-slate-200">{url ? <a href={url} target="_blank" rel="noreferrer" className="underline decoration-dotted">{a}</a> : a}</td>
+                  <td className="pr-2 text-slate-400">{b}</td><td className="text-slate-300">{c}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="mt-2 text-xs text-slate-500">
+            The market is moving from one-off studies to subscriptions on existing cameras. Our edge for cities that cannot buy from US vendors: on-premise, privacy built in, trained on local traffic, and a price below one study per year.
+            In Uzbekistan, compulsory motor insurers are a natural co-funder, as Aviva (Canada) and Queensland's insurance regulator (MAIC) were abroad.
+          </p>
+        </div>
+      </div>
     </Section>
   );
 }

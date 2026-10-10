@@ -24,7 +24,7 @@ export default function Evaluation() {
   const count = (k) => data.items.filter((i) => i.kind === k).length;
 
   return (
-    <Section id="evaluation" kicker="Error analysis" title="How good is it"
+    <Section id="evaluation" kicker="Quality, measured" title="How good is it"
       intro="Measured on test sets we built ourselves. Top: what the final added (any camera, weather). Below: event rules on our labels of a real intersection, every hit, false alarm and miss.">
       <FinalQuality />
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">

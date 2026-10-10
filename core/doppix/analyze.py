@@ -126,17 +126,15 @@ def render_private_video(src: str, p: Perception, dst: Path, max_sec: float | No
             if k is None:
                 k = int(np.searchsorted(p.frame_idx, i, side="right")) - 1
             rows = np.asarray(dets_by_k.get(max(k, 0), []))
-            blur_now = []
+            persons = vehicles = np.zeros((0, 4))
             if len(rows):
                 rows = rows[rows[:, CONF] >= 0.25]
                 px = rows[:, [X1, Y1, X2, Y2]] * [W0, H0, W0, H0]
                 persons = px[rows[:, CLS] == config.PERSON]
                 vehicles = px[np.isin(rows[:, CLS], config.VEHICLES)]
-                heads = privacy.head_boxes(persons)
-                plates = privacy.find_plates(frame, vehicles)
-                blur_now = heads + plates
-                heads_total += len(heads)
-                plates_total += len(plates)
+            blur_now, nh, npl = privacy.private_regions(frame, persons, vehicles)   # + general model, always
+            heads_total += nh
+            plates_total += npl
         if i % step == 0:
             privacy.blur_regions(frame, blur_now)
             proc.stdin.write(cv2.resize(frame, (OUT_W, out_h), interpolation=cv2.INTER_AREA).tobytes())
@@ -200,9 +198,8 @@ def analyze_image(src: str, dst: Path) -> dict:
     h, w = img.shape[:2]
     boxes, cls, conf, det_name = perception.detect_image(img, conf=0.3)
     persons, vehicles = boxes[cls == config.PERSON], boxes[np.isin(cls, config.VEHICLES)]
-    plates = privacy.find_plates(img, vehicles)
-    heads = privacy.head_boxes(persons)
-    privacy.blur_regions(img, heads + plates)
+    regions, n_heads, n_plates = privacy.private_regions(img, persons, vehicles)
+    privacy.blur_regions(img, regions)
     scale = min(1.0, 1600 / w)
     cv2.imwrite(str(dst), cv2.resize(img, (int(w * scale), int(h * scale))), [cv2.IMWRITE_JPEG_QUALITY, 88])
     counts = {}
@@ -212,7 +209,7 @@ def analyze_image(src: str, dst: Path) -> dict:
     return {"kind": "image", "width": w, "height": h, "counts": counts,
             "objects": [{"cls": config.CLASS_NAMES[c], "conf": round(float(s), 3),
                          "box": [round(float(v), 4) for v in (b / [w, h, w, h])]} for b, c, s in zip(boxes, cls, conf)],
-            "plates_blurred": len(plates), "heads_blurred": len(heads),
+            "plates_blurred": n_plates, "heads_blurred": n_heads,
             "traffic_light": (max(set(light), key=light.count) if light else None), "detector": det_name}
 
 

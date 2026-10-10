@@ -66,7 +66,7 @@ export default function FinalQuality() {
           During the final we fine-tuned a low-light model on synthetic night, rain and blur copies of the training frames: night 0.39 → 0.92.
           On daylight video it lowered our event score (0.83 → 0.77), so each camera picks its detector at upload: our daylight model, the low-light model
           or a general COCO model, whichever finds clearly more confident road users in 6 sample frames (underlined = expected choice).
-          On 7 open-licence clips from other cities this switched a night drone view from 3 to 137 confident detections.
+          On 7 open-licence clips from other cities a night drone view went from 5 to 43 confident detections in 6 sample frames.
           Caveat: night numbers are on synthetic night; real night video is pilot month 1.
         </p>
       </div>

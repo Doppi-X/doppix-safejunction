@@ -17,7 +17,7 @@ const FINDINGS = [
 
 function Card({ title, note, children, className = "" }) {
   return (
-    <div className={`card p-4 ${className}`}>
+    <div className={`card min-w-0 p-4 ${className}`}>
       <h3 className="font-semibold text-white">{title}</h3>
       {note && <p className="mt-1 text-sm text-slate-400">{note}</p>}
       <div className="mt-3">{children}</div>
@@ -68,7 +68,7 @@ export default function EDA() {
           </div>
         ))}
       </div>
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Footage" note="4K 10-bit 4:2:2 H.264 at ~30 fps, ~147 Mb/s. Browsers cannot play this format, so the site shows H.264 copies. The pipeline reads the originals.">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">

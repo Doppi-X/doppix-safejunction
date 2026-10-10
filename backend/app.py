@@ -95,7 +95,7 @@ def first_frame(src: Path, dst: Path) -> dict:
     h, w = frame.shape[:2]
     import numpy as np
     b, c, _, _ = perception.detect_image(frame, conf=0.3, imgsz=IMGSZ)
-    privacy.blur_regions(frame, privacy.head_boxes(b[c == config.PERSON]) + privacy.find_plates(frame, b[np.isin(c, config.VEHICLES)]))
+    privacy.blur_regions(frame, privacy.private_regions(frame, b[c == config.PERSON], b[np.isin(c, config.VEHICLES)])[0])
     scale = min(1.0, 1280 / w)
     cv2.imwrite(str(dst), cv2.resize(frame, (int(w * scale), int(h * scale))), [cv2.IMWRITE_JPEG_QUALITY, 85])
     return {"width": w, "height": h, "fps": round(fps, 3), "duration": round(n / fps, 2) if n > 0 else None}

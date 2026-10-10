@@ -4,6 +4,9 @@ import Hero from "./sections/Hero.jsx";
 import Analyze from "./sections/Analyze.jsx";
 import Business from "./sections/Business.jsx";
 import Network from "./sections/Network.jsx";
+import Jury from "./sections/Jury.jsx";
+import Engineering from "./sections/Engineering.jsx";
+import Transparency from "./sections/Transparency.jsx";
 import Samples from "./sections/Samples.jsx";
 import Evaluation from "./sections/Evaluation.jsx";
 import EDA from "./sections/EDA.jsx";
@@ -14,12 +17,14 @@ import BuiltWith from "./sections/BuiltWith.jsx";
 import { REPO_URL, TEAM_NAME } from "./team.js";
 
 const NAV = [
+  ["jury", "Overview"],
   ["analyze", "Try it"],
   ["network", "City dashboard"],
-  ["business", "Business"],
+  ["engineering", "Engineering"],
   ["approach", "How it works"],
   ["evaluation", "Quality"],
-  ["samples", "Validation"],
+  ["business", "Business"],
+  ["transparency", "Data & declaration"],
   ["team", "Team"],
 ];
 
@@ -52,18 +57,18 @@ export default function App() {
             </span>
             {TEAM_NAME}
           </a>
-          <nav className="hidden gap-1 md:flex">
+          <nav className="hidden gap-0.5 xl:flex">
             {NAV.map(([id, name]) => (
               <a key={id} href={`#${id}`}
-                className={`rounded-md px-3 py-1.5 text-sm ${active === id ? "bg-slate-800 text-white" : "text-slate-400 hover:text-white"}`}>
+                className={`rounded-md px-2.5 py-1.5 text-sm ${active === id ? "bg-slate-800 text-white" : "text-slate-400 hover:text-white"}`}>
                 {name}
               </a>
             ))}
           </nav>
-          <button className="md:hidden" onClick={() => setOpen(!open)} aria-label="Menu">{open ? <X /> : <Menu />}</button>
+          <button className="xl:hidden" onClick={() => setOpen(!open)} aria-label="Menu">{open ? <X /> : <Menu />}</button>
         </div>
         {open && (
-          <nav className="border-t border-slate-800 px-4 py-2 md:hidden">
+          <nav className="border-t border-slate-800 px-4 py-2 xl:hidden">
             {NAV.map(([id, name]) => (
               <a key={id} href={`#${id}`} onClick={() => setOpen(false)} className="block py-2 text-slate-300">{name}</a>
             ))}
@@ -72,13 +77,16 @@ export default function App() {
       </header>
       <main id="top">
         <Hero />
+        <Jury />
         <Analyze />
         <Network />
-        <Business />
+        <Engineering />
         <Approach />
         <Evaluation />
+        <Business />
         <Samples />
         <EDA />
+        <Transparency />
         <BuiltWith />
         <Team />
         <Links />

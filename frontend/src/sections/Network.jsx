@@ -123,10 +123,10 @@ export default function Network() {
 
       <div className="grid gap-4 lg:grid-cols-[1.15fr_1fr]">
         <div className="card overflow-hidden">
-          <div className="flex items-center justify-between border-b border-white/5 px-4 py-2.5">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/5 px-4 py-2.5">
             <h3 className="flex items-center gap-1.5 font-semibold text-white"><Building2 size={16} className="text-amber-300" /> Risk ranking</h3>
-            <div className="flex items-center gap-2">
-              <select value={metric} onChange={(e) => setMetric(e.target.value)} title={METRICS[metric].tip}
+            <div className="flex min-w-0 flex-wrap items-center gap-2">
+              <select value={metric} onChange={(e) => setMetric(e.target.value)} title={METRICS[metric].tip} style={{ maxWidth: "15rem" }}
                 className="rounded-md border border-white/10 bg-slate-900 px-2 py-1 text-xs text-white">
                 {Object.entries(METRICS).map(([k, v]) => <option key={k} value={k}>Rank by: {v.name}</option>)}
               </select>

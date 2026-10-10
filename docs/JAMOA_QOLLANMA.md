@@ -159,7 +159,7 @@ Video → [1] Aniqlash + kuzatish → [2] Sahna → [3] Hodisalar → [4] Maxfiy
   Qaysi biri aniq ko'proq ishonchli obyekt topsa, o'sha tanlanadi. Teng bo'lsa, kunduzgi modelimiz qoladi, chunki qoidalar u uchun sozlangan.
 - **Nega yorug'lik bo'yicha emas:** ko'cha chiroqlari ostidagi haqiqiy tun yorug'lik bo'yicha kunduzgi Nyu-York kadri bilan bir xil chiqdi (~90). Shuning uchun bu usuldan voz kechdik. Bu ham "nima ishlamadi" misoli.
 - **Boshqa shaharlardagi 7 ta ochiq video bilan sinov:**
-  - tungi dron ko'rinishida bizning model 3 ta, COCO 137 ta obyekt topdi, shuning uchun COCO tanlandi;
+  - tungi dron ko'rinishida 6 ta kadrda bizning model 5 ta, COCO 43 ta ishonchli obyekt topdi, shuning uchun COCO tanlandi;
   - Shibuya (Tokio) va bizning chorrahada esa o'z modelimiz yaxshiroq.
 - **Ochiq aytamiz:** tungi model qanday sun'iy tunda o'qitilgan bo'lsa, xuddi shunday sun'iy tunda sinaldi. Haqiqiy tungi kamerada natija boshqacha bo'lishi mumkin. Haqiqiy tungi video pilotning 1-oyida yig'iladi.
 

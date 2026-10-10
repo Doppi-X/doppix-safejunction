@@ -1,10 +1,14 @@
-{
- "day_intersection_trafficlight_nyc.mp4": {
-  "id": "2ff0952abbd4",
-  "status": "done",
-  "message": "",
+[
+ {
+  "file": "day_intersection_trafficlight_nyc",
+  "condition": "day",
+  "duration_s": 26.7,
   "detector": "general_coco.pt",
-  "mode": "learned",
+  "detector_scores": {
+   "detector.pt": 55,
+   "detector_lowlight.pt": 64,
+   "general_coco.pt": 103
+  },
   "events": [
    [
     0.0,
@@ -25,21 +29,25 @@
    "serious_per_1000_road_users": 0.0,
    "method": "PET image-plane, carriageway cells only; bins <1.5 / 1.5-3 / 3-5 s (Bellevue WA screening)"
   },
-  "timing": {
-   "perception_s": 13.2,
-   "privacy_render_s": 18.9,
-   "total_s": 33.0,
-   "video_s": 26.7,
-   "stride_s": 0.1,
-   "imgsz": 1280
-  }
+  "privacy": {
+   "plates_blurred": 1426,
+   "heads_blurred": 1463,
+   "fps": 15.0
+  },
+  "licence": "Mixkit Stock Video Free License https://mixkit.co/license/#videoFree",
+  "author": "dubassy (mixkit.co/@dubassy)",
+  "page_url": "https://mixkit.co/free-stock-video/traffic-light-directing-traffic-4272/"
  },
- "day_crossing_tokyo_shibuya.mp4": {
-  "id": "438c967baf38",
-  "status": "done",
-  "message": "",
+ {
+  "file": "day_crossing_tokyo_shibuya",
+  "condition": "day",
+  "duration_s": 19.8,
   "detector": "detector.pt",
-  "mode": "learned",
+  "detector_scores": {
+   "detector.pt": 443,
+   "detector_lowlight.pt": 342,
+   "general_coco.pt": 51
+  },
   "events": [],
   "conflicts": {
    "counts": {
@@ -54,21 +62,25 @@
    "serious_per_1000_road_users": 150.0,
    "method": "PET image-plane, carriageway cells only; bins <1.5 / 1.5-3 / 3-5 s (Bellevue WA screening)"
   },
-  "timing": {
-   "perception_s": 13.0,
-   "privacy_render_s": 11.1,
-   "total_s": 24.9,
-   "video_s": 19.8,
-   "stride_s": 0.1,
-   "imgsz": 1280
-  }
+  "privacy": {
+   "plates_blurred": 513,
+   "heads_blurred": 11994,
+   "fps": 15.0
+  },
+  "licence": "Mixkit Stock Video Free License https://mixkit.co/license/#videoFree",
+  "author": "dubassy (mixkit.co/@dubassy)",
+  "page_url": "https://mixkit.co/free-stock-video/crowds-of-people-cross-a-street-junction-4401/"
  },
- "day_intersection_topdown_drone.mp4": {
-  "id": "ae503f3a7621",
-  "status": "done",
-  "message": "",
+ {
+  "file": "day_intersection_topdown_drone",
+  "condition": "day",
+  "duration_s": 35.94,
   "detector": "detector.pt",
-  "mode": "learned",
+  "detector_scores": {
+   "detector.pt": 32,
+   "detector_lowlight.pt": 1,
+   "general_coco.pt": 33
+  },
   "events": [],
   "conflicts": {
    "counts": {
@@ -83,21 +95,25 @@
    "serious_per_1000_road_users": 0.0,
    "method": "PET image-plane, carriageway cells only; bins <1.5 / 1.5-3 / 3-5 s (Bellevue WA screening)"
   },
-  "timing": {
-   "perception_s": 15.2,
-   "privacy_render_s": 16.1,
-   "total_s": 31.5,
-   "video_s": 35.9,
-   "stride_s": 0.1,
-   "imgsz": 1280
-  }
+  "privacy": {
+   "plates_blurred": 199,
+   "heads_blurred": 1869,
+   "fps": 14.99
+  },
+  "licence": "Pexels License (free to use, modify; attribution not required) https://www.pexels.com/license/",
+  "author": "Tom Fisk (Pexels)",
+  "page_url": "https://www.pexels.com/video/from-above-footage-of-vehicular-traffic-flow-in-the-city-streets-at-daytime-2955576/"
  },
- "night_intersection_topdown_drone.mp4": {
-  "id": "e7dd102b8109",
-  "status": "done",
-  "message": "",
+ {
+  "file": "night_intersection_topdown_drone",
+  "condition": "night",
+  "duration_s": 82.28,
   "detector": "general_coco.pt",
-  "mode": "learned",
+  "detector_scores": {
+   "detector.pt": 5,
+   "detector_lowlight.pt": 2,
+   "general_coco.pt": 43
+  },
   "events": [
    [
     4.104,
@@ -123,21 +139,25 @@
    "serious_per_1000_road_users": 4.4,
    "method": "PET image-plane, carriageway cells only; bins <1.5 / 1.5-3 / 3-5 s (Bellevue WA screening)"
   },
-  "timing": {
-   "perception_s": 36.7,
-   "privacy_render_s": 119.4,
-   "total_s": 168.7,
-   "video_s": 82.3,
-   "stride_s": 0.1,
-   "imgsz": 1280
-  }
+  "privacy": {
+   "plates_blurred": 770,
+   "heads_blurred": 37,
+   "fps": 14.99
+  },
+  "licence": "Pexels License (free to use, modify; attribution not required) https://www.pexels.com/license/",
+  "author": "Tom Fisk (Pexels)",
+  "page_url": "https://www.pexels.com/video/from-above-footage-of-vehicular-traffic-on-a-busy-street-intersection-in-the-city-at-night-3063475/"
  },
- "night_crosswalk_trafficlight_street.mp4": {
-  "id": "760d88c33889",
-  "status": "done",
-  "message": "",
+ {
+  "file": "night_crosswalk_trafficlight_street",
+  "condition": "night",
+  "duration_s": 16.68,
   "detector": "detector.pt",
-  "mode": "learned",
+  "detector_scores": {
+   "detector.pt": 6,
+   "detector_lowlight.pt": 6,
+   "general_coco.pt": 0
+  },
   "events": [],
   "conflicts": {
    "counts": {
@@ -152,50 +172,64 @@
    "serious_per_1000_road_users": 0.0,
    "method": "PET image-plane, carriageway cells only; bins <1.5 / 1.5-3 / 3-5 s (Bellevue WA screening)"
   },
-  "timing": {
-   "perception_s": 9.0,
-   "privacy_render_s": 2.9,
-   "total_s": 12.1,
-   "video_s": 16.7,
-   "stride_s": 0.1,
-   "imgsz": 1280
-  }
+  "privacy": {
+   "plates_blurred": 10,
+   "heads_blurred": 410,
+   "fps": 11.99
+  },
+  "licence": "Mixkit Stock Video Free License https://mixkit.co/license/#videoFree",
+  "author": "Edgar Fernandez (mixkit.co/@edgarfernandez)",
+  "page_url": "https://mixkit.co/free-stock-video/crosswalk-at-night-2013/"
  },
- "rain_night_crossing_nyc_timessquare.mp4": {
-  "id": "290e78572968",
-  "status": "done",
-  "message": "",
-  "detector": "general_coco.pt",
-  "mode": "learned",
-  "events": [],
+ {
+  "file": "rain_night_crossing_nyc_timessquare",
+  "condition": "rain",
+  "duration_s": 19.87,
+  "detector": "detector.pt",
+  "detector_scores": {
+   "detector.pt": 28,
+   "detector_lowlight.pt": 26,
+   "general_coco.pt": 22
+  },
+  "events": [
+   [
+    11.5,
+    19.8,
+    "congestion"
+   ]
+  ],
   "conflicts": {
    "counts": {
-    "serious": 19,
-    "moderate": 15,
-    "interaction": 12
+    "serious": 3,
+    "moderate": 3,
+    "interaction": 6
    },
-   "exposure_pedestrians": 43,
-   "exposure_vehicles": 35,
-   "vru_serious": 15,
-   "serious_per_1000_pedestrians": 348.8,
-   "serious_per_1000_road_users": 243.6,
+   "exposure_pedestrians": 32,
+   "exposure_vehicles": 29,
+   "vru_serious": 2,
+   "serious_per_1000_pedestrians": 62.5,
+   "serious_per_1000_road_users": 49.2,
    "method": "PET image-plane, carriageway cells only; bins <1.5 / 1.5-3 / 3-5 s (Bellevue WA screening)"
   },
-  "timing": {
-   "perception_s": 10.1,
-   "privacy_render_s": 8.9,
-   "total_s": 19.5,
-   "video_s": 19.9,
-   "stride_s": 0.1,
-   "imgsz": 1280
-  }
+  "privacy": {
+   "plates_blurred": 620,
+   "heads_blurred": 3713,
+   "fps": 15.0
+  },
+  "licence": "Mixkit Stock Video Free License https://mixkit.co/license/#videoFree",
+  "author": "dubassy (mixkit.co/@dubassy)",
+  "page_url": "https://mixkit.co/free-stock-video/times-square-during-a-rainy-night-4332/"
  },
- "snow_intersection_ottawa.mp4": {
-  "id": "85dfd5a89a19",
-  "status": "done",
-  "message": "",
+ {
+  "file": "snow_intersection_ottawa",
+  "condition": "snow",
+  "duration_s": 17.12,
   "detector": "general_coco.pt",
-  "mode": "learned",
+  "detector_scores": {
+   "detector.pt": 6,
+   "detector_lowlight.pt": 7,
+   "general_coco.pt": 11
+  },
   "events": [],
   "conflicts": {
    "counts": {
@@ -210,13 +244,13 @@
    "serious_per_1000_road_users": 0.0,
    "method": "PET image-plane, carriageway cells only; bins <1.5 / 1.5-3 / 3-5 s (Bellevue WA screening)"
   },
-  "timing": {
-   "perception_s": 7.5,
-   "privacy_render_s": 5.1,
-   "total_s": 12.7,
-   "video_s": 17.1,
-   "stride_s": 0.1,
-   "imgsz": 1280
-  }
+  "privacy": {
+   "plates_blurred": 25,
+   "heads_blurred": 287,
+   "fps": 14.99
+  },
+  "licence": "Pexels License (free to use, modify; attribution not required) https://www.pexels.com/license/",
+  "author": "Braeson Holland (Pexels)",
+  "page_url": "https://www.pexels.com/video/cars-and-people-in-the-street-during-a-heavy-snowfall-11316066/"
  }
-}
+]

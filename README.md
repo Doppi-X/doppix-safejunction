@@ -66,7 +66,7 @@ The frontend finds the API through `data/api.json`, which `deploy/serve.py` publ
 
    Each scores 6 frames spread over the clip, counting confident (≥ 0.5) road users. The daylight model, which the rules were tuned on, is kept unless another finds more than 1.25× + 2 as many.
 
-   Why: on 7 open-licence clips from other cities (below), our fine-tune barely saw anything from a drone at night (3 confident road users in 4 frames, COCO 137). On our own junction it beats COCO (261 vs 172), and at the Shibuya crossing too (294 vs 72). A brightness threshold could not separate lit night streets from day (both had a mean HSV value of about 90), so we dropped it.
+   Why: on 7 open-licence clips from other cities (below), our fine-tune barely saw anything from a drone at night (5 confident road users in 6 sample frames, COCO 43). On our own junction it beats COCO (261 vs 172 in 4 sample frames), and at the Shibuya crossing too (443 vs 51 in 6). A brightness threshold could not separate lit night streets from day (both had a mean HSV value of about 90), so we dropped it.
 
    With the COCO model there is no traffic-light state, so red-light rules need our model or a drawn light plus our light classifier.
 2. **Scene:** there are three sources, in this order.
@@ -122,20 +122,21 @@ Bold = the better model in that condition. The app picks per camera from sample 
 
 These are open-licence clips from other cities (`eval/new_videos_sources.json`). Each was uploaded through the live API without drawing zones, exactly as a new user would (`eval/results/new_cameras.json`). There are no labels, so this table shows what the system did, not its accuracy.
 
-| clip | condition | length | detector chosen | events (zero-config) | PET conflicts serious / moderate | pedestrians / vehicles on carriageway |
+| clip | condition | length | detector chosen (scores: ours / low-light / COCO) | events (zero-config) | PET conflicts serious / moderate | pedestrians / vehicles on carriageway |
 |---|---|---|---|---|---|---|
-| day_intersection_trafficlight_nyc | day | 27 s | general_coco.pt | congestion | 0 / 0 | 0 / 15 |
-| day_crossing_tokyo_shibuya | day | 20 s | detector.pt | none | 9 / 10 | 44 / 16 |
-| day_intersection_topdown_drone | day | 36 s | detector.pt | none | 0 / 0 | 0 / 38 |
-| night_intersection_topdown_drone | night | 82 s | general_coco.pt | congestion | 1 / 5 | 0 / 226 |
-| night_crosswalk_trafficlight_street | night | 17 s | detector.pt | none | 0 / 0 | 2 / 2 |
-| rain_night_crossing_nyc_timessquare | rain | 20 s | general_coco.pt | none | 19 / 15 | 43 / 35 |
-| snow_intersection_ottawa | snow | 17 s | general_coco.pt | none | 0 / 0 | 0 / 3 |
+| day_intersection_trafficlight_nyc | day | 27 s | general_coco.pt (55 / 64 / 103) | congestion | 0 / 0 | 0 / 15 |
+| day_crossing_tokyo_shibuya | day | 20 s | detector.pt (443 / 342 / 51) | none | 9 / 10 | 44 / 16 |
+| day_intersection_topdown_drone | day | 36 s | detector.pt (32 / 1 / 33) | none | 0 / 0 | 0 / 38 |
+| night_intersection_topdown_drone | night | 82 s | general_coco.pt (5 / 2 / 43) | congestion | 1 / 5 | 0 / 226 |
+| night_crosswalk_trafficlight_street | night | 17 s | detector.pt (6 / 6 / 0) | none | 0 / 0 | 2 / 2 |
+| rain_night_crossing_nyc_timessquare | rain | 20 s | detector.pt (28 / 26 / 22) | congestion | 3 / 3 | 32 / 29 |
+| snow_intersection_ottawa | snow | 17 s | general_coco.pt (6 / 7 / 11) | none | 0 / 0 | 0 / 3 |
 
 What this shows:
-* **Detector choice matters.** The general COCO model was picked for the night drone view, Times Square in rain, Ottawa in snow and New York. Our own model was kept for Shibuya and the day drone view.
+* **Detector choice matters.** The general COCO model was picked for the night drone view, Ottawa in snow and New York. Our own model was kept for Shibuya, Times Square and the day drone view. Scores count confident road users in 6 sample frames.
 * **Short zero-config clips find few events.** Lane directions need traffic over time; drawing zones (about 2 minutes) or a longer clip is the fix.
-* **PET finds conflicts where crowds meet cars** (Shibuya, Times Square) even without zones.
+* **PET finds conflicts where crowds meet cars** (Shibuya 9 serious, Times Square 3) even without zones.
+* **Privacy:** a first run showed our detector missed people close to a street-level camera (Times Square), so faces were left unblurred. Privacy now blurs the union of our detector and the general COCO model. The exposed thumbnails were deleted and all 7 clips were re-run.
 * **Weak spots:**
   * In the day drone view (straight down), both detectors are weak, which rules out top-down drone footage today.
   * In the night street-level clip, few road users were detected.
