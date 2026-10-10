@@ -1,10 +1,12 @@
 """Yechimning barcha sozlamalari bir joyda."""
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[2]          # repo root
+CORE = Path(__file__).resolve().parents[1]          # core/
 WEIGHTS = ROOT / "weights" / "detector.pt"
-TRACKER_CFG = ROOT / "configs" / "bytetrack.yaml"
-SCENE_CFG = ROOT / "configs" / "scene.json"
+PLATE_WEIGHTS = ROOT / "weights" / "plate.pt"
+TRACKER_CFG = CORE / "configs" / "bytetrack.yaml"
+SCENE_CFG = CORE / "configs" / "scene.json"
 
 SEED = 42
 

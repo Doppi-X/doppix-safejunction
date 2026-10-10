@@ -13,7 +13,7 @@ import numpy as np
 from . import config
 
 REF_W = 960                       # solishtirish shu kenglikda (tez va shovqinga chidamli)
-REF_PATH = config.ROOT / "configs" / "scene_ref.png"
+REF_PATH = config.CORE / "configs" / "scene_ref.png"
 
 
 def background(frames: list[np.ndarray]) -> np.ndarray:

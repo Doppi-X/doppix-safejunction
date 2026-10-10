@@ -1,0 +1,92 @@
+{
+ "videos": {
+  "C3896": {
+   "duration": 340.3,
+   "wrong_way_alarms": 0,
+   "near_miss_alarms": 0,
+   "stopped_vehicle": {
+    "tp": 1,
+    "fp": 2,
+    "fn": 2,
+    "f1": 0.333
+   },
+   "congestion": {
+    "tp": 2,
+    "fp": 3,
+    "fn": 3,
+    "f1": 0.4
+   }
+  },
+  "C3897": {
+   "duration": 317.8,
+   "wrong_way_alarms": 0,
+   "near_miss_alarms": 0,
+   "stopped_vehicle": {
+    "tp": 1,
+    "fp": 3,
+    "fn": 4,
+    "f1": 0.222
+   },
+   "congestion": {
+    "tp": 1,
+    "fp": 4,
+    "fn": 2,
+    "f1": 0.25
+   }
+  },
+  "C3902": {
+   "duration": 317.8,
+   "wrong_way_alarms": 0,
+   "near_miss_alarms": 0,
+   "stopped_vehicle": {
+    "tp": 0,
+    "fp": 3,
+    "fn": 2,
+    "f1": 0.0
+   },
+   "congestion": {
+    "tp": 0,
+    "fp": 5,
+    "fn": 2,
+    "f1": 0.0
+   }
+  },
+  "C3905": {
+   "duration": 127.6,
+   "wrong_way_alarms": 0,
+   "near_miss_alarms": 0,
+   "stopped_vehicle": {
+    "tp": 0,
+    "fp": 3,
+    "fn": 1,
+    "f1": 0.0
+   },
+   "congestion": {
+    "tp": 1,
+    "fp": 1,
+    "fn": 0,
+    "f1": 0.667
+   }
+  }
+ },
+ "injection": {
+  "C3896": {
+   "injected": 15,
+   "caught": 15
+  },
+  "C3897": {
+   "injected": 15,
+   "caught": 14
+  },
+  "C3902": {
+   "injected": 15,
+   "caught": 14
+  },
+  "C3905": {
+   "injected": 15,
+   "caught": 13
+  }
+ },
+ "injection_recall": 0.933,
+ "wrong_way_false_alarms_per_hour": 0.0
+}
