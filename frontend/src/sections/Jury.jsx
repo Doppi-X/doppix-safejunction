@@ -1,5 +1,20 @@
 import { AlertTriangle, Building2, Camera, CheckCircle2, PlayCircle, Smartphone } from "lucide-react";
 import Section from "./Section.jsx";
+import { REPO_URL } from "../team.js";
+
+// Every item the final's task asks for, and where it is answered.
+const ASKED = [
+  ["Prototype: public, live, works on the jury's own input", "Try it: upload any video or photo, on a laptop or phone", "#analyze"],
+  ["Engineering: where inference runs, speed, cost per camera", "Engineering constraint", "#engineering"],
+  ["Quality at night, in rain, on local vehicles and plates", "Engineering constraint + Quality", "#engineering"],
+  ["Quality measured on a test set we built; known failures", "Quality, measured", "#evaluation"],
+  ["A system, not one call to someone else's model", "How it works (8 stages)", "#approach"],
+  ["Innovation: why a weekend copy fails", "How it works · 7 unseen cameras · our 12,990 labels", "#engineering"],
+  ["User, payer, evidence, 3-month pilot", "Overview · Business", "#business"],
+  ["Budget, ROI, unit economics, payback, assumptions", "Business calculator", "#business"],
+  ["Pre-final work declared; data sources and licences", "Data & declaration", "#transparency"],
+  ["Repository with run instructions; deploy history (GitHub Actions)", "GitHub: README and Actions", "repo"],
+];
 
 const CARDS = [
   {
@@ -33,6 +48,22 @@ export default function Jury() {
           </div>
         ))}
       </div>
+      <details className="card mt-4 p-4">
+        <summary className="cursor-pointer font-semibold text-white">What the task asks, and where this site answers it</summary>
+        <table className="mt-3 w-full text-sm">
+          <tbody>
+            {ASKED.map(([q, where, href]) => (
+              <tr key={q} className="border-t border-white/5 align-top">
+                <td className="py-1.5 pr-3 text-slate-300">{q}</td>
+                <td className="py-1.5">
+                  <a href={href === "repo" ? REPO_URL : href} target={href === "repo" ? "_blank" : undefined} rel="noreferrer"
+                    className="text-amber-300 underline decoration-dotted">{where}</a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </details>
       <div className="card mt-4 grid items-center gap-4 p-4 sm:grid-cols-[auto_1fr]">
         <img src="./data/img/qr.png" alt="QR code to this site" className="mx-auto h-36 w-36 rounded-lg bg-white p-1.5" />
         <div>

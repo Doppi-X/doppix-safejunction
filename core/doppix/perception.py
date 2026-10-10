@@ -81,13 +81,25 @@ def _road_users(model, frame: np.ndarray, cmap: dict | None) -> int:
     return int((conf[keep] >= 0.5).sum()) if len(keep) else 0
 
 
+_scorers: dict = {}
+
+
+def _scoring_model(weights: Path):
+    """Separate instances for scoring: a model that has run model.track() keeps tracker state in its
+    predictor, and its predict() then returns tracked boxes only (fewer), which skews the choice."""
+    if weights not in _scorers:
+        from ultralytics import YOLO
+        _scorers[weights] = YOLO(str(weights))
+    return _scorers[weights]
+
+
 def choose_weights(frames: list[np.ndarray]) -> tuple[Path, dict]:
     """Per-camera detector choice (built during the final): score a few frames with each candidate.
 
     The daylight model (the one the rules were tuned on) is kept unless another model finds clearly more
     confident road users: a cheap, label-free check that picks the model that actually sees this camera."""
     cands = [Path(config.WEIGHTS)] + [w for w in (config.LOWLIGHT_WEIGHTS, config.GENERAL_WEIGHTS) if w.exists()]
-    scores = {w.name: sum(_road_users(load_detector(w), f, class_map(w)) for f in frames) for w in cands}
+    scores = {w.name: sum(_road_users(_scoring_model(w), f, class_map(w)) for f in frames) for w in cands}
     best = Path(config.WEIGHTS)
     for w in cands[1:]:
         if scores[w.name] > config.SWITCH_RATIO * scores[best.name] + 2:
@@ -118,7 +130,7 @@ def detect_image(frame: np.ndarray, conf: float = 0.3, imgsz: int = config.IMGSZ
     f = frame if frame.shape[1] <= config.FRAME_W else cv2.resize(frame, (config.FRAME_W, round(frame.shape[0] * config.FRAME_W / frame.shape[1])))
     w, _ = choose_weights([f])
     cmap = class_map(w)
-    r = load_detector(w).predict(frame, imgsz=imgsz, conf=conf, device=_device(), verbose=False)[0]
+    r = _scoring_model(w).predict(frame, imgsz=imgsz, conf=conf, device=_device(), verbose=False)[0]
     b, c, s = r.boxes.xyxy.cpu().numpy(), r.boxes.cls.cpu().numpy().astype(int), r.boxes.conf.cpu().numpy()
     if cmap:
         keep = np.array([k in cmap for k in c], dtype=bool)

@@ -56,6 +56,7 @@ export default function Analyze() {
   const [drag, setDrag] = useState(false);
   const [name, setName] = useState("");
   const input = useRef(null);
+  const busyRef = useRef(false);
   const online = server && server !== "offline";
 
   // poll the job; load the result when done
@@ -108,8 +109,19 @@ export default function Analyze() {
     return () => clearTimeout(t);
   }, [zones]);
 
+  // hero "Live demo" button: run the sample clip as soon as the server is reachable
+  const runSampleRef = useRef(null);
+  runSampleRef.current = () => fetch("./data/demo_sample/video.mp4").then((r) => r.blob())
+    .then((b) => start(new File([b], "sample_40s.mp4", { type: "video/mp4" }))).catch(() => setError("Could not load the sample."));
+  useEffect(() => {
+    const go = () => { if (!busyRef.current) runSampleRef.current(); };
+    window.addEventListener("sj:sample", go);
+    return () => window.removeEventListener("sj:sample", go);
+  }, []);
+
   const reset = () => { setJob(null); setDoc(null); setImg(null); setError(""); setZones({}); setZoneState(""); };
   const busy = job && !["done", "error"].includes(job.status);
+  busyRef.current = busy;
   const pct = job?.stage === "upload" ? upload : job?.progress || 0;
 
   return (
@@ -137,8 +149,7 @@ export default function Analyze() {
           <button disabled={!online} onClick={() => input.current?.click()}
             className="btn bg-amber-500 px-4 py-2 text-slate-950 hover:bg-amber-400 disabled:opacity-40"><Upload size={16} /> Choose file</button>
           <input ref={input} type="file" accept="video/*,image/*" className="hidden" onChange={(e) => start(e.target.files?.[0])} />
-          <button disabled={!online} onClick={() => fetch("./data/demo_sample/video.mp4").then((r) => r.blob())
-            .then((b) => start(new File([b], "sample_40s.mp4", { type: "video/mp4" }))).catch(() => setError("Could not load the sample."))}
+          <button disabled={!online} onClick={() => runSampleRef.current()}
             className="text-sm text-amber-300 underline decoration-dotted hover:text-amber-200 disabled:opacity-40">
             No traffic video at hand? Run our 40 s sample clip</button>
         </div>
