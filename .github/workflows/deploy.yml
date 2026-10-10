@@ -30,7 +30,7 @@ jobs:
         shell: cmd
         run: |
           REM fetch from the runner's fresh checkout on the same disk (no second download from GitHub)
-          git -c safe.directory=* -C "%SERVER_CHECKOUT%" fetch -q "%GITHUB_WORKSPACE%" ${{ github.sha }}
+          git -c safe.directory=* -C "%SERVER_CHECKOUT%" fetch -q --update-shallow "%GITHUB_WORKSPACE%" ${{ github.sha }}
           git -c safe.directory=* -C "%SERVER_CHECKOUT%" reset -q --hard ${{ github.sha }}
           git -c safe.directory=* -C "%SERVER_CHECKOUT%" log --oneline -1
 
