@@ -18,6 +18,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "core"))
+sys.path.insert(0, str(ROOT / "eval"))
 from doppix import config  # noqa: E402
 
 RNG = np.random.default_rng(42)
@@ -68,8 +69,8 @@ def low_bitrate(img):
 
 
 def night_enhanced(img):
-    """The night corruption, then our low-light enhancement (core/doppix/enhance.py) as in production."""
-    from doppix.enhance import enhance
+    """The night corruption, then the low-light enhancement we tried (eval/lowlight_enhance.py)."""
+    from lowlight_enhance import enhance
     return enhance(night(img))
 
 

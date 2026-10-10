@@ -1,4 +1,8 @@
-"""Low-light enhancement before detection (built during the final).
+"""Low-light enhancement before detection — TRIED AND REJECTED (built during the final).
+
+Result (eval/results/robustness.json): on synthetic night frames mAP50 fell from 0.390 to 0.266,
+because lifting the dark frame also amplifies sensor noise. Not used in the product; kept as a
+documented negative result.
 
 If a frame is dark (mean luma below DARK), lift it with a gamma curve chosen so the mean
 reaches TARGET, then equalise local contrast on the luma channel (CLAHE). Bright frames
