@@ -59,11 +59,14 @@ def main():
     ap.add_argument("--videos", required=True)
     ap.add_argument("--labeler-data", required=True, help="the labeler's 02_data folder")
     ap.add_argument("--n", type=int, default=15)
+    ap.add_argument("--exclude", nargs="*", default=[], help="video stems to skip")
     a = ap.parse_args()
     from ultralytics import YOLO
     ours, coco = YOLO(str(config.WEIGHTS)), YOLO(str(config.GENERAL_WEIGHTS))
     data = Path(a.labeler_data)
     for v in sorted(Path(a.videos).glob("*.mp4")):
+        if v.stem in a.exclude:
+            continue
         dst = data / "samples" / v.name
         if not dst.exists():
             shutil.copy(v, dst)
