@@ -16,6 +16,12 @@ jobs:
       SERVER_CHECKOUT: D:\My_projects\doppix-safejunction
       PYTHON: D:\My_projects\Train_yolo\venv\Scripts\python.exe
       HF_TOKEN_FILE: D:\My_projects\safejunction_state\hf_token.txt
+      # the server's C: drive is full: keep npm cache and temp files on D:
+      npm_config_cache: D:
+pm-cache
+      TEMP: D:\My_projects\safejunction_state	mp
+      TMP: D:\My_projects\safejunction_state	mp
+      NODE_OPTIONS: --use-system-ca
     steps:
       - uses: actions/checkout@v4
         with:
@@ -37,7 +43,7 @@ jobs:
         shell: cmd
         working-directory: frontend
         run: |
-          call npm install --no-audit --no-fund
+          call npm ci --no-audit --no-fund
           call npm run build
 
       - name: Frontend - publish to Hugging Face
