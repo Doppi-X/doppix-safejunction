@@ -63,7 +63,7 @@ Hammasi shahar serverida, bitta RTX 3060'da ishlaydi va real vaqtdan 2 barobar t
 - zaif tomonimiz **tun** edi: aniqlik 0.39. Kadrni yorqinlashtirish yordam bermadi, yomonlashtirdi.
 - Finalda sun'iy tun, yomg'ir va xiralik bilan qayta o'qitdik: tun **0.39 dan 0.92 ga** ko'tarildi.
 - Lekin bu model kunduzgi hodisa bahosini 0.83 dan 0.77 ga tushirdi. Shuning uchun har bir kamera ulanganda tizim 6 ta kadrda uchta modelni sinaydi: bizning kunduzgi, bizning tungi va umumiy COCO modeli. Qaysi biri ishonchliroq ko'rsa, o'sha tanlanadi.
-- Boshqa shaharlardan 7 ta ochiq video bilan sinadik: tungi dron ko'rinishida 6 ta kadrda bizning model 5 ta, umumiy model 43 ta ishonchli obyekt ko'rdi, shuning uchun umumiy model tanlandi.
+- Boshqa shaharlardan 7 ta ochiq video bilan sinadik: tungi dron ko'rinishida 6 ta kadrda bizning model 7 ta, umumiy model 211 ta ishonchli obyekt ko'rdi, shuning uchun umumiy model tanlandi.
 - Ochiq aytamiz: bu sun'iy tungi test. Haqiqiy tungi video pilotning birinchi oyida yig'iladi."
 
 ### 8-slayd · 5:25–6:20 · Ibodulla

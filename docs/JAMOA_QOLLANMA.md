@@ -49,7 +49,7 @@
 | **Inference qayerda** | Shahar video arxivi yonidagi GPU serverda (on-premise). Bizda bitta RTX 3060 12 GB. Brauzer faqat yuklaydi va ko'radi, hech qanday bulutli AI API chaqirilmaydi | o'lchangan |
 | **O'z apparatimizdagi tezlik** | Aniqlash + kuzatish 10 fps'da **real vaqtdan 2× tez**. Rasm 0.5–0.7 s. 40 s video yuklashdan hisobotgacha ~50–60 s | o'lchangan |
 | **Kamera boshiga narx** | Infratuzilma ~**13 $/oy**: server 1,200 $ / 36 oy / 4 kamera = 8.3 $, elektr 0.3 kW × 720 soat × 0.08 $ / 4 = 4.3 $ | hisob + farazlar |
-| **Tunda** | Sintetik tunda: bizning model 0.39 → tungi model **0.92** (mAP50). Haqiqiy tungi dron videosida bizning model 6 kadrda 5 ta, umumiy COCO model 43 ta ishonchli obyekt topdi, shuning uchun model har kamera uchun avtomatik tanlanadi | sintetik test + haqiqiy video (labelsiz) |
+| **Tunda** | Sintetik tunda: bizning model 0.39 → tungi model **0.92** (mAP50). Haqiqiy tungi dron videosida bizning model 6 kadrda 7 ta, umumiy COCO model 211 ta ishonchli obyekt topdi, shuning uchun model har kamera uchun avtomatik tanlanadi | sintetik test + haqiqiy video (labelsiz) |
 | **Yomg'irda** | Sintetik yomg'ir 0.79 → **0.97**, tuman 0.97, xiralik 0.71 → 0.96. Haqiqiy yomg'ir (Times Square, Shenzhen, Tehron) va qor (Ottava) videolarida sinaldi | sintetik + haqiqiy (labelsiz) |
 | **Mahalliy avtomobillar** | Toshkent chorrahasida o'zimiz labellagan **12,990 box**: Cobalt, Damas, bo'g'inli avtobuslar, bizning svetoforlar | o'lchangan |
 | **Mahalliy raqamlar** | Raqamlarni **o'qimaymiz**, faqat xiralashtiramiz (maxfiylik). Ochiq raqam detektori har bir mashina boxi ichida ishlaydi | — |
@@ -141,7 +141,7 @@ Video → [1] Model tanlash → [2] Aniqlash + kuzatish → [3] Sahna → [4] Ho
   - **bizning tungi modelimiz** (tun, yomg'ir va xiralik bilan qayta o'qitilgan);
   - **umumiy COCO modeli** (YOLO26m, millionlab rasmlarda o'qitilgan).
 - **Qanday tanlanadi:** videodan 6 ta kadr olinadi. Har model ≥ 0.5 ishonch bilan nechta yo'l harakati ishtirokchisini topishi sanaladi. Kunduzgi modelimiz qoladi, agar boshqasi **1.25× + 2** martadan ko'proq topmasa. Qoidalar shu model uchun sozlangan.
-- **Nega:** yangi videolar ko'rsatdi, bizning model bitta chorrahada o'qitilgani uchun dron yoki tungi ko'cha ko'rinishida deyarli hech narsa ko'rmaydi (tungi dron: 5 ta va 43 ta). Bizning chorrahada esa bizning model yaxshiroq (261 ta va 172 ta).
+- **Nega:** yangi videolar ko'rsatdi, bizning model bitta chorrahada o'qitilgani uchun dron yoki tungi ko'cha ko'rinishida deyarli hech narsa ko'rmaydi (tungi dron: 7 ta va 211 ta). Bizning chorrahada esa bizning model yaxshiroq (261 ta va 172 ta).
 - **Avval sinab, voz kechganimiz:** yorug'lik bo'yicha tanlash. Ko'cha chirog'i ostidagi tun kunduzgi kadr bilan bir xil yorug'likda chiqdi (~90).
 
 ### [2] Aniqlash va kuzatish
@@ -265,12 +265,12 @@ Video → [1] Model tanlash → [2] Aniqlash + kuzatish → [3] Sahna → [4] Ho
 | Kamera | Tanlangan model | Jiddiy / o'rtacha PET | Izoh |
 |---|---|---|---|
 | Shibuya, Tokio | bizniki | 9 / 10 | Olomon va mashinalar |
-| Times Square, yomg'irli tun | bizniki | 3 / 3 | |
+| Times Square, yomg'irli tun | COCO | **19** / 15 | Olomon, taksilar |
 | Tungi dron | COCO | 1 / 5 | 226 mashina, tirbandlik |
 | Nyu-York kunduz | COCO | 0 / 0 | Tirbandlik |
 | Ottava, qor | COCO | 0 / 0 | Kam transport |
 | Kunduzgi dron (tik tepadan) | bizniki | 0 / 0 | **Zaif:** ikkala model ham tepadan yaxshi ko'rmaydi |
-| Tungi ko'cha | bizniki | 0 / 0 | Kam obyekt topildi |
+| Tungi ko'cha | COCO | 2 / 1 | Kam obyekt |
 
 ---
 

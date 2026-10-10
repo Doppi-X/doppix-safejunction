@@ -46,7 +46,7 @@
   "detector_scores": {
    "detector.pt": 443,
    "detector_lowlight.pt": 342,
-   "general_coco.pt": 51
+   "general_coco.pt": 108
   },
   "events": [],
   "conflicts": {
@@ -110,9 +110,9 @@
   "duration_s": 82.28,
   "detector": "general_coco.pt",
   "detector_scores": {
-   "detector.pt": 5,
+   "detector.pt": 7,
    "detector_lowlight.pt": 2,
-   "general_coco.pt": 43
+   "general_coco.pt": 211
   },
   "events": [
    [
@@ -152,29 +152,29 @@
   "file": "night_crosswalk_trafficlight_street",
   "condition": "night",
   "duration_s": 16.68,
-  "detector": "detector.pt",
+  "detector": "general_coco.pt",
   "detector_scores": {
    "detector.pt": 6,
    "detector_lowlight.pt": 6,
-   "general_coco.pt": 0
+   "general_coco.pt": 12
   },
   "events": [],
   "conflicts": {
    "counts": {
-    "serious": 0,
-    "moderate": 0,
+    "serious": 2,
+    "moderate": 1,
     "interaction": 0
    },
-   "exposure_pedestrians": 2,
-   "exposure_vehicles": 2,
-   "vru_serious": 0,
-   "serious_per_1000_pedestrians": 0.0,
-   "serious_per_1000_road_users": 0.0,
+   "exposure_pedestrians": 1,
+   "exposure_vehicles": 3,
+   "vru_serious": 2,
+   "serious_per_1000_pedestrians": 2000.0,
+   "serious_per_1000_road_users": 500.0,
    "method": "PET image-plane, carriageway cells only; bins <1.5 / 1.5-3 / 3-5 s (Bellevue WA screening)"
   },
   "privacy": {
    "plates_blurred": 10,
-   "heads_blurred": 410,
+   "heads_blurred": 413,
    "fps": 11.99
   },
   "licence": "Mixkit Stock Video Free License https://mixkit.co/license/#videoFree",
@@ -185,35 +185,29 @@
   "file": "rain_night_crossing_nyc_timessquare",
   "condition": "rain",
   "duration_s": 19.87,
-  "detector": "detector.pt",
+  "detector": "general_coco.pt",
   "detector_scores": {
-   "detector.pt": 28,
+   "detector.pt": 45,
    "detector_lowlight.pt": 26,
-   "general_coco.pt": 22
+   "general_coco.pt": 97
   },
-  "events": [
-   [
-    11.5,
-    19.8,
-    "congestion"
-   ]
-  ],
+  "events": [],
   "conflicts": {
    "counts": {
-    "serious": 3,
-    "moderate": 3,
-    "interaction": 6
+    "serious": 19,
+    "moderate": 15,
+    "interaction": 12
    },
-   "exposure_pedestrians": 32,
-   "exposure_vehicles": 29,
-   "vru_serious": 2,
-   "serious_per_1000_pedestrians": 62.5,
-   "serious_per_1000_road_users": 49.2,
+   "exposure_pedestrians": 43,
+   "exposure_vehicles": 35,
+   "vru_serious": 15,
+   "serious_per_1000_pedestrians": 348.8,
+   "serious_per_1000_road_users": 243.6,
    "method": "PET image-plane, carriageway cells only; bins <1.5 / 1.5-3 / 3-5 s (Bellevue WA screening)"
   },
   "privacy": {
-   "plates_blurred": 620,
-   "heads_blurred": 3713,
+   "plates_blurred": 480,
+   "heads_blurred": 3210,
    "fps": 15.0
   },
   "licence": "Mixkit Stock Video Free License https://mixkit.co/license/#videoFree",
@@ -226,9 +220,9 @@
   "duration_s": 17.12,
   "detector": "general_coco.pt",
   "detector_scores": {
-   "detector.pt": 6,
+   "detector.pt": 7,
    "detector_lowlight.pt": 7,
-   "general_coco.pt": 11
+   "general_coco.pt": 22
   },
   "events": [],
   "conflicts": {
