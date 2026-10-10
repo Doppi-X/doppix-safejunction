@@ -7,6 +7,8 @@ export const ZONE_TYPES = [
   { id: "crosswalk", name: "Crosswalk", color: "#f8fafc", min: 3, hint: "outline a zebra crossing" },
   { id: "stop_line", name: "Stop line", color: "#f97316", min: 2, max: 2, hint: "2 clicks: the line cars stop at" },
   { id: "traffic_light", name: "Traffic light", color: "#22c55e", min: 2, max: 2, rect: true, hint: "2 clicks: box around the light that governs the stop line" },
+  { id: "calibration", name: "Speed calibration", color: "#22d3ee", min: 4, max: 4, single: true,
+    hint: "4 clicks around a road rectangle you know the size of (e.g. a zebra crossing), then type its sides in metres" },
 ];
 
 /** Draw zones on the first frame. Click to add points; "Finish" closes the shape. Works with touch. */
@@ -28,7 +30,8 @@ export default function ZoneEditor({ frameUrl, value, onChange, disabled }) {
 
   const commit = (pts) => {
     const shape = T.rect ? [[pts[0][0], pts[0][1]], [pts[1][0], pts[0][1]], [pts[1][0], pts[1][1]], [pts[0][0], pts[1][1]]] : pts;
-    onChange({ ...zones, [type]: [...(zones[type] || []), shape] });
+    const extra = type === "calibration" && !zones.calibration_dims ? { calibration_dims: { width_m: 3.5, length_m: 4, limit_kmh: 60 } } : {};
+    onChange({ ...zones, ...extra, [type]: T.single ? [shape] : [...(zones[type] || []), shape] });
     setDraft([]);
   };
 
@@ -60,10 +63,26 @@ export default function ZoneEditor({ frameUrl, value, onChange, disabled }) {
               ? <polyline key={z.id + i} points={P(pts)} stroke={z.color} strokeWidth={4} fill="none" />
               : <polygon key={z.id + i} points={P(pts)} stroke={z.color} strokeWidth={2} fill={z.color + "30"} />
           )))}
+          {(zones.calibration || []).map((pts, i) => pts.map(([x, y], k) => (
+            <text key={"c" + i + k} x={x * size.w + 6} y={y * size.h - 6} fill="#22d3ee" fontSize="13" fontWeight="700">{k + 1}</text>
+          )))}
           {draft.length > 0 && <polyline points={P(draft)} stroke={T.color} strokeWidth={2} strokeDasharray="5 4" fill="none" />}
           {draft.map(([x, y], i) => <circle key={i} cx={x * size.w} cy={y * size.h} r={4} fill={T.color} />)}
         </svg>
       </div>
+      {type === "calibration" && (
+        <div className="flex flex-wrap items-center gap-2 rounded-lg border border-cyan-500/30 bg-cyan-500/5 p-2 text-xs text-slate-300">
+          {[["width_m", "Side 1→2 (m)", 3.5], ["length_m", "Side 2→3 (m)", 4], ["limit_kmh", "Speed limit (km/h)", 60]].map(([k, label, def]) => (
+            <label key={k} className="flex items-center gap-1">{label}
+              <input type="number" min="0" step="0.5" disabled={disabled}
+                value={(zones.calibration_dims || {})[k] ?? def}
+                onChange={(e) => onChange({ ...zones, calibration_dims: { width_m: 3.5, length_m: 4, limit_kmh: 60, ...(zones.calibration_dims || {}), [k]: Number(e.target.value) } })}
+                className="w-16 rounded border border-white/10 bg-slate-900 px-1.5 py-0.5 text-right text-white" />
+            </label>
+          ))}
+          <span className="text-slate-500">A zebra stripe is usually 0.5 m; a lane about 3.5 m. Points are numbered on the frame.</span>
+        </div>
+      )}
       <div className="flex flex-wrap items-center gap-1.5 text-xs">
         <span className="text-slate-400">{T.name}: {T.hint}.</span>
         <div className="flex-1" />

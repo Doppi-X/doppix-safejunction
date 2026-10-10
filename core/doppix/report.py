@@ -32,7 +32,8 @@ def summary_row(doc: dict, **meta) -> dict:
             "risk_index": round(sum(SEVERITY.get(k, 1) * v["count"] for k, v in per.items()) / minutes * 10, 1),
             "vehicles": rep.get("vehicles_seen"), "pedestrians": rep.get("pedestrians_seen"),
             "hotspots": rep.get("hotspots", []), "rates_reliable": rep.get("rates_reliable", False),
-            "aspect": round(doc["width"] / doc["height"], 4), "conflicts": rep.get("conflicts")}
+            "aspect": round(doc["width"] / doc["height"], 4), "conflicts": rep.get("conflicts"),
+            "speed_p85": (rep.get("speed") or {}).get("p85_kmh")}
 
 
 def hotspots(p: Perception, events: list, involved: list | None) -> list:
@@ -53,7 +54,7 @@ def hotspots(p: Perception, events: list, involved: list | None) -> list:
 
 
 def build(p: Perception, events: list, curve: list, ff: FlowField, involved: list | None = None,
-          conflicts: tuple | None = None) -> dict:
+          conflicts: tuple | None = None, speed: dict | None = None) -> dict:
     dur_h = max(p.duration, 1e-6) / 3600
     per_class = {}
     for s, e, lab in events:
@@ -101,13 +102,20 @@ def build(p: Perception, events: list, curve: list, ff: FlowField, involved: lis
         pet_rec = (f"{cs['vru_serious']} serious pedestrian/cyclist conflicts (PET < 1.5 s), {cs['serious_per_1000_pedestrians']} per 1,000 "
                    "pedestrians: see the red dots on the hotspot map; consider a refuge island, kerb extension or a leading pedestrian interval there.")
         recs.append(pet_rec)
+    speed_rec = None
+    if speed and speed.get("vehicles", 0) >= 5 and speed["p85_kmh"] > speed["limit_kmh"] + 10:
+        speed_rec = (f"85th-percentile speed {speed['p85_kmh']} km/h over a {speed['limit_kmh']:.0f} km/h limit "
+                    f"({100 * speed['share_over_limit']:.0f} % of {speed['vehicles']} vehicles over the limit): speed humps or a raised crossing, "
+                    "or an average-speed camera on this approach.")
     if not reliable:
         recs = [f"Clip is {p.duration:.0f} s long: events are listed, but hourly rates and recommendations need "
                 "at least 5 minutes (a pilot camera collects whole days)."] + ([f"Indicative, from this clip: {pet_rec}"] if pet_rec else [])
     elif not recs:
         recs.append("No rule crossed its threshold in this clip; keep monitoring to collect a full day.")
+    if speed_rec:      # speeds are not a rate: valid on a short clip too
+        recs.append(speed_rec)
     return {"duration_min": round(p.duration / 60, 2), "per_class": per_class, "vehicles_seen": veh,
             "pedestrians_seen": ped, "risk": risk_stats, "safety_index": round(score, 1) if reliable else None,
             "rates_reliable": reliable, "recommendations": recs,
             "hotspots": hotspots(p, events, involved) + [[c["x"], c["y"], "conflict"] for c in cf if c["severity"] == "serious"],
-            "conflicts": cs}
+            "conflicts": cs, "speed": {k: v for k, v in (speed or {}).items() if k != "per_track"} or None}

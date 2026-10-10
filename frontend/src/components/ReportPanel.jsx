@@ -64,6 +64,37 @@ function Conflicts({ cs }) {
   );
 }
 
+/** Speed survey from the 4-point calibration. */
+function Speed({ sp }) {
+  if (!sp) return (
+    <div className="card p-4">
+      <h3 className="font-semibold text-white">Speeds</h3>
+      <p className="mt-1 text-sm text-slate-400">Draw <b className="text-cyan-300">Speed calibration</b> (4 corners of a road rectangle you know the size of) under "Edit zones" to get vehicle speeds in km/h: mean, 85th percentile and share over the limit.</p>
+    </div>
+  );
+  if (!sp.vehicles) return <div className="card p-4"><h3 className="font-semibold text-white">Speeds</h3><p className="mt-1 text-sm text-slate-400">{sp.note}</p></div>;
+  const max = Math.max(1, ...(sp.histogram || []));
+  return (
+    <div className="card p-4">
+      <h3 className="font-semibold text-white">Speeds <span className="text-xs font-normal text-slate-400">({sp.vehicles} moving vehicles, limit {sp.limit_kmh} km/h)</span></h3>
+      <div className="mt-3 grid grid-cols-3 gap-2">
+        {[["85th percentile", `${sp.p85_kmh} km/h`], ["median", `${sp.median_kmh} km/h`], ["over the limit", `${Math.round(100 * sp.share_over_limit)} %`]].map(([k, v]) => (
+          <div key={k} className="rounded-lg bg-white/5 p-2"><div className="font-display text-lg font-bold text-white">{v}</div><div className="text-[11px] text-slate-400">{k}</div></div>
+        ))}
+      </div>
+      <div className="mt-3 flex h-16 items-end gap-1">
+        {(sp.histogram || []).map((n, i) => (
+          <div key={i} className="flex flex-1 flex-col items-center gap-0.5">
+            <div className="w-full rounded-t" style={{ height: `${(100 * n) / max}%`, background: i * 10 >= sp.limit_kmh ? "#f87171" : "#22d3ee" }} />
+            <span className="text-[9px] text-slate-500">{i * 10}</span>
+          </div>
+        ))}
+      </div>
+      <p className="mt-2 text-[11px] text-slate-500">km/h per vehicle (median of 1 s displacements on the calibrated ground plane). The 85th percentile is how speed limits are set and checked. Estimates (about ±10–15 %), not radar-checked.</p>
+    </div>
+  );
+}
+
 /** City-facing summary of one analysed video. */
 export default function ReportPanel({ doc, frameUrl, name = "Uploaded camera" }) {
   const r = doc.report || {};
@@ -130,7 +161,7 @@ export default function ReportPanel({ doc, frameUrl, name = "Uploaded camera" })
       </div>
     </div>
     <div className="grid gap-3 lg:grid-cols-[1fr_2fr]">
-      <Conflicts cs={r.conflicts} />
+      <div className="space-y-3"><Conflicts cs={r.conflicts} /><Speed sp={r.speed} /></div>
       <div className="card p-4">
         <h3 className="flex items-center gap-1.5 font-semibold text-white"><MapPin size={16} className="text-amber-300" /> Hotspot map</h3>
         <p className="mt-1 text-xs text-slate-400">Each dot is a road user involved in an event, or a serious conflict point, placed where it happened. Clusters show where to change the street first.</p>

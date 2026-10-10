@@ -182,11 +182,17 @@ def build_doc(p: Perception, zones: dict | None) -> dict:
     curve = risk.replay(p)
     doc = make_doc(p, scene if scene is not None else Scene(), light, events, curve, involved=involved,
                    scene_mode=scene_mode, flow=generic.flow_json(ff, p), zones_in=zones or {})
-    from . import conflicts
+    from . import conflicts, speed
     from .autoscene import build_tracks
-    cf, cs = conflicts.detect(p, build_tracks(p), ff)
+    tracks = build_tracks(p)
+    cf, cs = conflicts.detect(p, tracks, ff)
     doc["conflicts"] = cf
-    doc["report"] = report.build(p, events, curve, ff, involved, conflicts=(cf, cs))
+    sp = None
+    cal = (zones or {}).get("calibration") or []
+    if cal:
+        sp = speed.measure(p, tracks, {"points": cal[-1], **((zones or {}).get("calibration_dims") or {})})
+    doc["speed"] = sp
+    doc["report"] = report.build(p, events, curve, ff, involved, conflicts=(cf, cs), speed=sp)
     return doc
 
 

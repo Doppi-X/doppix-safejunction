@@ -35,6 +35,9 @@ ${rows.map(([c, v]) => `<tr><td>${esc(eventName(c))}</td><td>${v.count}</td><td>
 ${r.conflicts ? `<h2>Conflicts (post-encroachment time)</h2>
 <table><tr><th>Serious &lt; 1.5 s</th><th>Moderate 1.5–3 s</th><th>Interaction 3–5 s</th><th>Serious pedestrian conflicts per 1,000 pedestrians</th><th>Exposure (pedestrians / vehicles)</th></tr>
 <tr><td>${r.conflicts.counts.serious}</td><td>${r.conflicts.counts.moderate}</td><td>${r.conflicts.counts.interaction}</td><td>${r.conflicts.serious_per_1000_pedestrians ?? "–"}</td><td>${r.conflicts.exposure_pedestrians} / ${r.conflicts.exposure_vehicles}</td></tr></table>` : ""}
+${r.speed && r.speed.vehicles ? `<h2>Speeds (4-point calibration)</h2>
+<table><tr><th>Vehicles</th><th>Median</th><th>85th percentile</th><th>Max</th><th>Over limit (${r.speed.limit_kmh} km/h)</th><th>Over limit + 10</th></tr>
+<tr><td>${r.speed.vehicles}</td><td>${r.speed.median_kmh} km/h</td><td>${r.speed.p85_kmh} km/h</td><td>${r.speed.max_kmh} km/h</td><td>${Math.round(100 * r.speed.share_over_limit)} %</td><td>${Math.round(100 * r.speed.share_over_limit_10)} %</td></tr></table>` : ""}
 <h2>Where it happens</h2>
 <div class="map">${frameUrl ? `<img src="${esc(frameUrl)}" crossorigin="anonymous">` : ""}<svg viewBox="0 0 1000 ${1000 / aspect}" preserveAspectRatio="none">${dots}</svg></div>
 <div class="legend">${legend}</div>
