@@ -18,11 +18,14 @@ jobs:
       HF_TOKEN_FILE: D:\My_projects\safejunction_state\hf_token.txt
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - name: Backend - move the server checkout to this commit
         shell: cmd
         run: |
-          git -c safe.directory=* -C "%SERVER_CHECKOUT%" fetch -q origin
+          REM fetch from the runner's fresh checkout on the same disk (no second download from GitHub)
+          git -c safe.directory=* -C "%SERVER_CHECKOUT%" fetch -q "%GITHUB_WORKSPACE%" ${{ github.sha }}
           git -c safe.directory=* -C "%SERVER_CHECKOUT%" reset -q --hard ${{ github.sha }}
           git -c safe.directory=* -C "%SERVER_CHECKOUT%" log --oneline -1
 
