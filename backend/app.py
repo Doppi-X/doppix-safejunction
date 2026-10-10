@@ -1,9 +1,17 @@
-"""Sayt serveri: statik sayt + jonli demo API (video yuklash -> pipeline -> natija).
+"""SafeJunction API server (rewritten during the final).
 
-    uvicorn app:app --host 0.0.0.0 --port 7860
+    uvicorn app:app --host 0.0.0.0 --port 7860 --app-dir backend
 
-Demo xuddi topshiriq yechimidagi modullarni ishlatadi (doppix: perception, rules, risk). Bitta ishchi
-oqim navbatdagi videolarni ketma-ket qayta ishlaydi; frontend holatni /api/demo/{id} dan so'rab turadi.
+POST /api/jobs              upload a video -> job id; perception starts at once
+GET  /api/jobs/{id}         status, stage, progress, queue position
+GET  /api/jobs/{id}/frame   first frame (heads and plates blurred) for drawing zones
+POST /api/jobs/{id}/zones   zones drawn in the browser; re-runs the rules if the job is done
+GET  /api/jobs/{id}/result  events, tracks, risk, learned flow, report
+GET  /api/jobs/{id}/video.mp4  privacy-blurred video
+POST /api/image             one image -> detections, counts, blurred image
+GET  /api/health
+
+One worker thread processes videos in order (one GPU). Results live for 6 h.
 """
 from __future__ import annotations
 
@@ -11,7 +19,6 @@ import json
 import os
 import queue
 import shutil
-import subprocess
 import sys
 import threading
 import time
@@ -25,42 +32,36 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 HERE = Path(__file__).resolve().parent
-SRC = Path(os.environ.get("DOPPIX_SRC", HERE.parent.parent / "03_src"))
-DIST = Path(os.environ.get("SITE_DIST", HERE.parent / "frontend" / "dist"))
-JOBS = Path(os.environ.get("JOBS_DIR", HERE / "_jobs"))
-SAMPLE = Path(os.environ.get("DEMO_SAMPLE", HERE / "sample.mp4"))
-SAMPLE_CACHE = HERE / "sample_result"          # namuna klip natijasi (bir marta hisoblanadi, keyin darhol)
-MAX_SEC = float(os.environ.get("DEMO_MAX_SEC", 60))
-MAX_MB = int(os.environ.get("DEMO_MAX_MB", 400))
-MAX_QUEUE = int(os.environ.get("DEMO_MAX_QUEUE", 6))
-JOB_TTL = 3 * 3600
-JOBS.mkdir(parents=True, exist_ok=True)
+ROOT = HERE.parent
+sys.path.insert(0, str(ROOT / "core"))
 
-sys.path.insert(0, str(SRC / "src"))
-sys.path.insert(0, str(HERE))
+from doppix import analyze, config, perception, privacy  # noqa: E402
+from doppix.perception import Perception  # noqa: E402
+
+JOBS = Path(os.environ.get("JOBS_DIR", ROOT / "_jobs"))
+JOBS.mkdir(parents=True, exist_ok=True)
+DIST = Path(os.environ.get("SITE_DIST", ROOT / "frontend" / "dist"))
+MAX_SEC = float(os.environ.get("MAX_SEC", 120))
+MAX_MB = int(os.environ.get("MAX_MB", 500))
+MAX_QUEUE = int(os.environ.get("MAX_QUEUE", 8))
+TTL = 6 * 3600
+VIDEO_EXT = {".mp4", ".mov", ".m4v", ".avi", ".mkv", ".webm"}
+IMAGE_EXT = {".jpg", ".jpeg", ".png", ".webp", ".bmp"}
 
 import torch  # noqa: E402
 
 CUDA = torch.cuda.is_available()
-STRIDE = float(os.environ.get("DEMO_STRIDE", 0.1 if CUDA else 0.2))
-IMGSZ = int(os.environ.get("DEMO_IMGSZ", 1280 if CUDA else 960))
-torch.set_num_threads(max(1, os.cpu_count() or 1))
+STRIDE = float(os.environ.get("STRIDE", 0.1 if CUDA else 0.25))
+IMGSZ = int(os.environ.get("IMGSZ", 1280 if CUDA else 960))
+DEVICE = torch.cuda.get_device_name(0) if CUDA else "CPU"
 
-app = FastAPI(title="Do'ppiX demo")
+app = FastAPI(title="Do'ppiX SafeJunction")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 jobs: dict[str, dict] = {}
 order: list[str] = []
 work: queue.Queue[str] = queue.Queue()
 lock = threading.Lock()
-
-
-def ffmpeg() -> str:
-    exe = shutil.which("ffmpeg")
-    if exe:
-        return exe
-    import imageio_ffmpeg
-    return imageio_ffmpeg.get_ffmpeg_exe()
 
 
 def update(jid: str, **kw) -> None:
@@ -71,68 +72,45 @@ def update(jid: str, **kw) -> None:
 def cleanup() -> None:
     now = time.time()
     for d in JOBS.glob("*"):
-        if d.is_dir() and now - d.stat().st_mtime > JOB_TTL:
+        if d.is_dir() and now - d.stat().st_mtime > TTL:
             shutil.rmtree(d, ignore_errors=True)
             jobs.pop(d.name, None)
 
 
-def process(jid: str) -> None:
+def first_frame(src: Path, dst: Path) -> dict:
+    """First frame, heads and plates blurred, for drawing zones; also probes the video."""
     import cv2
-    import numpy as np
-    from doppix import align, perception, risk, rules
-    from doppix.scene import Scene
-    from doppix.tracks import light_state
-    from docbuild import make_doc
-
-    d = JOBS / jid
-    src = d / jobs[jid]["file"]
-    t0 = time.time()
-    update(jid, status="running", stage="prepare", progress=0.01)
     cap = cv2.VideoCapture(str(src))
-    ok = cap.isOpened() and cap.read()[0]
+    ok, frame = cap.read()
     fps = cap.get(cv2.CAP_PROP_FPS) or 25.0
     n = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     cap.release()
     if not ok:
-        raise RuntimeError("Could not decode this video. Please upload an MP4 (H.264/HEVC).")
-    used = min(n / fps if n > 0 else MAX_SEC, MAX_SEC)
-    update(jid, stage="perception", message=f"{used:.0f} s of video at {1 / STRIDE:.0f} fps")
+        raise ValueError("Could not decode this video. Please upload an MP4 (H.264 or HEVC).")
+    h, w = frame.shape[:2]
+    model = perception.load_detector()
+    r = model.predict(frame, imgsz=IMGSZ, conf=0.3, device=0 if CUDA else "cpu", verbose=False)[0]
+    import numpy as np
+    b, c = r.boxes.xyxy.cpu().numpy(), r.boxes.cls.cpu().numpy().astype(int)
+    privacy.blur_regions(frame, privacy.head_boxes(b[c == config.PERSON]) + privacy.find_plates(frame, b[np.isin(c, config.VEHICLES)]))
+    scale = min(1.0, 1280 / w)
+    cv2.imwrite(str(dst), cv2.resize(frame, (int(w * scale), int(h * scale))), [cv2.IMWRITE_JPEG_QUALITY, 85])
+    return {"width": w, "height": h, "fps": round(fps, 3), "duration": round(n / fps, 2) if n > 0 else None}
 
-    def prog(i, total):
-        total = total or used * fps
-        update(jid, progress=0.02 + 0.83 * min(1.0, i / max(1, total)),
-               message=f"frame {i} / {int(total)} · {time.time() - t0:.0f} s elapsed")
 
-    p = perception.run(str(src), stride_sec=STRIDE, progress=prog, max_sec=MAX_SEC, imgsz=IMGSZ)
+def process(jid: str) -> None:
+    d = JOBS / jid
+    src = d / jobs[jid]["file"]
+    update(jid, status="running", stage="perception", progress=0.0)
 
-    update(jid, stage="rules", progress=0.86, message="")
-    base = Scene.load()
-    ref = align.load_ref()
-    M = align.estimate(ref, p.bg) if ref is not None and p.bg is not None else None
-    scene_ok = M is not None
-    scene = base.transformed(M)
-    events, involved = rules.detect(p, base, detail=True) if scene_ok else ([], [])
-    light = light_state(p, scene) if scene_ok else np.full(len(p.frame_idx), -1.0)
+    def say(stage, frac):
+        weights = {"perception": (0.0, 0.7), "events": (0.7, 0.75), "privacy": (0.75, 0.99), "done": (1.0, 1.0)}
+        a, b = weights.get(stage, (0, 1))
+        update(jid, stage=stage, progress=round(a + (b - a) * min(1.0, frac), 3))
 
-    update(jid, stage="risk", progress=0.9)
-    curve = risk.replay(p)
-
-    update(jid, stage="encode", progress=0.93)
-    subprocess.run([ffmpeg(), "-y", "-loglevel", "error", "-i", str(src), "-t", f"{used:.2f}",
-                    "-vf", "scale='min(960,iw)':-2", "-c:v", "libx264", "-preset", "veryfast", "-crf", "28",
-                    "-pix_fmt", "yuv420p", "-an", "-movflags", "+faststart", str(d / "video.mp4")], check=True)
-
-    note = None if scene_ok else ("This does not look like the hackathon intersection, so the scene layout could not "
-                                  "be aligned. Showing detections, tracks and risk only; scene-based events are skipped.")
-    doc = make_doc(p, scene if scene_ok else Scene(), light, events, curve,
-                   scene_ok=scene_ok, note=note, elapsed=round(time.time() - t0, 1), stride=STRIDE, imgsz=IMGSZ,
-                   involved=involved)
-    (d / "result.json").write_text(json.dumps(doc, separators=(",", ":")), encoding="utf-8")
-    if jobs[jid].get("sample"):
-        SAMPLE_CACHE.mkdir(exist_ok=True)
-        for f in ("result.json", "video.mp4"):
-            shutil.copy(d / f, SAMPLE_CACHE / f)
-    update(jid, status="done", stage="done", progress=1.0, message="")
+    analyze.analyze_video(str(src), d, zones=jobs[jid].get("zones"), max_sec=MAX_SEC,
+                          stride_sec=STRIDE, imgsz=IMGSZ, progress=say)
+    update(jid, status="done", stage="done", progress=1.0)
 
 
 def worker() -> None:
@@ -140,7 +118,7 @@ def worker() -> None:
         jid = work.get()
         try:
             process(jid)
-        except Exception as e:  # noqa: BLE001 — foydalanuvchiga xabar, server ishlashda davom etadi
+        except Exception as e:  # noqa: BLE001 - reported to the user, the server keeps running
             traceback.print_exc()
             update(jid, status="error", message=str(e)[:300])
         finally:
@@ -153,36 +131,28 @@ def worker() -> None:
 threading.Thread(target=worker, daemon=True).start()
 
 
-def enqueue(jid: str, fname: str, sample: bool = False) -> dict:
+def status(jid: str) -> dict:
     with lock:
-        jobs[jid] = {"id": jid, "status": "queued", "stage": "queued", "progress": 0.0, "message": "", "file": fname,
-                     "created": time.time(), "sample": sample}
-        order.append(jid)
-    work.put(jid)
-    return status(jid)
+        j = jobs.get(jid)
+        if j is None:
+            raise HTTPException(404, "Unknown job (results are kept for 6 hours).")
+        out = {k: v for k, v in j.items() if k not in ("file",)}
+        out["queue_pos"] = order.index(jid) if j["status"] == "queued" and jid in order else 0
+    return out
 
 
-@app.get("/api/health")
-def health():
-    return {"ok": True, "device": "cuda" if CUDA else "cpu", "max_sec": MAX_SEC, "max_mb": MAX_MB,
-            "has_sample": SAMPLE.exists(), "queue": len(order), "stride": STRIDE, "imgsz": IMGSZ}
-
-
-@app.post("/api/demo")
-async def demo(request: Request):
+async def save_upload(request: Request, allowed: set[str]) -> tuple[str, Path]:
     form = await request.form()
     up = form.get("file")
     if up is None or not hasattr(up, "read"):
-        raise HTTPException(400, "no file")
-    if len(order) >= MAX_QUEUE:
-        raise HTTPException(429, "The demo queue is full, please try again in a minute.")
+        raise HTTPException(400, "No file in the request.")
+    ext = Path(up.filename or "x.mp4").suffix.lower()
+    if ext not in allowed:
+        raise HTTPException(400, f"Unsupported file type {ext}.")
     cleanup()
     jid = uuid.uuid4().hex[:12]
     d = JOBS / jid
     d.mkdir(parents=True)
-    ext = Path(up.filename or "v.mp4").suffix.lower() or ".mp4"
-    if ext not in {".mp4", ".mov", ".m4v", ".avi", ".mkv", ".webm"}:
-        raise HTTPException(400, "Please upload a video file (mp4, mov, avi, mkv, webm).")
     size = 0
     with open(d / f"in{ext}", "wb") as f:
         while chunk := await up.read(2 ** 20):
@@ -192,58 +162,100 @@ async def demo(request: Request):
                 shutil.rmtree(d, ignore_errors=True)
                 raise HTTPException(413, f"File is larger than {MAX_MB} MB.")
             f.write(chunk)
-    return enqueue(jid, f"in{ext}")
+    return jid, d / f"in{ext}"
 
 
-@app.post("/api/demo/sample")
-def demo_sample():
-    if not SAMPLE.exists():
-        raise HTTPException(404, "no sample clip on this server")
+@app.get("/api/health")
+def health():
+    return {"ok": True, "device": DEVICE, "cuda": CUDA, "max_sec": MAX_SEC, "max_mb": MAX_MB,
+            "stride_s": STRIDE, "imgsz": IMGSZ, "queue": len(order)}
+
+
+@app.post("/api/jobs")
+async def create_job(request: Request):
     if len(order) >= MAX_QUEUE:
-        raise HTTPException(429, "The demo queue is full, please try again in a minute.")
-    cleanup()
-    jid = uuid.uuid4().hex[:12]
-    (JOBS / jid).mkdir(parents=True)
-    if (SAMPLE_CACHE / "result.json").exists() and (SAMPLE_CACHE / "video.mp4").exists():
-        for f in ("result.json", "video.mp4"):
-            shutil.copy(SAMPLE_CACHE / f, JOBS / jid / f)
-        with lock:
-            jobs[jid] = {"id": jid, "status": "done", "stage": "done", "progress": 1.0, "file": "in.mp4",
-                         "message": "cached result", "created": time.time(), "sample": True}
-        return status(jid)
-    shutil.copy(SAMPLE, JOBS / jid / "in.mp4")
-    return enqueue(jid, "in.mp4", sample=True)
-
-
-def status(jid: str) -> dict:
+        raise HTTPException(429, "The queue is full, please try again in a minute.")
+    jid, src = await save_upload(request, VIDEO_EXT)
+    try:
+        info = first_frame(src, src.parent / "frame.jpg")
+    except Exception as e:  # noqa: BLE001
+        shutil.rmtree(src.parent, ignore_errors=True)
+        raise HTTPException(400, str(e)) from e
     with lock:
-        j = jobs.get(jid)
-        if j is None:
-            raise HTTPException(404, "unknown job (results are kept for 3 hours)")
-        out = {k: v for k, v in j.items() if k != "file"}
-        out["queue_pos"] = order.index(jid) if j["status"] == "queued" and jid in order else 0
-    return out
-
-
-@app.get("/api/demo/{jid}")
-def demo_status(jid: str):
+        jobs[jid] = {"id": jid, "status": "queued", "stage": "queued", "progress": 0.0, "message": "",
+                     "file": src.name, "created": time.time(), "zones": None, "video": info,
+                     "processed_sec": min(MAX_SEC, info["duration"] or MAX_SEC)}
+        order.append(jid)
+    work.put(jid)
     return status(jid)
 
 
-@app.get("/api/demo/{jid}/result")
-def demo_result(jid: str):
+@app.get("/api/jobs/{jid}")
+def job_status(jid: str):
+    return status(jid)
+
+
+@app.get("/api/jobs/{jid}/frame")
+def job_frame(jid: str):
+    f = JOBS / jid / "frame.jpg"
+    if not f.exists():
+        raise HTTPException(404, "No frame.")
+    return FileResponse(f, media_type="image/jpeg")
+
+
+@app.post("/api/jobs/{jid}/zones")
+async def job_zones(jid: str, request: Request):
+    zones = await request.json()
+    status(jid)
+    update(jid, zones=zones)
+    d = JOBS / jid
+    if jobs[jid]["status"] == "done" and (d / "perception.npz").exists():
+        p = Perception.load(d / "perception.npz")
+        old = json.loads((d / "result.json").read_text(encoding="utf-8"))
+        doc = analyze.build_doc(p, zones)
+        for k in ("privacy", "timing"):
+            doc[k] = old.get(k)
+        (d / "result.json").write_text(json.dumps(doc, separators=(",", ":")), encoding="utf-8")
+    return status(jid)
+
+
+@app.get("/api/jobs/{jid}/result")
+def job_result(jid: str):
     f = JOBS / jid / "result.json"
     if not f.exists():
-        raise HTTPException(404, "not ready")
+        raise HTTPException(404, "Not ready.")
     return FileResponse(f, media_type="application/json")
 
 
-@app.get("/api/demo/{jid}/video.mp4")
-def demo_video(jid: str):
+@app.get("/api/jobs/{jid}/video.mp4")
+def job_video(jid: str):
     f = JOBS / jid / "video.mp4"
     if not f.exists():
-        raise HTTPException(404, "not ready")
+        raise HTTPException(404, "Not ready.")
     return FileResponse(f, media_type="video/mp4")
+
+
+@app.post("/api/image")
+async def image(request: Request):
+    jid, src = await save_upload(request, IMAGE_EXT)
+    t0 = time.perf_counter()
+    try:
+        res = analyze.analyze_image(str(src), src.parent / "image.jpg")
+    except Exception as e:  # noqa: BLE001
+        raise HTTPException(400, f"Could not analyse this image: {e}") from e
+    finally:
+        src.unlink(missing_ok=True)
+    res["elapsed_s"] = round(time.perf_counter() - t0, 2)
+    res["image_url"] = f"/api/images/{jid}.jpg"
+    return res
+
+
+@app.get("/api/images/{jid}.jpg")
+def image_file(jid: str):
+    f = JOBS / jid / "image.jpg"
+    if not f.exists():
+        raise HTTPException(404, "Not found.")
+    return FileResponse(f, media_type="image/jpeg")
 
 
 if DIST.exists():

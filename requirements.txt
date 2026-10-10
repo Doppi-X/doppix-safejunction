@@ -1,0 +1,11 @@
+# Do'ppiX SafeJunction — Python 3.10+
+numpy>=1.24
+opencv-python-headless>=4.8
+torch>=2.2
+torchvision>=0.17
+ultralytics==8.4.163
+lap>=0.5.12
+fastapi>=0.110
+uvicorn>=0.29
+python-multipart>=0.0.9
+imageio-ffmpeg>=0.4.9
