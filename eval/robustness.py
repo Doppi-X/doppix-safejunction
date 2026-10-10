@@ -67,7 +67,13 @@ def low_bitrate(img):
     return cv2.resize(cv2.imdecode(buf, cv2.IMREAD_COLOR), (img.shape[1], img.shape[0]))
 
 
-CONDITIONS = {"clean (day)": None, "night": night, "rain": rain, "fog": fog,
+def night_enhanced(img):
+    """The night corruption, then our low-light enhancement (core/doppix/enhance.py) as in production."""
+    from doppix.enhance import enhance
+    return enhance(night(img))
+
+
+CONDITIONS = {"clean (day)": None, "night": night, "night + enhance": night_enhanced, "rain": rain, "fog": fog,
               "motion blur": motion_blur, "low bit-rate 540p": low_bitrate}
 
 
@@ -77,9 +83,11 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--work", default=str(ROOT / "_robustness"))
     ap.add_argument("--samples", default=str(ROOT / "eval" / "results" / "robustness_samples"))
+    ap.add_argument("--weights", default=str(config.WEIGHTS))
+    ap.add_argument("--only", nargs="*", help="evaluate only these conditions")
     a = ap.parse_args()
     from ultralytics import YOLO
-    model = YOLO(str(config.WEIGHTS))
+    model = YOLO(a.weights)
     val = Path(a.val)
     work = Path(a.work)
     samples = Path(a.samples)
@@ -87,7 +95,9 @@ def main():
     results = {}
     names = config.CLASS_NAMES
     for cond, fn in CONDITIONS.items():
-        d = work / cond.replace(" ", "_").replace("(", "").replace(")", "")
+        if a.only and cond not in a.only:
+            continue
+        d = work / cond.replace(" ", "_").replace("(", "").replace(")", "").replace("+", "plus")
         if d.exists():
             shutil.rmtree(d)
         (d / "images" / "val").mkdir(parents=True)
