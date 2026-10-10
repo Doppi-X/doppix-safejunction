@@ -3,9 +3,9 @@ from __future__ import annotations
 
 import numpy as np
 
-from doppix import config
-from doppix.perception import CLS, CONF, K, TID, X1, X2, Y1, Y2, Perception
-from doppix.scene import H, W, Scene, inside
+from . import config
+from .perception import CLS, CONF, K, TID, X1, X2, Y1, Y2, Perception
+from .scene import H, W, Scene, inside
 
 TRACK_FPS = 5
 SHOW_CLASSES = [config.PERSON, *config.VEHICLES, config.BICYCLE]

@@ -385,10 +385,11 @@ def aligned_scene(p: Perception, scene: Scene | None = None) -> Scene:
     return scene.transformed(estimate(ref, p.bg))
 
 
-def detect(p: Perception, scene: Scene | None = None, detail: bool = False):
+def detect(p: Perception, scene: Scene | None = None, detail: bool = False, align: bool = True):
     """Hodisalar [[boshi, oxiri, klass], ...]. detail=True — qo'shimcha har hodisaning ishtirokchi trek
-    id'lari (saytdagi videoda ajratib ko'rsatish uchun; topshiriq natijasiga ta'sir qilmaydi)."""
-    scene = aligned_scene(p, scene)
+    id'lari (saytdagi videoda ajratib ko'rsatish uchun; topshiriq natijasiga ta'sir qilmaydi).
+    align=False — sahna shu kamera uchun chizilgan (final: brauzerda chizilgan zonalar), moslash kerak emas."""
+    scene = aligned_scene(p, scene) if align else scene
     ctx = Ctx(p, scene, build_tracks(p), light_state(p, scene), p.times)
     dur = p.duration
     events = []

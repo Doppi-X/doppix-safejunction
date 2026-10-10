@@ -36,6 +36,18 @@ class Scene:
              "stop_line": s.stop_lines, "traffic_light": s.lights, "island": s.islands}.get(sh["type"], []).append(pts)
         return s
 
+    @classmethod
+    def from_zones(cls, zones: dict) -> "Scene":
+        """Zones drawn in the web app (normalised 0..1 points per type) -> Scene (final)."""
+        s = cls()
+        keymap = {"carriageway": s.carriageway, "crosswalk": s.crosswalks, "stop_line": s.stop_lines,
+                  "traffic_light": s.lights, "island": s.islands}
+        for typ, polys in (zones or {}).items():
+            for pts in polys:
+                if typ in keymap and len(pts) >= 2:
+                    keymap[typ].append((np.asarray(pts, dtype=np.float32) * [W, H]).astype(np.float32))
+        return s
+
     def transformed(self, M: np.ndarray | None) -> "Scene":
         """Barcha shakllarni 2x3 affine M bilan o'zgartirilgan nusxa (kamera siljishi uchun)."""
         if M is None:
