@@ -29,7 +29,7 @@ const FAILURES = [
   ["Scooter riders", "E-scooters are not a detector class, so a rider looks like a fast pedestrian. Speed normalised by body height separates them: pedestrians move 0.3–1 heights/s, riders 2.5+."],
   ["Cut-off people", "At the bottom frame edge the box bottom is the frame edge, not the feet. We ignore these people for jaywalking."],
   ["A missed stopped vehicle", "C3905 81–108 s: a car stopped partly inside the queue area is not reported. Stops mixed with congestion are hard to tell apart with our rules."],
-  ["Part B is unvalidated on real crashes", "The samples contain no accidents. The risk model gives 0 false alarms on 18 min of normal traffic, but its recall on real collisions is unknown."],
+  ["Crash-risk score is unvalidated on real crashes", "The samples contain no accidents. The risk model gives 0 false alarms on 18 min of normal traffic, but its recall on real collisions is unknown."],
 ];
 
 const NEXT = [
@@ -84,8 +84,8 @@ export default function Approach() {
               <tr><td className="pr-3 text-slate-300">Traffic-light state</td><td><span className="chip border-sky-600 text-sky-300">learned</span></td></tr>
               <tr><td className="pr-3 text-slate-300">Tracking</td><td><span className="chip">algorithmic (ByteTrack)</span></td></tr>
               <tr><td className="pr-3 text-slate-300">Scene layout</td><td><span className="chip">drawn once + auto-aligned</span></td></tr>
-              <tr><td className="pr-3 text-slate-300">Event segments (Part A)</td><td><span className="chip border-amber-600 text-amber-300">rules</span></td></tr>
-              <tr><td className="pr-3 text-slate-300">Accident risk (Part B)</td><td><span className="chip border-amber-600 text-amber-300">rules + calibration</span></td></tr>
+              <tr><td className="pr-3 text-slate-300">Event segments</td><td><span className="chip border-amber-600 text-amber-300">rules</span></td></tr>
+              <tr><td className="pr-3 text-slate-300">Accident risk</td><td><span className="chip border-amber-600 text-amber-300">rules + calibration</span></td></tr>
             </tbody>
           </table>
           <p className="mt-3 text-xs text-slate-500">
@@ -94,7 +94,7 @@ export default function Approach() {
         </div>
 
         <div className="card p-4">
-          <h3 className="font-semibold text-white">Part B — accident anticipation</h3>
+          <h3 className="font-semibold text-white">Accident anticipation (time-to-collision)</h3>
           <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-slate-300">
             <li>The detector and tracker run causally on every 6th frame. Only past frames are ever used.</li>
             <li>For each pair of road users, a linear extrapolation of the last 1 s gives the time to closest approach <i>t*</i> and the miss distance <i>d*</i>.</li>
@@ -105,7 +105,7 @@ export default function Approach() {
         </div>
       </div>
 
-      <h3 className="mt-10 text-lg font-semibold text-white">Event rules (Part A)</h3>
+      <h3 className="mt-10 text-lg font-semibold text-white">Event rules</h3>
       <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {RULES.map(([c, d]) => (
           <div key={c} className="card p-3">
@@ -118,7 +118,7 @@ export default function Approach() {
         ))}
       </div>
       <p className="mt-3 text-sm text-slate-500">
-        Classes that never occur in the samples (accident, near_miss, wrong_way, U-turns, obstacles, fire…) are not emitted as segments. Under macro-F1, a false positive on an absent class costs a whole class. Accidents are handled by the Part B risk score.
+        Classes that never occur in the samples (accident, near_miss, wrong_way, U-turns, obstacles, fire…) are not emitted as segments. Under macro-F1, a false positive on an absent class costs a whole class. Accidents are handled by the crash-risk score.
       </p>
 
       <div className="mt-10 grid gap-4 lg:grid-cols-2">
@@ -164,7 +164,7 @@ export default function Approach() {
           </div>
         </div>
         <div className="card p-4">
-          <h3 className="font-semibold text-white">Events (Part A) on our labels</h3>
+          <h3 className="font-semibold text-white">Events on our labels</h3>
           <table className="mt-2 w-full text-sm">
             <tbody className="[&_td]:py-0.5">
               {DEV.map(([c, f1]) => (
@@ -186,7 +186,7 @@ export default function Approach() {
             <li>• fp16 on GPU; weights loaded once for all videos</li>
             <li>• Fixed seed (42), no test-time randomness</li>
             <li>• Self-timing guard: sparser sampling if the 3× budget is at risk</li>
-            <li>• RTX 3060: 1.81–1.92× video duration for Part A + B</li>
+            <li>• RTX 3060: 1.81–1.92× video duration for events + crash risk (full 4K clips)</li>
             <li>• Every threshold in one place (<code>config.py</code>, <code>rules.P</code>)</li>
           </ul>
         </div>

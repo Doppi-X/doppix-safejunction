@@ -17,7 +17,43 @@ NAMES = {
 }
 
 
-def build(p: Perception, events: list, curve: list, ff: FlowField) -> dict:
+SEVERITY = {"red_light": 3, "wrong_way": 3, "failure_to_yield": 3, "near_miss": 3, "jaywalking": 2,
+            "stop_line": 1, "stopped_vehicle": 1, "congestion": 1}
+
+
+def summary_row(doc: dict, **meta) -> dict:
+    """One camera in the city dashboard: counts, rates per 10 min, risk index, hotspots. No pixels."""
+    rep = doc.get("report") or {}
+    per = rep.get("per_class", {})
+    minutes = max(doc["duration"] / 60, 1e-6)
+    return {**meta, "duration_s": doc["duration"], "mode": doc.get("scene_mode"),
+            "counts": {k: v["count"] for k, v in per.items()},
+            "per_10min": {k: round(v["count"] / minutes * 10, 1) for k, v in per.items()},
+            "risk_index": round(sum(SEVERITY.get(k, 1) * v["count"] for k, v in per.items()) / minutes * 10, 1),
+            "vehicles": rep.get("vehicles_seen"), "pedestrians": rep.get("pedestrians_seen"),
+            "hotspots": rep.get("hotspots", []), "rates_reliable": rep.get("rates_reliable", False),
+            "aspect": round(doc["width"] / doc["height"], 4), "conflicts": rep.get("conflicts")}
+
+
+def hotspots(p: Perception, events: list, involved: list | None) -> list:
+    """Where each event happened: median foot point of every road user involved, in 0..1 image coords."""
+    if not involved:
+        return []
+    t = p.times[p.dets[:, 0].astype(int)]
+    tid = p.dets[:, 1].astype(int)
+    out = []
+    for (s, e, lab), ids in zip(events, involved):
+        for i in ids:
+            m = (tid == i) & (t >= s) & (t <= e)
+            if not m.any():
+                continue
+            r = p.dets[m]
+            out.append([round(float(np.median((r[:, 4] + r[:, 6]) / 2)), 3), round(float(np.median(r[:, 7])), 3), lab])
+    return out
+
+
+def build(p: Perception, events: list, curve: list, ff: FlowField, involved: list | None = None,
+          conflicts: tuple | None = None) -> dict:
     dur_h = max(p.duration, 1e-6) / 3600
     per_class = {}
     for s, e, lab in events:
@@ -44,9 +80,7 @@ def build(p: Perception, events: list, curve: list, ff: FlowField) -> dict:
     if not reliable:
         for v in per_class.values():
             v["per_hour"] = None
-    severity = {"red_light": 3, "wrong_way": 3, "failure_to_yield": 3, "near_miss": 3, "jaywalking": 2,
-                "stop_line": 1, "stopped_vehicle": 1, "congestion": 1}
-    score = sum(severity.get(k, 1) * v["count"] for k, v in per_class.items()) / dur_h
+    score = sum(SEVERITY.get(k, 1) * v["count"] for k, v in per_class.items()) / dur_h
     recs = []
     pc = lambda k: per_class.get(k, {}).get("per_hour") or 0
     if pc("red_light") >= 6:
@@ -61,11 +95,19 @@ def build(p: Perception, events: list, curve: list, ff: FlowField) -> dict:
         recs.append(f"Wrong-way driving seen ({per_class['wrong_way']['count']}×): add 'no entry' signs and lane arrows at the entry where it starts.")
     if pc("congestion") >= 6:
         recs.append(f"Congestion {per_class['congestion']['seconds']:.0f} s in {p.duration / 60:.0f} min: review the signal cycle split for this direction.")
+    cf, cs = conflicts or ([], None)
+    pet_rec = None
+    if cs and cs["vru_serious"] >= 3 and (cs["serious_per_1000_pedestrians"] or 0) >= 50:
+        pet_rec = (f"{cs['vru_serious']} serious pedestrian/cyclist conflicts (PET < 1.5 s), {cs['serious_per_1000_pedestrians']} per 1,000 "
+                   "pedestrians: see the red dots on the hotspot map; consider a refuge island, kerb extension or a leading pedestrian interval there.")
+        recs.append(pet_rec)
     if not reliable:
         recs = [f"Clip is {p.duration:.0f} s long: events are listed, but hourly rates and recommendations need "
-                "at least 5 minutes (a pilot camera collects whole days)."]
+                "at least 5 minutes (a pilot camera collects whole days)."] + ([f"Indicative, from this clip: {pet_rec}"] if pet_rec else [])
     elif not recs:
         recs.append("No rule crossed its threshold in this clip; keep monitoring to collect a full day.")
     return {"duration_min": round(p.duration / 60, 2), "per_class": per_class, "vehicles_seen": veh,
             "pedestrians_seen": ped, "risk": risk_stats, "safety_index": round(score, 1) if reliable else None,
-            "rates_reliable": reliable, "recommendations": recs}
+            "rates_reliable": reliable, "recommendations": recs,
+            "hotspots": hotspots(p, events, involved) + [[c["x"], c["y"], "conflict"] for c in cf if c["severity"] == "serious"],
+            "conflicts": cs}

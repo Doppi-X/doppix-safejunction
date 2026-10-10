@@ -34,21 +34,26 @@ export default function FinalQuality() {
       <div className="card p-4">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h3 className="font-semibold text-white">Night, rain, fog, blur</h3>
-          <span className="text-[11px] text-slate-500">22 held-out frames, 1,386 boxes, synthetic corruptions</span>
+          <span className="text-[11px] text-slate-500">1,386 boxes, synthetic corruptions, mAP50</span>
         </div>
         <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_1fr]">
           <table className="w-full text-sm">
-            <thead className="text-left text-xs text-slate-500"><tr><th className="py-1">Condition</th><th>mAP50</th><th>person</th><th>car</th></tr></thead>
+            <thead className="text-left text-xs text-slate-500"><tr><th className="py-1">Condition</th><th>Daylight model</th><th>Low-light model</th></tr></thead>
             <tbody>
-              {rows.map(([k, v]) => (
-                <tr key={k} onClick={() => COND_IMG[k] && setCond(k)}
-                  className={`border-t border-white/5 ${COND_IMG[k] ? "cursor-pointer hover:bg-white/5" : "text-slate-500"} ${cond === k ? "bg-white/10" : ""}`}>
-                  <td className="py-1.5 pr-2">{k}</td>
-                  <td className={`font-mono ${v.mAP50 < 0.6 ? "text-red-300" : v.mAP50 < 0.85 ? "text-amber-300" : "text-emerald-300"}`}>{v.mAP50.toFixed(2)}</td>
-                  <td className="font-mono text-slate-400">{v.per_class_mAP50_95?.person?.toFixed(2) ?? "–"}</td>
-                  <td className="font-mono text-slate-400">{v.per_class_mAP50_95?.car?.toFixed(2) ?? "–"}</td>
-                </tr>
-              ))}
+              {rows.map(([k, v]) => {
+                const l = rob.lowlight?.[k];
+                const routed = k === "night" ? "low" : "day";
+                const cell = (m, on) => m == null ? <td className="font-mono text-slate-600">–</td> : (
+                  <td className={`font-mono ${m < 0.6 ? "text-red-300" : m < 0.85 ? "text-amber-300" : "text-emerald-300"} ${on ? "font-bold underline decoration-dotted" : "opacity-70"}`}>{m.toFixed(2)}</td>);
+                return (
+                  <tr key={k} onClick={() => COND_IMG[k] && setCond(k)}
+                    className={`border-t border-white/5 ${COND_IMG[k] ? "cursor-pointer hover:bg-white/5" : "text-slate-500"} ${cond === k ? "bg-white/10" : ""}`}>
+                    <td className="py-1.5 pr-2">{k}</td>
+                    {cell(v.mAP50, COND_IMG[k] && routed === "day")}
+                    {cell(l?.mAP50, COND_IMG[k] && routed === "low")}
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
           <figure>
@@ -57,7 +62,12 @@ export default function FinalQuality() {
           </figure>
         </div>
         <p className="mt-2 text-xs text-slate-500">
-          Night is our weak spot: all training footage is daytime. Brightening frames made it worse (rejected). Training on synthetic night, rain and blur copies is the fix we measure next, and real night video is the first thing a pilot collects.
+          mAP50 on our 22 held-out frames. All our footage is daytime, so night was the weak spot (0.39). Brightening frames made it worse (rejected).
+          During the final we fine-tuned a low-light model on synthetic night, rain and blur copies of the training frames: night 0.39 → 0.92.
+          On daylight video it lowered our event score (0.83 → 0.77), so each camera picks its detector at upload: our daylight model, the low-light model
+          or a general COCO model, whichever finds clearly more confident road users in 6 sample frames (underlined = expected choice).
+          On 7 open-licence clips from other cities this switched a night drone view from 3 to 137 confident detections.
+          Caveat: night numbers are on synthetic night; real night video is pilot month 1.
         </p>
       </div>
     </div>

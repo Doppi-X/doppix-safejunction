@@ -46,6 +46,7 @@ export const EVENT_META = {
   congestion: { color: "#3b82f6", name: "Congestion" },
   accident: { color: "#dc2626", name: "Accident" },
   near_miss: { color: "#fb7185", name: "Near miss" },
+  conflict: { color: "#e11d48", name: "Serious conflict (PET < 1.5 s)" },
   wrong_way: { color: "#14b8a6", name: "Wrong way" },
   illegal_u_turn: { color: "#06b6d4", name: "Illegal U-turn" },
   illegal_turn: { color: "#0ea5e9", name: "Illegal turn" },

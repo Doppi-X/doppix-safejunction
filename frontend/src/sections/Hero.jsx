@@ -6,9 +6,9 @@ import { useJSON } from "../lib/hooks.js";
 import { REPO_URL } from "../team.js";
 
 const STATS = [
-  ["2 min", "to onboard a new camera: upload, optionally draw 4 zones"],
   ["0 / h", "wrong-way false alarms on 18 min of real traffic; 93 % of injected wrong-way cars caught"],
   ["0.83", "Score A (macro F1 over 6 event classes) on our own labels of a Tashkent intersection"],
+  ["0.39 → 0.92", "detector mAP50 at night after our low-light fine-tune (synthetic test); each camera auto-picks the detector that sees it best"],
   ["2×", "faster than real time on one RTX 3060 (detection + tracking at 10 fps)"],
 ];
 
@@ -35,7 +35,7 @@ function HeroPlayer() {
         <VideoOverlay ref={ref} src="./data/video/hero.mp4" offset={CLIP_START} doc={doc} frames={frames} controls={false}
           layers={{ highlight: true, boxes: true, ids: false, trails: true, zones: false }} />
         <div className="absolute bottom-2 left-2 flex items-center gap-1.5 rounded-full bg-slate-950/80 px-2.5 py-1 text-xs text-slate-200">
-          <span className="h-2 w-2 animate-pulse rounded-full bg-red-500" /> Our pipeline on sample C3896 · 1:14–1:32
+          <span className="h-2 w-2 animate-pulse rounded-full bg-red-500" /> Reference intersection · faces and plates blurred
         </div>
       </div>
     </div>
@@ -62,8 +62,8 @@ export default function Hero() {
             <a href="#analyze" className="btn bg-amber-500 px-4 py-2.5 text-slate-950 hover:bg-amber-400">
               <PlayCircle size={18} /> Analyse your video
             </a>
-            <a href="#samples" className="btn border border-slate-600 px-4 py-2.5 text-slate-200 hover:bg-slate-800">
-              Annotated videos <ArrowRight size={16} />
+            <a href="#network" className="btn border border-slate-600 px-4 py-2.5 text-slate-200 hover:bg-slate-800">
+              City dashboard <ArrowRight size={16} />
             </a>
             {REPO_URL && (
               <a href={REPO_URL} target="_blank" rel="noreferrer" className="btn border border-slate-600 px-4 py-2.5 text-slate-200 hover:bg-slate-800">

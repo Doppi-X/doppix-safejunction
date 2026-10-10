@@ -1,0 +1,103 @@
+{
+ "method": "synthetic corruptions of our 22 held-out labeled frames; see eval/robustness.py",
+ "results": {
+  "clean (day)": {
+   "mAP50": 0.978,
+   "mAP50_95": 0.865,
+   "precision": 0.952,
+   "recall": 0.949,
+   "per_class_mAP50_95": {
+    "person": 0.809,
+    "car": 0.933,
+    "bus": 0.873,
+    "truck": 0.87,
+    "light_red": 0.908,
+    "light_not_red": 0.795
+   }
+  },
+  "night": {
+   "mAP50": 0.916,
+   "mAP50_95": 0.736,
+   "precision": 0.949,
+   "recall": 0.844,
+   "per_class_mAP50_95": {
+    "person": 0.491,
+    "car": 0.858,
+    "bus": 0.774,
+    "truck": 0.713,
+    "light_red": 0.857,
+    "light_not_red": 0.723
+   }
+  },
+  "night + enhance": {
+   "mAP50": 0.525,
+   "mAP50_95": 0.416,
+   "precision": 0.662,
+   "recall": 0.478,
+   "per_class_mAP50_95": {
+    "person": 0.127,
+    "car": 0.673,
+    "bus": 0.306,
+    "truck": 0.611,
+    "light_red": 0.613,
+    "light_not_red": 0.167
+   }
+  },
+  "rain": {
+   "mAP50": 0.967,
+   "mAP50_95": 0.828,
+   "precision": 0.95,
+   "recall": 0.916,
+   "per_class_mAP50_95": {
+    "person": 0.723,
+    "car": 0.911,
+    "bus": 0.864,
+    "truck": 0.803,
+    "light_red": 0.872,
+    "light_not_red": 0.796
+   }
+  },
+  "fog": {
+   "mAP50": 0.976,
+   "mAP50_95": 0.862,
+   "precision": 0.944,
+   "recall": 0.949,
+   "per_class_mAP50_95": {
+    "person": 0.782,
+    "car": 0.928,
+    "bus": 0.865,
+    "truck": 0.879,
+    "light_red": 0.924,
+    "light_not_red": 0.793
+   }
+  },
+  "motion blur": {
+   "mAP50": 0.959,
+   "mAP50_95": 0.801,
+   "precision": 0.95,
+   "recall": 0.909,
+   "per_class_mAP50_95": {
+    "person": 0.654,
+    "car": 0.907,
+    "bus": 0.852,
+    "truck": 0.774,
+    "light_red": 0.81,
+    "light_not_red": 0.806
+   }
+  },
+  "low bit-rate 540p": {
+   "mAP50": 0.857,
+   "mAP50_95": 0.677,
+   "precision": 0.748,
+   "recall": 0.801,
+   "per_class_mAP50_95": {
+    "person": 0.475,
+    "car": 0.84,
+    "bus": 0.812,
+    "truck": 0.698,
+    "light_red": 0.579,
+    "light_not_red": 0.659
+   }
+  }
+ }
+}

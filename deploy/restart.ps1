@@ -1,8 +1,8 @@
 # Restart the SafeJunction service on the GPU server (called by the deploy workflow).
 $ErrorActionPreference = "SilentlyContinue"
 Get-CimInstance Win32_Process | Where-Object {
-    ($_.Name -eq "python.exe" -and ($_.CommandLine -match "deploy\serve.py" -or $_.CommandLine -match "doppix-safejunction\backend")) -or
-    ($_.Name -eq "cloudflared.exe" -and $_.CommandLine -match "7870")
+    ($_.Name -eq "python.exe" -and ($_.CommandLine -like "*deploy\serve.py*" -or $_.CommandLine -like "*doppix-safejunction\backend*")) -or
+    ($_.Name -eq "cloudflared.exe" -and $_.CommandLine -like "*7870*")
 } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force; "stopped $($_.Name) $($_.ProcessId)" }
 schtasks /End /TN SafeJunction | Out-Null
 Start-Sleep 2

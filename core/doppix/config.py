@@ -5,6 +5,13 @@ ROOT = Path(__file__).resolve().parents[2]          # repo root
 CORE = Path(__file__).resolve().parents[1]          # core/
 WEIGHTS = ROOT / "weights" / "detector.pt"
 PLATE_WEIGHTS = ROOT / "weights" / "plate.pt"
+# Detector choice per camera (built during the final): our daylight fine-tune, our night/rain/blur fine-tune,
+# and the general COCO-pretrained YOLO26m for viewpoints unlike our junction (drone, eye level, foreign streets).
+# A few frames are scored with each; the daylight model is kept unless another sees clearly more.
+LOWLIGHT_WEIGHTS = ROOT / "weights" / "detector_lowlight.pt"
+GENERAL_WEIGHTS = ROOT / "weights" / "general_coco.pt"
+GENERAL_MAP = {0: 0, 1: 1, 2: 2, 3: 3, 5: 4, 7: 5}     # COCO person, bicycle, car, motorcycle, bus, truck -> ours
+SWITCH_RATIO = 1.25                                    # another model must find > 1.25x + 2 confident road users
 TRACKER_CFG = CORE / "configs" / "bytetrack.yaml"
 SCENE_CFG = CORE / "configs" / "scene.json"
 

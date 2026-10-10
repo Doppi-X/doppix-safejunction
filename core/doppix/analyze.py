@@ -170,6 +170,8 @@ def analyze_video(src: str, workdir: Path, zones=None, max_sec: float | None = N
     doc["timing"] = {"perception_s": round(t_perc, 1), "privacy_render_s": round(time.perf_counter() - t1, 1),
                      "total_s": round(time.perf_counter() - t0, 1), "video_s": round(p.duration, 1),
                      "stride_s": stride_sec, "imgsz": imgsz}
+    doc["detector"] = getattr(p, "detector", "detector.pt")
+    doc["detector_scores"] = getattr(p, "detector_scores", None)
     (workdir / "result.json").write_text(json.dumps(doc, separators=(",", ":")), encoding="utf-8")
     say("done", 1.0)
     return doc
@@ -182,24 +184,21 @@ def build_doc(p: Perception, zones: dict | None) -> dict:
     curve = risk.replay(p)
     doc = make_doc(p, scene if scene is not None else Scene(), light, events, curve, involved=involved,
                    scene_mode=scene_mode, flow=generic.flow_json(ff, p), zones_in=zones or {})
-    doc["report"] = report.build(p, events, curve, ff)
+    from . import conflicts
+    from .autoscene import build_tracks
+    cf, cs = conflicts.detect(p, build_tracks(p), ff)
+    doc["conflicts"] = cf
+    doc["report"] = report.build(p, events, curve, ff, involved, conflicts=(cf, cs))
     return doc
 
 
 def analyze_image(src: str, dst: Path) -> dict:
     """Single image: detections, counts, plates and heads blurred."""
-    from ultralytics import YOLO
-    import torch
     img = cv2.imread(src)
     if img is None:
         raise ValueError("cannot read image")
     h, w = img.shape[:2]
-    model = perception.load_detector()
-    dev = 0 if torch.cuda.is_available() else "cpu"
-    r = model.predict(img, imgsz=config.IMGSZ, conf=0.3, device=dev, verbose=False)[0]
-    boxes = r.boxes.xyxy.cpu().numpy()
-    cls = r.boxes.cls.cpu().numpy().astype(int)
-    conf = r.boxes.conf.cpu().numpy()
+    boxes, cls, conf, det_name = perception.detect_image(img, conf=0.3)
     persons, vehicles = boxes[cls == config.PERSON], boxes[np.isin(cls, config.VEHICLES)]
     plates = privacy.find_plates(img, vehicles)
     heads = privacy.head_boxes(persons)
@@ -214,7 +213,7 @@ def analyze_image(src: str, dst: Path) -> dict:
             "objects": [{"cls": config.CLASS_NAMES[c], "conf": round(float(s), 3),
                          "box": [round(float(v), 4) for v in (b / [w, h, w, h])]} for b, c, s in zip(boxes, cls, conf)],
             "plates_blurred": len(plates), "heads_blurred": len(heads),
-            "traffic_light": (max(set(light), key=light.count) if light else None)}
+            "traffic_light": (max(set(light), key=light.count) if light else None), "detector": det_name}
 
 
 if __name__ == "__main__":

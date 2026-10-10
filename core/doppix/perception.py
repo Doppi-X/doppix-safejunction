@@ -52,15 +52,78 @@ class Perception:
 _model = None
 
 
-def load_detector():
+_models: dict = {}
+
+
+def load_detector(weights: Path | None = None):
     """Model bir marta yuklanadi (bir nechta video uchun qayta ishlatiladi)."""
     global _model
-    if _model is None:
+    path = Path(weights or config.WEIGHTS)
+    if path not in _models:
         import torch
         from ultralytics import YOLO
         torch.manual_seed(config.SEED)
-        _model = YOLO(str(config.WEIGHTS))
+        _models[path] = YOLO(str(path))
+    _model = _models[path]
     return _model
+
+
+def class_map(weights: Path) -> dict | None:
+    return config.GENERAL_MAP if Path(weights).name == config.GENERAL_WEIGHTS.name else None
+
+
+def _road_users(model, frame: np.ndarray, cmap: dict | None) -> int:
+    r = model.predict(frame, imgsz=config.IMGSZ, conf=0.25, device=_device(), verbose=False)[0]
+    cls, conf = r.boxes.cls.cpu().numpy().astype(int), r.boxes.conf.cpu().numpy()
+    users = [c for c in cls] if cmap is None else [cmap[c] for c in cls if c in cmap]
+    keep = np.array([u in (config.PERSON, config.BICYCLE, *config.VEHICLES) for u in users], dtype=bool)
+    conf = conf if cmap is None else conf[[c in cmap for c in cls]]
+    return int((conf[keep] >= 0.5).sum()) if len(keep) else 0
+
+
+def choose_weights(frames: list[np.ndarray]) -> tuple[Path, dict]:
+    """Per-camera detector choice (built during the final): score a few frames with each candidate.
+
+    The daylight model (the one the rules were tuned on) is kept unless another model finds clearly more
+    confident road users: a cheap, label-free check that picks the model that actually sees this camera."""
+    cands = [Path(config.WEIGHTS)] + [w for w in (config.LOWLIGHT_WEIGHTS, config.GENERAL_WEIGHTS) if w.exists()]
+    scores = {w.name: sum(_road_users(load_detector(w), f, class_map(w)) for f in frames) for w in cands}
+    best = Path(config.WEIGHTS)
+    for w in cands[1:]:
+        if scores[w.name] > config.SWITCH_RATIO * scores[best.name] + 2:
+            best = w
+    return best, scores
+
+
+def sample_frames(video_path: str, max_sec: float | None, n: int = 6) -> list[np.ndarray]:
+    cap = cv2.VideoCapture(str(video_path))
+    fps = cap.get(cv2.CAP_PROP_FPS) or 25.0
+    total = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) or int(fps * 10)
+    if max_sec:
+        total = min(total, int(max_sec * fps))
+    out = []
+    for q in np.linspace(0.05, 0.95, n):
+        cap.set(cv2.CAP_PROP_POS_FRAMES, int(total * q))
+        ok, f = cap.read()
+        if ok:
+            if f.shape[1] > config.FRAME_W:
+                f = cv2.resize(f, (config.FRAME_W, round(f.shape[0] * config.FRAME_W / f.shape[1])), interpolation=cv2.INTER_AREA)
+            out.append(f)
+    cap.release()
+    return out
+
+
+def detect_image(frame: np.ndarray, conf: float = 0.3, imgsz: int = config.IMGSZ):
+    """One image: (boxes xyxy px, our class ids, conf, weights name), detector chosen on this frame."""
+    f = frame if frame.shape[1] <= config.FRAME_W else cv2.resize(frame, (config.FRAME_W, round(frame.shape[0] * config.FRAME_W / frame.shape[1])))
+    w, _ = choose_weights([f])
+    cmap = class_map(w)
+    r = load_detector(w).predict(frame, imgsz=imgsz, conf=conf, device=_device(), verbose=False)[0]
+    b, c, s = r.boxes.xyxy.cpu().numpy(), r.boxes.cls.cpu().numpy().astype(int), r.boxes.conf.cpu().numpy()
+    if cmap:
+        keep = np.array([k in cmap for k in c], dtype=bool)
+        b, s, c = b[keep], s[keep], np.array([cmap[k] for k in c[keep]], dtype=int)
+    return b, c, s, w.name
 
 
 def _device():
@@ -79,7 +142,10 @@ def run(video_path: str, stride_sec: float = config.PART_A_STRIDE_SEC, progress=
     """
     import time
     t_start = time.perf_counter()
-    model = load_detector()
+    weights, scores = choose_weights(sample_frames(video_path, max_sec))
+    model = load_detector(weights)
+    cmap = class_map(weights)
+    track_kw = {"classes": sorted(cmap)} if cmap else {}
     dev = _device()
     cv2.setNumThreads(os.cpu_count() or 1)   # ba'zi OpenCV build'larida standart — 1 oqim (resize sekin)
     cap = cv2.VideoCapture(str(video_path))
@@ -119,7 +185,7 @@ def run(video_path: str, stride_sec: float = config.PART_A_STRIDE_SEC, progress=
             if (idx // stride) % max(1, bg_every // stride) == 0 and len(bg_frames) < 30:
                 bg_frames.append(frame.copy())
             res = model.track(frame, persist=True, tracker=str(config.TRACKER_CFG), imgsz=imgsz,
-                              conf=config.DET_CONF, device=dev, verbose=False, **half_kw)[0]
+                              conf=config.DET_CONF, device=dev, verbose=False, **half_kw, **track_kw)[0]
             k = len(frame_ids)
             frame_ids.append(idx)
             b = res.boxes
@@ -129,7 +195,9 @@ def run(video_path: str, stride_sec: float = config.PART_A_STRIDE_SEC, progress=
                 cls = b.cls.cpu().numpy()
                 conf = b.conf.cpu().numpy()
                 for i in range(len(ids)):
-                    rows.append((k, ids[i], cls[i], conf[i], *xyxyn[i]))
+                    c = cls[i] if cmap is None else cmap.get(int(cls[i]))
+                    if c is not None:
+                        rows.append((k, ids[i], c, conf[i], *xyxyn[i]))
             if progress and k % 10 == 0:
                 progress(idx, n_frames)
             if budget_sec and n_frames > 0 and k and k % 10 == 0:
@@ -148,4 +216,7 @@ def run(video_path: str, stride_sec: float = config.PART_A_STRIDE_SEC, progress=
     from .align import background
     dets = np.asarray(rows, dtype=np.float32).reshape(-1, 8)
     bg = background(bg_frames) if bg_frames else None
-    return Perception(float(fps), n_frames, width, height, np.asarray(frame_ids, dtype=np.int32), dets, bg)
+    p = Perception(float(fps), n_frames, width, height, np.asarray(frame_ids, dtype=np.int32), dets, bg)
+    p.detector = weights.name
+    p.detector_scores = scores
+    return p

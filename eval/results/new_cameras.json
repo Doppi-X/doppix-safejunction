@@ -1,0 +1,222 @@
+{
+ "day_intersection_trafficlight_nyc.mp4": {
+  "id": "2ff0952abbd4",
+  "status": "done",
+  "message": "",
+  "detector": "general_coco.pt",
+  "mode": "learned",
+  "events": [
+   [
+    0.0,
+    26.6,
+    "congestion"
+   ]
+  ],
+  "conflicts": {
+   "counts": {
+    "serious": 0,
+    "moderate": 0,
+    "interaction": 0
+   },
+   "exposure_pedestrians": 0,
+   "exposure_vehicles": 15,
+   "vru_serious": 0,
+   "serious_per_1000_pedestrians": null,
+   "serious_per_1000_road_users": 0.0,
+   "method": "PET image-plane, carriageway cells only; bins <1.5 / 1.5-3 / 3-5 s (Bellevue WA screening)"
+  },
+  "timing": {
+   "perception_s": 13.2,
+   "privacy_render_s": 18.9,
+   "total_s": 33.0,
+   "video_s": 26.7,
+   "stride_s": 0.1,
+   "imgsz": 1280
+  }
+ },
+ "day_crossing_tokyo_shibuya.mp4": {
+  "id": "438c967baf38",
+  "status": "done",
+  "message": "",
+  "detector": "detector.pt",
+  "mode": "learned",
+  "events": [],
+  "conflicts": {
+   "counts": {
+    "serious": 9,
+    "moderate": 10,
+    "interaction": 16
+   },
+   "exposure_pedestrians": 44,
+   "exposure_vehicles": 16,
+   "vru_serious": 9,
+   "serious_per_1000_pedestrians": 204.5,
+   "serious_per_1000_road_users": 150.0,
+   "method": "PET image-plane, carriageway cells only; bins <1.5 / 1.5-3 / 3-5 s (Bellevue WA screening)"
+  },
+  "timing": {
+   "perception_s": 13.0,
+   "privacy_render_s": 11.1,
+   "total_s": 24.9,
+   "video_s": 19.8,
+   "stride_s": 0.1,
+   "imgsz": 1280
+  }
+ },
+ "day_intersection_topdown_drone.mp4": {
+  "id": "ae503f3a7621",
+  "status": "done",
+  "message": "",
+  "detector": "detector.pt",
+  "mode": "learned",
+  "events": [],
+  "conflicts": {
+   "counts": {
+    "serious": 0,
+    "moderate": 0,
+    "interaction": 0
+   },
+   "exposure_pedestrians": 0,
+   "exposure_vehicles": 38,
+   "vru_serious": 0,
+   "serious_per_1000_pedestrians": null,
+   "serious_per_1000_road_users": 0.0,
+   "method": "PET image-plane, carriageway cells only; bins <1.5 / 1.5-3 / 3-5 s (Bellevue WA screening)"
+  },
+  "timing": {
+   "perception_s": 15.2,
+   "privacy_render_s": 16.1,
+   "total_s": 31.5,
+   "video_s": 35.9,
+   "stride_s": 0.1,
+   "imgsz": 1280
+  }
+ },
+ "night_intersection_topdown_drone.mp4": {
+  "id": "e7dd102b8109",
+  "status": "done",
+  "message": "",
+  "detector": "general_coco.pt",
+  "mode": "learned",
+  "events": [
+   [
+    4.104,
+    22.222,
+    "congestion"
+   ],
+   [
+    33.734,
+    82.182,
+    "congestion"
+   ]
+  ],
+  "conflicts": {
+   "counts": {
+    "serious": 1,
+    "moderate": 5,
+    "interaction": 4
+   },
+   "exposure_pedestrians": 0,
+   "exposure_vehicles": 226,
+   "vru_serious": 0,
+   "serious_per_1000_pedestrians": null,
+   "serious_per_1000_road_users": 4.4,
+   "method": "PET image-plane, carriageway cells only; bins <1.5 / 1.5-3 / 3-5 s (Bellevue WA screening)"
+  },
+  "timing": {
+   "perception_s": 36.7,
+   "privacy_render_s": 119.4,
+   "total_s": 168.7,
+   "video_s": 82.3,
+   "stride_s": 0.1,
+   "imgsz": 1280
+  }
+ },
+ "night_crosswalk_trafficlight_street.mp4": {
+  "id": "760d88c33889",
+  "status": "done",
+  "message": "",
+  "detector": "detector.pt",
+  "mode": "learned",
+  "events": [],
+  "conflicts": {
+   "counts": {
+    "serious": 0,
+    "moderate": 0,
+    "interaction": 0
+   },
+   "exposure_pedestrians": 2,
+   "exposure_vehicles": 2,
+   "vru_serious": 0,
+   "serious_per_1000_pedestrians": 0.0,
+   "serious_per_1000_road_users": 0.0,
+   "method": "PET image-plane, carriageway cells only; bins <1.5 / 1.5-3 / 3-5 s (Bellevue WA screening)"
+  },
+  "timing": {
+   "perception_s": 9.0,
+   "privacy_render_s": 2.9,
+   "total_s": 12.1,
+   "video_s": 16.7,
+   "stride_s": 0.1,
+   "imgsz": 1280
+  }
+ },
+ "rain_night_crossing_nyc_timessquare.mp4": {
+  "id": "290e78572968",
+  "status": "done",
+  "message": "",
+  "detector": "general_coco.pt",
+  "mode": "learned",
+  "events": [],
+  "conflicts": {
+   "counts": {
+    "serious": 19,
+    "moderate": 15,
+    "interaction": 12
+   },
+   "exposure_pedestrians": 43,
+   "exposure_vehicles": 35,
+   "vru_serious": 15,
+   "serious_per_1000_pedestrians": 348.8,
+   "serious_per_1000_road_users": 243.6,
+   "method": "PET image-plane, carriageway cells only; bins <1.5 / 1.5-3 / 3-5 s (Bellevue WA screening)"
+  },
+  "timing": {
+   "perception_s": 10.1,
+   "privacy_render_s": 8.9,
+   "total_s": 19.5,
+   "video_s": 19.9,
+   "stride_s": 0.1,
+   "imgsz": 1280
+  }
+ },
+ "snow_intersection_ottawa.mp4": {
+  "id": "85dfd5a89a19",
+  "status": "done",
+  "message": "",
+  "detector": "general_coco.pt",
+  "mode": "learned",
+  "events": [],
+  "conflicts": {
+   "counts": {
+    "serious": 0,
+    "moderate": 0,
+    "interaction": 0
+   },
+   "exposure_pedestrians": 0,
+   "exposure_vehicles": 3,
+   "vru_serious": 0,
+   "serious_per_1000_pedestrians": null,
+   "serious_per_1000_road_users": 0.0,
+   "method": "PET image-plane, carriageway cells only; bins <1.5 / 1.5-3 / 3-5 s (Bellevue WA screening)"
+  },
+  "timing": {
+   "perception_s": 7.5,
+   "privacy_render_s": 5.1,
+   "total_s": 12.7,
+   "video_s": 17.1,
+   "stride_s": 0.1,
+   "imgsz": 1280
+  }
+ }
+}

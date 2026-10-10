@@ -26,8 +26,8 @@ export default function Samples() {
   }) : [];
 
   return (
-    <Section id="samples" alt kicker="Results" title="Sample videos, fully annotated"
-      intro="All four organizer videos through our pipeline: tracked objects, the objects behind each event, the timeline and the risk curve.">
+    <Section id="samples" alt kicker="Validation · reference intersection" title="Where the rules were measured"
+      intro="Four clips of one Tashkent junction from the elimination round (built before the final), labeled by us event by event. This is the test set behind our quality numbers; the clips are re-rendered with faces and plates blurred.">
       <div className="card mb-4 space-y-3 p-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="inline-flex flex-wrap rounded-xl bg-white/5 p-1">

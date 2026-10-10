@@ -1,0 +1,12 @@
+{
+ "weights": "detector.pt",
+ "score_a": 0.828,
+ "per_class_f1_at_0.5": {
+  "congestion": 0.9,
+  "failure_to_yield": 0.609,
+  "jaywalking": 0.737,
+  "red_light": 1.0,
+  "stop_line": 0.923,
+  "stopped_vehicle": 0.833
+ }
+}

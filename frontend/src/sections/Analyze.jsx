@@ -26,10 +26,11 @@ function useServer() {
   return [api, server];
 }
 
-function post(url, file, onProgress) {
+function post(url, file, onProgress, name = "") {
   return new Promise((resolve, reject) => {
     const fd = new FormData();
     fd.append("file", file);
+    if (name) fd.append("name", name);
     const x = new XMLHttpRequest();
     x.open("POST", url);
     x.upload.onprogress = (e) => e.lengthComputable && onProgress?.(e.loaded / e.total);
@@ -53,6 +54,7 @@ export default function Analyze() {
   const [upload, setUpload] = useState(0);
   const [error, setError] = useState("");
   const [drag, setDrag] = useState(false);
+  const [name, setName] = useState("");
   const input = useRef(null);
   const online = server && server !== "offline";
 
@@ -80,7 +82,7 @@ export default function Analyze() {
       } else {
         if (server?.max_mb && file.size > server.max_mb * 2 ** 20) throw new Error(`File is larger than ${server.max_mb} MB.`);
         setJob({ status: "upload", stage: "upload" });
-        setJob(await post(`${api}/api/jobs`, file, setUpload));
+        setJob(await post(`${api}/api/jobs`, file, setUpload, name.trim()));
       }
     } catch (e) { setError(e.message); setJob(null); }
   };
@@ -129,9 +131,16 @@ export default function Analyze() {
             <p className="font-semibold text-white">Drop a traffic video or photo here</p>
             <p className="mt-1 text-sm text-slate-400">MP4/MOV/AVI/MKV or JPG/PNG. Faces and plates are blurred before anything is shown.</p>
           </div>
+          <input value={name} onChange={(e) => setName(e.target.value)} maxLength={60}
+            placeholder="Camera name or location (optional), e.g. Amir Temur / Navoi"
+            className="w-full max-w-md rounded-md border border-white/10 bg-slate-900 px-3 py-2 text-sm text-white placeholder:text-slate-500" />
           <button disabled={!online} onClick={() => input.current?.click()}
             className="btn bg-amber-500 px-4 py-2 text-slate-950 hover:bg-amber-400 disabled:opacity-40"><Upload size={16} /> Choose file</button>
           <input ref={input} type="file" accept="video/*,image/*" className="hidden" onChange={(e) => start(e.target.files?.[0])} />
+          <button disabled={!online} onClick={() => fetch("./data/demo_sample/video.mp4").then((r) => r.blob())
+            .then((b) => start(new File([b], "sample_40s.mp4", { type: "video/mp4" }))).catch(() => setError("Could not load the sample."))}
+            className="text-sm text-amber-300 underline decoration-dotted hover:text-amber-200 disabled:opacity-40">
+            No traffic video at hand? Run our 40 s sample clip</button>
         </div>
       )}
 
@@ -192,7 +201,7 @@ export default function Analyze() {
             <span className="text-sm text-slate-400">{doc.width}×{doc.height} · {doc.fps} fps</span>
             <button className="btn border border-white/10 text-slate-200 hover:bg-white/5" onClick={reset}><RotateCcw size={14} /> New video</button>
           </div>
-          <ReportPanel doc={doc} />
+          <ReportPanel doc={doc} frameUrl={`${api}/api/jobs/${job.id}/frame`} name={name.trim() || "Uploaded camera"} />
           <ResultViewer doc={doc} videoUrl={`${api}/api/jobs/${job.id}/video.mp4`} />
           <details className="card p-4">
             <summary className="cursor-pointer text-sm font-semibold text-white">Edit zones and re-run the rules (takes seconds)</summary>

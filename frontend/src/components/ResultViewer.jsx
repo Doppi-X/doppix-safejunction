@@ -98,13 +98,13 @@ export default function ResultViewer({ doc, videoUrl, jump }) {
 
       <div className="card p-3">
         <div className="mb-1 flex items-baseline justify-between gap-2">
-          <h4 className="text-sm font-semibold text-slate-200">Event timeline <span className="font-normal text-slate-500">Part A</span></h4>
+          <h4 className="text-sm font-semibold text-slate-200">Event timeline</h4>
           {doc.labels && <span className="text-[11px] text-slate-500">white line = our manual label</span>}
         </div>
         <Timeline doc={doc} time={time} onSeek={seek} />
       </div>
       <div className="card p-3">
-        <h4 className="mb-1 text-sm font-semibold text-slate-200">Accident risk, next 5 s <span className="font-normal text-slate-500">Part B</span></h4>
+        <h4 className="mb-1 text-sm font-semibold text-slate-200">Accident risk, next 5 s</h4>
         <RiskChart risk={doc.risk} duration={doc.duration} time={time} onSeek={seek} height={110} />
       </div>
     </div>

@@ -3,6 +3,7 @@ import { Menu, X } from "lucide-react";
 import Hero from "./sections/Hero.jsx";
 import Analyze from "./sections/Analyze.jsx";
 import Business from "./sections/Business.jsx";
+import Network from "./sections/Network.jsx";
 import Samples from "./sections/Samples.jsx";
 import Evaluation from "./sections/Evaluation.jsx";
 import EDA from "./sections/EDA.jsx";
@@ -14,12 +15,12 @@ import { REPO_URL, TEAM_NAME } from "./team.js";
 
 const NAV = [
   ["analyze", "Try it"],
-  ["samples", "Results"],
-  ["evaluation", "Quality"],
-  ["approach", "How it works"],
+  ["network", "City dashboard"],
   ["business", "Business"],
+  ["approach", "How it works"],
+  ["evaluation", "Quality"],
+  ["samples", "Validation"],
   ["team", "Team"],
-  ["links", "Links"],
 ];
 
 export default function App() {
@@ -72,11 +73,12 @@ export default function App() {
       <main id="top">
         <Hero />
         <Analyze />
-        <Samples />
-        <Evaluation />
-        <EDA />
-        <Approach />
+        <Network />
         <Business />
+        <Approach />
+        <Evaluation />
+        <Samples />
+        <EDA />
         <BuiltWith />
         <Team />
         <Links />
@@ -85,7 +87,7 @@ export default function App() {
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-8 text-sm text-slate-400 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="font-display font-semibold text-white">{TEAM_NAME}</div>
-            <div>WIUT Hackathon 2026 · Computer Vision track · Toyota traffic event detection</div>
+            <div>WIUT Hackathon 2026 Final · Computer vision for road safety · Startup mode</div>
           </div>
           <nav className="flex flex-wrap gap-x-4 gap-y-1">
             {NAV.map(([id, name]) => <a key={id} href={`#${id}`} className="hover:text-white">{name}</a>)}

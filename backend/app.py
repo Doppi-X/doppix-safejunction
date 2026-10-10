@@ -9,6 +9,8 @@ POST /api/jobs/{id}/zones   zones drawn in the browser; re-runs the rules if the
 GET  /api/jobs/{id}/result  events, tracks, risk, learned flow, report
 GET  /api/jobs/{id}/video.mp4  privacy-blurred video
 POST /api/image             one image -> detections, counts, blurred image
+GET  /api/network          every analysed camera: event counts, rates, hotspots (city dashboard)
+GET  /api/network/{id}.jpg  that camera's blurred first frame
 GET  /api/health
 
 One worker thread processes videos in order (one GPU). Results live for 6 h.
@@ -35,7 +37,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 sys.path.insert(0, str(ROOT / "core"))
 
-from doppix import analyze, config, perception, privacy  # noqa: E402
+from doppix import analyze, config, perception, privacy, report  # noqa: E402
 from doppix.perception import Perception  # noqa: E402
 
 JOBS = Path(os.environ.get("JOBS_DIR", ROOT / "_jobs"))
@@ -45,6 +47,9 @@ MAX_SEC = float(os.environ.get("MAX_SEC", 120))
 MAX_MB = int(os.environ.get("MAX_MB", 500))
 MAX_QUEUE = int(os.environ.get("MAX_QUEUE", 8))
 TTL = 6 * 3600
+# city dashboard: metadata only (counts, hotspots, a blurred thumbnail), kept after the video is deleted
+NET = Path(os.environ.get("NETWORK_DIR", JOBS.parent / "network"))
+NET.mkdir(parents=True, exist_ok=True)
 VIDEO_EXT = {".mp4", ".mov", ".m4v", ".avi", ".mkv", ".webm"}
 IMAGE_EXT = {".jpg", ".jpeg", ".png", ".webp", ".bmp"}
 
@@ -88,14 +93,22 @@ def first_frame(src: Path, dst: Path) -> dict:
     if not ok:
         raise ValueError("Could not decode this video. Please upload an MP4 (H.264 or HEVC).")
     h, w = frame.shape[:2]
-    model = perception.load_detector()
-    r = model.predict(frame, imgsz=IMGSZ, conf=0.3, device=0 if CUDA else "cpu", verbose=False)[0]
     import numpy as np
-    b, c = r.boxes.xyxy.cpu().numpy(), r.boxes.cls.cpu().numpy().astype(int)
+    b, c, _, _ = perception.detect_image(frame, conf=0.3, imgsz=IMGSZ)
     privacy.blur_regions(frame, privacy.head_boxes(b[c == config.PERSON]) + privacy.find_plates(frame, b[np.isin(c, config.VEHICLES)]))
     scale = min(1.0, 1280 / w)
     cv2.imwrite(str(dst), cv2.resize(frame, (int(w * scale), int(h * scale))), [cv2.IMWRITE_JPEG_QUALITY, 85])
     return {"width": w, "height": h, "fps": round(fps, 3), "duration": round(n / fps, 2) if n > 0 else None}
+
+
+def register(jid: str) -> None:
+    """Add or refresh this job's row in the city dashboard."""
+    d = JOBS / jid
+    doc = json.loads((d / "result.json").read_text(encoding="utf-8"))
+    row = report.summary_row(doc, id=jid, name=jobs[jid].get("name") or f"Camera {jid[:4].upper()}",
+                             created=jobs[jid]["created"], source="upload", privacy=doc.get("privacy"))
+    shutil.copy(d / "frame.jpg", NET / f"{jid}.jpg")
+    (NET / f"{jid}.json").write_text(json.dumps(row, separators=(",", ":")), encoding="utf-8")
 
 
 def process(jid: str) -> None:
@@ -114,6 +127,7 @@ def process(jid: str) -> None:
     doc = json.loads(doc_path.read_text(encoding="utf-8"))
     doc["device"] = DEVICE
     doc_path.write_text(json.dumps(doc, separators=(",", ":")), encoding="utf-8")
+    register(jid)
     update(jid, status="done", stage="done", progress=1.0)
 
 
@@ -145,8 +159,9 @@ def status(jid: str) -> dict:
     return out
 
 
-async def save_upload(request: Request, allowed: set[str]) -> tuple[str, Path]:
+async def save_upload(request: Request, allowed: set[str]) -> tuple[str, Path, str]:
     form = await request.form()
+    name = str(form.get("name") or "").strip()[:60]
     up = form.get("file")
     if up is None or not hasattr(up, "read"):
         raise HTTPException(400, "No file in the request.")
@@ -166,7 +181,7 @@ async def save_upload(request: Request, allowed: set[str]) -> tuple[str, Path]:
                 shutil.rmtree(d, ignore_errors=True)
                 raise HTTPException(413, f"File is larger than {MAX_MB} MB.")
             f.write(chunk)
-    return jid, d / f"in{ext}"
+    return jid, d / f"in{ext}", name
 
 
 @app.get("/api/health")
@@ -179,7 +194,7 @@ def health():
 async def create_job(request: Request):
     if len(order) >= MAX_QUEUE:
         raise HTTPException(429, "The queue is full, please try again in a minute.")
-    jid, src = await save_upload(request, VIDEO_EXT)
+    jid, src, name = await save_upload(request, VIDEO_EXT)
     try:
         info = first_frame(src, src.parent / "frame.jpg")
     except Exception as e:  # noqa: BLE001
@@ -187,7 +202,7 @@ async def create_job(request: Request):
         raise HTTPException(400, str(e)) from e
     with lock:
         jobs[jid] = {"id": jid, "status": "queued", "stage": "queued", "progress": 0.0, "message": "",
-                     "file": src.name, "created": time.time(), "zones": None, "video": info,
+                     "file": src.name, "created": time.time(), "zones": None, "video": info, "name": name,
                      "processed_sec": min(MAX_SEC, info["duration"] or MAX_SEC)}
         order.append(jid)
     work.put(jid)
@@ -217,9 +232,10 @@ async def job_zones(jid: str, request: Request):
         p = Perception.load(d / "perception.npz")
         old = json.loads((d / "result.json").read_text(encoding="utf-8"))
         doc = analyze.build_doc(p, zones)
-        for k in ("privacy", "timing"):
+        for k in ("privacy", "timing", "detector", "detector_scores"):
             doc[k] = old.get(k)
         (d / "result.json").write_text(json.dumps(doc, separators=(",", ":")), encoding="utf-8")
+        register(jid)
     return status(jid)
 
 
@@ -241,7 +257,7 @@ def job_video(jid: str):
 
 @app.post("/api/image")
 async def image(request: Request):
-    jid, src = await save_upload(request, IMAGE_EXT)
+    jid, src, _ = await save_upload(request, IMAGE_EXT)
     t0 = time.perf_counter()
     try:
         res = analyze.analyze_image(str(src), src.parent / "image.jpg")
@@ -257,6 +273,25 @@ async def image(request: Request):
 @app.get("/api/images/{jid}.jpg")
 def image_file(jid: str):
     f = JOBS / jid / "image.jpg"
+    if not f.exists():
+        raise HTTPException(404, "Not found.")
+    return FileResponse(f, media_type="image/jpeg")
+
+
+@app.get("/api/network")
+def network():
+    rows = []
+    for f in NET.glob("*.json"):
+        try:
+            rows.append(json.loads(f.read_text(encoding="utf-8")))
+        except (OSError, ValueError):
+            continue
+    return sorted(rows, key=lambda r: -r["created"])
+
+
+@app.get("/api/network/{jid}.jpg")
+def network_frame(jid: str):
+    f = NET / f"{Path(jid).name}.jpg"
     if not f.exists():
         raise HTTPException(404, "Not found.")
     return FileResponse(f, media_type="image/jpeg")

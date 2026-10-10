@@ -1,0 +1,12 @@
+{
+ "weights": "best.pt",
+ "score_a": 0.7706,
+ "per_class_f1_at_0.5": {
+  "congestion": 0.857,
+  "failure_to_yield": 0.522,
+  "jaywalking": 0.811,
+  "red_light": 0.8,
+  "stop_line": 0.923,
+  "stopped_vehicle": 0.783
+ }
+}

@@ -44,7 +44,7 @@ export default function EDA() {
   const [heat, setHeat] = useState("veh");
   const [traj, setTraj] = useState(null);
   const [objVid, setObjVid] = useState(null);
-  const head = { id: "eda", kicker: "Exploratory data analysis", title: "What the camera sees", alt: true };
+  const head = { id: "eda", kicker: "Validation data · elimination round", title: "What the reference camera sees", alt: true };
   if (!eda || !samples) return <Section {...head}><div className="card h-64 animate-pulse" /></Section>;
 
   const vids = eda.videos;
