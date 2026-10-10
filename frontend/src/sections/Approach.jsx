@@ -4,12 +4,12 @@ import { eventColor } from "../lib/data.js";
 import Ablation from "../components/Ablation.jsx";
 
 const PIPE = [
-  { t: "4K video", d: "10-bit 4:2:2 H.264, 30 fps. Decoded sequentially; skipped frames are only grab()-ed." },
-  { t: "YOLO26m", d: "Fine-tuned on our labels: 6 road-user classes + light_red / light_not_red. Runs at 1920 px, imgsz 1280, ~10 fps." },
-  { t: "ByteTrack", d: "Persistent IDs; the low-confidence second stage keeps occluded pedestrians alive." },
-  { t: "Scene alignment", d: "ORB + RANSAC aligns the video background to the reference, then the scene layout is shifted onto the video (1–2.5 px error)." },
-  { t: "Event rules", d: "One interpretable function per class over tracks, zones and the light state → time segments." },
-  { t: "Risk model", d: "Causal pairwise time-to-collision, calibrated on normal traffic → P(accident within 5 s)." },
+  { t: "Any camera", d: "Video or photo from existing CCTV. Uploaded over HTTPS to our GPU server; deleted after 6 h." },
+  { t: "YOLO26m + ByteTrack", d: "Our fine-tune on 12,990 Tashkent boxes: 6 road-user classes + traffic-light state. ~10 fps, 2× real time on an RTX 3060." },
+  { t: "Scene", d: "Zones drawn in the browser, or our known camera re-aligned (ORB+RANSAC), or learned from traffic: drivable area + lane directions." },
+  { t: "Events", d: "Zone rules (red light, stop line, pedestrians, yielding) + zero-config rules (wrong-way, stopped, congestion, near miss)." },
+  { t: "Privacy", d: "Plate detector inside each vehicle box + head blur, before any frame leaves the server." },
+  { t: "Report", d: "Rates per hour, safety index and recommendations that name the number behind them." },
 ];
 
 const RULES = [
@@ -56,7 +56,7 @@ const FAILED = [
 export default function Approach() {
   return (
     <Section id="approach" kicker="Approach & technical report" title="How it works"
-      intro="Learned where there is data (thousands of boxes), rules where there is not (a handful of events per class): every rule can be checked against the video.">
+      intro="Learned where there is data (our 12,990 labeled boxes), rules where there is not: every event can be checked against the video, and every number on this site is measured on data we labeled.">
       {/* pipeline */}
       <div className="flex flex-col items-stretch gap-2 lg:flex-row lg:items-center">
         {PIPE.map((s, i) => (

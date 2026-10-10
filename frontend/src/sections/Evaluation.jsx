@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Play } from "lucide-react";
 import Section from "./Section.jsx";
+import FinalQuality from "../components/FinalQuality.jsx";
 import { eventColor, eventName, fetchJSON, fmtTime } from "../lib/data.js";
 import { useJSON } from "../lib/hooks.js";
 
@@ -23,8 +24,9 @@ export default function Evaluation() {
   const count = (k) => data.items.filter((i) => i.kind === k).length;
 
   return (
-    <Section id="evaluation" kicker="Error analysis" title="How good is it — on our own labels"
-      intro="The official evaluate.py on our own labels of the four sample videos, and every hit, false alarm and miss. Click one to watch it.">
+    <Section id="evaluation" kicker="Error analysis" title="How good is it"
+      intro="Measured on test sets we built ourselves. Top: what the final added (any camera, weather). Below: event rules on our labels of a real intersection, every hit, false alarm and miss.">
+      <FinalQuality />
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {[["Score A", data.score_a.toFixed(2), "text-white"], ["correct", count("TP"), "text-emerald-300"],
           ["false alarms", count("FP"), "text-red-300"], ["missed", count("FN"), "text-amber-300"]].map(([l, v, c]) => (
