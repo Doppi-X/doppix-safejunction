@@ -23,6 +23,9 @@ from .tracks import light_state
 OUT_W = 960            # web video width
 OUT_FPS = 15.0         # web video frame rate (half of a 30 fps source: smaller files, same timeline)
 ZONE_RULES = {"red_light", "stop_line", "jaywalking", "failure_to_yield", "stopped_vehicle", "congestion"}
+# On a newly drawn camera the zone stopped/congestion rules (geometry of our reference junction) are not
+# used: the zero-config versions are. Drawn zones add only the crossing and signal rules.
+DRAWN_RULES = {"red_light", "stop_line", "jaywalking", "failure_to_yield"}
 
 
 def ffmpeg() -> str:
@@ -34,10 +37,34 @@ def ffmpeg() -> str:
     return imageio_ffmpeg.get_ffmpeg_exe()
 
 
-def choose_scene(p: Perception, zones: dict | None) -> tuple[Scene | None, str]:
-    """Drawn zones win; else our reference intersection if the background matches; else none."""
+def learned_carriageway(ff, p: Perception) -> list[np.ndarray]:
+    """Road outline learned from where vehicles move (zero-config), in scene coordinates."""
+    from .autoscene import drivable_mask, frame_size
+    from .scene import H as SH, W as SW
+    m = drivable_mask(ff, 4).astype(np.uint8)
+    if not m.any():
+        return []
+    m = cv2.morphologyEx(m, cv2.MORPH_CLOSE, np.ones((3, 3), np.uint8))
+    big = cv2.resize(m * 255, (m.shape[1] * 8, m.shape[0] * 8), interpolation=cv2.INTER_NEAREST)
+    cnts, _ = cv2.findContours(big, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    fw, fh = frame_size(p)
+    out = []
+    for c in cnts:
+        if cv2.contourArea(c) < 64 * 6:                  # ignore specks (< ~6 cells)
+            continue
+        pts = c.reshape(-1, 2).astype(np.float32) / 8 * ff.cell          # -> frame px
+        out.append((pts / [fw, fh] * [SW, SH]).astype(np.float32))        # -> scene px
+    return out
+
+
+def choose_scene(p: Perception, zones: dict | None, ff=None) -> tuple[Scene | None, str]:
+    """Drawn zones win; else our reference intersection if the background matches; else none.
+    Drawn zones without a road outline get the road learned from traffic."""
     if zones and any(zones.get(k) for k in ("carriageway", "crosswalk", "stop_line", "traffic_light")):
-        return Scene.from_zones(zones), "drawn"
+        scene = Scene.from_zones(zones)
+        if not scene.carriageway and ff is not None:
+            scene.carriageway = learned_carriageway(ff, p)
+        return scene, "drawn"
     ref = align.load_ref()
     if ref is not None and p.bg is not None:
         M = align.estimate(ref, p.bg)
@@ -48,14 +75,17 @@ def choose_scene(p: Perception, zones: dict | None) -> tuple[Scene | None, str]:
 
 def events_for(p: Perception, zones: dict | None):
     """All events with the track ids behind each; zone rules replace the generic stop/congestion."""
-    scene, scene_mode = choose_scene(p, zones)
     g_ev, g_inv, ff = generic.detect(p)
+    scene, scene_mode = choose_scene(p, zones, ff)
     events, involved = [], []
     if scene is not None:
         z_ev, z_inv = rules.detect(p, scene, detail=True, align=False)
-        events += z_ev
-        involved += z_inv
-        keep = [i for i, e in enumerate(g_ev) if e[2] not in ZONE_RULES]
+        own = DRAWN_RULES if scene_mode == "drawn" else ZONE_RULES
+        for e, inv in zip(z_ev, z_inv):
+            if e[2] in own:
+                events.append(e)
+                involved.append(inv)
+        keep = [i for i, e in enumerate(g_ev) if e[2] not in own]
     else:
         keep = range(len(g_ev))
     events += [g_ev[i] for i in keep]
