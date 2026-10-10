@@ -6,10 +6,10 @@ import { useJSON } from "../lib/hooks.js";
 import { REPO_URL } from "../team.js";
 
 const STATS = [
-  ["0.83", "Score A on our labels of the 4 sample videos"],
-  ["0.98", "detector mAP@50 (validation)"],
-  ["1.4×", "video length to process on 8 CPU threads (budget 3×)"],
-  ["0", "false risk alarms on 18 min of normal traffic"],
+  ["2 min", "to onboard a new camera: upload, optionally draw 4 zones"],
+  ["0 / h", "wrong-way false alarms on 18 min of real traffic; 93 % of injected wrong-way cars caught"],
+  ["0.83", "Score A (macro F1 over 6 event classes) on our own labels of a Tashkent intersection"],
+  ["2×", "faster than real time on one RTX 3060 (detection + tracking at 10 fps)"],
 ];
 
 const CLIP_START = 74;   // hero.mp4 = C3896 dan 74–92 s kesma (~0.8 MB): qizilda o'tish, stop-chiziq, tirbandlik
@@ -48,18 +48,19 @@ export default function Hero() {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(245,158,11,0.12),transparent_55%),radial-gradient(ellipse_at_bottom_left,rgba(239,68,68,0.08),transparent_50%)]" />
       <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 pb-10 pt-14 sm:pt-20 lg:grid-cols-[1.05fr_1fr]">
         <div>
-          <p className="chip mb-5 border-amber-500/40 text-amber-300">WIUT Hackathon 2026 · Computer Vision · Toyota</p>
+          <p className="chip mb-5 border-amber-500/40 text-amber-300">Startup · WIUT Hackathon 2026 Final · Computer Vision</p>
           <h1 className="font-display text-3xl font-bold leading-[1.1] tracking-tight text-white sm:text-5xl">
-            Every violation at the intersection,{" "}
-            <span className="bg-gradient-to-r from-amber-300 to-red-400 bg-clip-text text-transparent">on a timeline</span>
+            Turn any traffic camera into a{" "}
+            <span className="bg-gradient-to-r from-amber-300 to-red-400 bg-clip-text text-transparent">road-safety auditor</span>
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-slate-300">
-            We track every car, bus and pedestrian at a Tashkent intersection, read the traffic light and the scene
-            layout, and turn that into time-stamped violations and a live accident-risk score.
+            SafeJunction watches the CCTV a city already has, finds red-light running, drivers not yielding to
+            pedestrians, wrong-way driving and near misses, and tells the traffic engineer what to change, before
+            the crash, with faces and plates blurred.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
-            <a href="#demo" className="btn bg-amber-500 px-4 py-2.5 text-slate-950 hover:bg-amber-400">
-              <PlayCircle size={18} /> Try the live demo
+            <a href="#analyze" className="btn bg-amber-500 px-4 py-2.5 text-slate-950 hover:bg-amber-400">
+              <PlayCircle size={18} /> Analyse your video
             </a>
             <a href="#samples" className="btn border border-slate-600 px-4 py-2.5 text-slate-200 hover:bg-slate-800">
               Annotated videos <ArrowRight size={16} />

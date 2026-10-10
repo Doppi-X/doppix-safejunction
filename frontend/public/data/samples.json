@@ -1,0 +1,210 @@
+[
+ {
+  "id": "C3896",
+  "file": "C3896.MP4",
+  "duration": 340.34,
+  "fps": 29.97,
+  "width": 3840,
+  "height": 2160,
+  "n_frames": 10200,
+  "size_mb": 5952.2,
+  "bitrate_kbps": 146709,
+  "codec": "h264",
+  "pix_fmt": "yuv422p10le",
+  "n_events": 17,
+  "labeled": true,
+  "event_counts": {
+   "congestion": 4,
+   "failure_to_yield": 2,
+   "jaywalking": 4,
+   "red_light": 1,
+   "stop_line": 2,
+   "stopped_vehicle": 4
+  },
+  "best_event": {
+   "congestion": [
+    1.0,
+    -230.23,
+    230.23
+   ],
+   "failure_to_yield": [
+    0.9,
+    -156.857,
+    156.857
+   ],
+   "jaywalking": [
+    1.0,
+    -167.768,
+    167.768
+   ],
+   "red_light": [
+    1.0,
+    -78.879,
+    78.879
+   ],
+   "stop_line": [
+    2.0,
+    -288.688,
+    288.688
+   ],
+   "stopped_vehicle": [
+    1.0,
+    -6.707,
+    6.707
+   ]
+  }
+ },
+ {
+  "id": "C3897",
+  "file": "C3897.MP4",
+  "duration": 317.82,
+  "fps": 29.97,
+  "width": 3840,
+  "height": 2160,
+  "n_frames": 9525,
+  "size_mb": 5568.2,
+  "bitrate_kbps": 146970,
+  "codec": "h264",
+  "pix_fmt": "yuv422p10le",
+  "n_events": 28,
+  "labeled": true,
+  "event_counts": {
+   "congestion": 3,
+   "failure_to_yield": 5,
+   "jaywalking": 11,
+   "red_light": 1,
+   "stop_line": 3,
+   "stopped_vehicle": 5
+  },
+  "best_event": {
+   "congestion": [
+    1.0,
+    -39.439,
+    39.439
+   ],
+   "failure_to_yield": [
+    1.0,
+    -307.908,
+    307.908
+   ],
+   "jaywalking": [
+    1.0,
+    -4.605,
+    4.605
+   ],
+   "red_light": [
+    1.0,
+    -57.457,
+    57.457
+   ],
+   "stop_line": [
+    1.0,
+    -0.0,
+    0.0
+   ],
+   "stopped_vehicle": [
+    1.0,
+    -145.846,
+    145.846
+   ]
+  }
+ },
+ {
+  "id": "C3902",
+  "file": "C3902.MP4",
+  "duration": 317.82,
+  "fps": 29.97,
+  "width": 3840,
+  "height": 2160,
+  "n_frames": 9525,
+  "size_mb": 5568.2,
+  "bitrate_kbps": 146970,
+  "codec": "h264",
+  "pix_fmt": "yuv422p10le",
+  "n_events": 14,
+  "labeled": true,
+  "event_counts": {
+   "congestion": 1,
+   "failure_to_yield": 4,
+   "jaywalking": 5,
+   "stop_line": 1,
+   "stopped_vehicle": 3
+  },
+  "best_event": {
+   "congestion": [
+    1.0,
+    -145.746,
+    145.746
+   ],
+   "failure_to_yield": [
+    1.0,
+    -174.875,
+    174.875
+   ],
+   "jaywalking": [
+    1.0,
+    -180.08,
+    180.08
+   ],
+   "stop_line": [
+    1.0,
+    -100.801,
+    100.801
+   ],
+   "stopped_vehicle": [
+    1.0,
+    -54.154,
+    54.154
+   ]
+  }
+ },
+ {
+  "id": "C3905",
+  "file": "C3905.MP4",
+  "duration": 127.63,
+  "fps": 29.97,
+  "width": 3840,
+  "height": 2160,
+  "n_frames": 3825,
+  "size_mb": 2240.2,
+  "bitrate_kbps": 147240,
+  "codec": "h264",
+  "pix_fmt": "yuv422p10le",
+  "n_events": 8,
+  "labeled": true,
+  "event_counts": {
+   "congestion": 1,
+   "failure_to_yield": 3,
+   "jaywalking": 2,
+   "stop_line": 1,
+   "stopped_vehicle": 1
+  },
+  "best_event": {
+   "congestion": [
+    1.0,
+    -86.386,
+    86.386
+   ],
+   "failure_to_yield": [
+    1.0,
+    -81.882,
+    81.882
+   ],
+   "jaywalking": [
+    1.0,
+    -72.673,
+    72.673
+   ],
+   "stop_line": [
+    0.83,
+    -74.374,
+    74.374
+   ],
+   "stopped_vehicle": [
+    -1.0,
+    -68.068,
+    68.068
+   ]
+  }
+ }
+]

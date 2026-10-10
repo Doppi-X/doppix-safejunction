@@ -1,0 +1,110 @@
+[
+ {
+  "variant": "Full pipeline",
+  "score_a": 0.828,
+  "per_class": {
+   "congestion": 0.9,
+   "failure_to_yield": 0.638,
+   "jaywalking": 0.702,
+   "red_light": 1.0,
+   "stop_line": 0.923,
+   "stopped_vehicle": 0.806
+  }
+ },
+ {
+  "variant": "Frame rate ~5 fps (every 2nd processed frame)",
+  "score_a": 0.827,
+  "per_class": {
+   "congestion": 0.9,
+   "failure_to_yield": 0.633,
+   "jaywalking": 0.702,
+   "red_light": 1.0,
+   "stop_line": 0.923,
+   "stopped_vehicle": 0.806
+  }
+ },
+ {
+  "variant": "Frame rate ~3.3 fps (every 3rd)",
+  "score_a": 0.742,
+  "per_class": {
+   "congestion": 0.842,
+   "failure_to_yield": 0.353,
+   "jaywalking": 0.566,
+   "red_light": 1.0,
+   "stop_line": 0.923,
+   "stopped_vehicle": 0.767
+  }
+ },
+ {
+  "variant": "No camera-shift alignment",
+  "score_a": 0.708,
+  "per_class": {
+   "congestion": 0.857,
+   "failure_to_yield": 0.433,
+   "jaywalking": 0.603,
+   "red_light": 0.8,
+   "stop_line": 0.769,
+   "stopped_vehicle": 0.788
+  }
+ },
+ {
+  "variant": "failure_to_yield: no signal rule",
+  "score_a": 0.82,
+  "per_class": {
+   "congestion": 0.9,
+   "failure_to_yield": 0.587,
+   "jaywalking": 0.702,
+   "red_light": 1.0,
+   "stop_line": 0.923,
+   "stopped_vehicle": 0.806
+  }
+ },
+ {
+  "variant": "failure_to_yield: no walking / creeping thresholds",
+  "score_a": 0.809,
+  "per_class": {
+   "congestion": 0.9,
+   "failure_to_yield": 0.521,
+   "jaywalking": 0.702,
+   "red_light": 1.0,
+   "stop_line": 0.923,
+   "stopped_vehicle": 0.806
+  }
+ },
+ {
+  "variant": "jaywalking: no 'alongside crosswalk' filter",
+  "score_a": 0.81,
+  "per_class": {
+   "congestion": 0.9,
+   "failure_to_yield": 0.638,
+   "jaywalking": 0.591,
+   "red_light": 1.0,
+   "stop_line": 0.923,
+   "stopped_vehicle": 0.806
+  }
+ },
+ {
+  "variant": "jaywalking: no scooter-speed filter",
+  "score_a": 0.822,
+  "per_class": {
+   "congestion": 0.9,
+   "failure_to_yield": 0.638,
+   "jaywalking": 0.667,
+   "red_light": 1.0,
+   "stop_line": 0.923,
+   "stopped_vehicle": 0.806
+  }
+ },
+ {
+  "variant": "stopped_vehicle: no 'yielding to pedestrians' filter",
+  "score_a": 0.813,
+  "per_class": {
+   "congestion": 0.9,
+   "failure_to_yield": 0.638,
+   "jaywalking": 0.702,
+   "red_light": 1.0,
+   "stop_line": 0.923,
+   "stopped_vehicle": 0.716
+  }
+ }
+]

@@ -104,6 +104,23 @@ const VideoOverlay = forwardRef(function VideoOverlay({ src, doc, frames, layers
       }
     }
 
+    // learned flow field (zero-config scene): arrows where traffic has one clear direction
+    if (layers.flow && doc.flow) {
+      const { gw, gh, cell_w, cell_h, count, dir } = doc.flow;
+      ctx.lineWidth = 1.6 * s;
+      for (let r = 0; r < gh; r++) for (let c = 0; c < gw; c++) {
+        const n = count[r][c], [dx, dy] = dir[r][c], m = Math.hypot(dx, dy);
+        if (n < 8 || m < 0.6) continue;
+        const cx = (c + 0.5) * cell_w * W, cy = (r + 0.5) * cell_h * H, L = 0.42 * cell_w * W;
+        const ux = dx / m, uy = dy / m, x2 = cx + ux * L, y2 = cy + uy * L;
+        ctx.strokeStyle = `rgba(56,189,248,${0.35 + 0.6 * m})`;
+        ctx.beginPath(); ctx.moveTo(cx - ux * L, cy - uy * L); ctx.lineTo(x2, y2);
+        ctx.lineTo(x2 - ux * 6 * s - uy * 4 * s, y2 - uy * 6 * s + ux * 4 * s);
+        ctx.moveTo(x2, y2); ctx.lineTo(x2 - ux * 6 * s + uy * 4 * s, y2 - uy * 6 * s - ux * 4 * s);
+        ctx.stroke();
+      }
+    }
+
     // faol hodisalarning ishtirokchilari: trek id -> hodisa (rang, nom)
     const focus = new Map();
     if (layers.highlight && doc.involved) {

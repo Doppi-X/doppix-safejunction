@@ -119,7 +119,7 @@ def render_private_video(src: str, p: Perception, dst: Path, max_sec: float | No
     return {"plates_blurred": plates_total, "heads_blurred": heads_total, "fps": round(fps / step, 2)}
 
 
-def analyze_video(src: str, workdir: Path, zones: dict | None = None, max_sec: float | None = None,
+def analyze_video(src: str, workdir: Path, zones=None, max_sec: float | None = None,
                   stride_sec: float = config.PART_A_STRIDE_SEC, imgsz: int = config.IMGSZ, progress=None) -> dict:
     """Full pipeline. progress(stage, fraction)."""
     from .docbuild import make_doc
@@ -132,7 +132,7 @@ def analyze_video(src: str, workdir: Path, zones: dict | None = None, max_sec: f
     t_perc = time.perf_counter() - t0
     p.save(workdir / "perception.npz")
     say("events", 0.0)
-    doc = build_doc(p, zones)
+    doc = build_doc(p, zones() if callable(zones) else zones)    # zones may be drawn while perception runs
     say("privacy", 0.0)
     t1 = time.perf_counter()
     priv = render_private_video(src, p, workdir / "video.mp4", max_sec, progress=lambda f: say("privacy", f))

@@ -1,0 +1,781 @@
+{
+ "per_class": {
+  "congestion": {
+   "0.3": {
+    "tp": 9,
+    "fp": 0,
+    "fn": 2,
+    "precision": 1.0,
+    "recall": 0.8181818181818182,
+    "f1": 0.9
+   },
+   "0.5": {
+    "tp": 9,
+    "fp": 0,
+    "fn": 2,
+    "precision": 1.0,
+    "recall": 0.8181818181818182,
+    "f1": 0.9
+   },
+   "0.7": {
+    "tp": 9,
+    "fp": 0,
+    "fn": 2,
+    "precision": 1.0,
+    "recall": 0.8181818181818182,
+    "f1": 0.9
+   },
+   "f1_mean": 0.9
+  },
+  "failure_to_yield": {
+   "0.3": {
+    "tp": 8,
+    "fp": 6,
+    "fn": 1,
+    "precision": 0.5714285714285714,
+    "recall": 0.8888888888888888,
+    "f1": 0.6956521739130435
+   },
+   "0.5": {
+    "tp": 7,
+    "fp": 7,
+    "fn": 2,
+    "precision": 0.5,
+    "recall": 0.7777777777777778,
+    "f1": 0.6086956521739131
+   },
+   "0.7": {
+    "tp": 7,
+    "fp": 7,
+    "fn": 2,
+    "precision": 0.5,
+    "recall": 0.7777777777777778,
+    "f1": 0.6086956521739131
+   },
+   "f1_mean": 0.6376811594202899
+  },
+  "jaywalking": {
+   "0.3": {
+    "tp": 15,
+    "fp": 7,
+    "fn": 1,
+    "precision": 0.6818181818181818,
+    "recall": 0.9375,
+    "f1": 0.7894736842105263
+   },
+   "0.5": {
+    "tp": 14,
+    "fp": 8,
+    "fn": 2,
+    "precision": 0.6363636363636364,
+    "recall": 0.875,
+    "f1": 0.7368421052631579
+   },
+   "0.7": {
+    "tp": 11,
+    "fp": 11,
+    "fn": 5,
+    "precision": 0.5,
+    "recall": 0.6875,
+    "f1": 0.5789473684210527
+   },
+   "f1_mean": 0.7017543859649122
+  },
+  "red_light": {
+   "0.3": {
+    "tp": 2,
+    "fp": 0,
+    "fn": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0
+   },
+   "0.5": {
+    "tp": 2,
+    "fp": 0,
+    "fn": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0
+   },
+   "0.7": {
+    "tp": 2,
+    "fp": 0,
+    "fn": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0
+   },
+   "f1_mean": 1.0
+  },
+  "stop_line": {
+   "0.3": {
+    "tp": 6,
+    "fp": 1,
+    "fn": 0,
+    "precision": 0.8571428571428571,
+    "recall": 1.0,
+    "f1": 0.923076923076923
+   },
+   "0.5": {
+    "tp": 6,
+    "fp": 1,
+    "fn": 0,
+    "precision": 0.8571428571428571,
+    "recall": 1.0,
+    "f1": 0.923076923076923
+   },
+   "0.7": {
+    "tp": 6,
+    "fp": 1,
+    "fn": 0,
+    "precision": 0.8571428571428571,
+    "recall": 1.0,
+    "f1": 0.923076923076923
+   },
+   "f1_mean": 0.923076923076923
+  },
+  "stopped_vehicle": {
+   "0.3": {
+    "tp": 10,
+    "fp": 3,
+    "fn": 1,
+    "precision": 0.7692307692307693,
+    "recall": 0.9090909090909091,
+    "f1": 0.8333333333333333
+   },
+   "0.5": {
+    "tp": 10,
+    "fp": 3,
+    "fn": 1,
+    "precision": 0.7692307692307693,
+    "recall": 0.9090909090909091,
+    "f1": 0.8333333333333333
+   },
+   "0.7": {
+    "tp": 9,
+    "fp": 4,
+    "fn": 2,
+    "precision": 0.6923076923076923,
+    "recall": 0.8181818181818182,
+    "f1": 0.7500000000000001
+   },
+   "f1_mean": 0.8055555555555555
+  }
+ },
+ "score_a": 0.8280113373362802,
+ "videos": [
+  {
+   "video": "C3896.MP4",
+   "gt": 14,
+   "pred": 17,
+   "congestion": "4/0/1",
+   "failure_to_yield": "1/1/0",
+   "jaywalking": "2/2/0",
+   "red_light": "1/0/0",
+   "stop_line": "2/0/0",
+   "stopped_vehicle": "3/1/0"
+  },
+  {
+   "video": "C3897.MP4",
+   "gt": 21,
+   "pred": 28,
+   "congestion": "3/0/0",
+   "failure_to_yield": "2/3/0",
+   "jaywalking": "8/3/0",
+   "red_light": "1/0/0",
+   "stop_line": "2/1/0",
+   "stopped_vehicle": "5/0/0"
+  },
+  {
+   "video": "C3902.MP4",
+   "gt": 13,
+   "pred": 14,
+   "congestion": "1/0/1",
+   "failure_to_yield": "3/1/1",
+   "jaywalking": "2/3/2",
+   "red_light": "0/0/0",
+   "stop_line": "1/0/0",
+   "stopped_vehicle": "2/1/0"
+  },
+  {
+   "video": "C3905.MP4",
+   "gt": 7,
+   "pred": 8,
+   "congestion": "1/0/0",
+   "failure_to_yield": "1/2/1",
+   "jaywalking": "2/0/0",
+   "red_light": "0/0/0",
+   "stop_line": "1/0/0",
+   "stopped_vehicle": "0/1/1"
+  }
+ ],
+ "items": [
+  {
+   "video": "C3896.MP4",
+   "label": "stopped_vehicle",
+   "start": 6.707,
+   "end": 23.323,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3896.MP4",
+   "label": "congestion",
+   "start": 55.756,
+   "end": 72.472,
+   "kind": "TP",
+   "iou": 0.99
+  },
+  {
+   "video": "C3896.MP4",
+   "label": "stop_line",
+   "start": 66.266,
+   "end": 102.202,
+   "kind": "TP",
+   "iou": 0.99
+  },
+  {
+   "video": "C3896.MP4",
+   "label": "congestion",
+   "start": 77.678,
+   "end": 106.606,
+   "kind": "TP",
+   "iou": 0.94
+  },
+  {
+   "video": "C3896.MP4",
+   "label": "red_light",
+   "start": 78.879,
+   "end": 86.879,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3896.MP4",
+   "label": "jaywalking",
+   "start": 122.823,
+   "end": 127.027,
+   "kind": "FP"
+  },
+  {
+   "video": "C3896.MP4",
+   "label": "congestion",
+   "start": 124.39093333333334,
+   "end": 145.416,
+   "kind": "FN"
+  },
+  {
+   "video": "C3896.MP4",
+   "label": "stopped_vehicle",
+   "start": 138.138,
+   "end": 148.248,
+   "kind": "FP"
+  },
+  {
+   "video": "C3896.MP4",
+   "label": "failure_to_yield",
+   "start": 156.857,
+   "end": 157.858,
+   "kind": "TP",
+   "iou": 0.9
+  },
+  {
+   "video": "C3896.MP4",
+   "label": "failure_to_yield",
+   "start": 158.458,
+   "end": 158.959,
+   "kind": "FP"
+  },
+  {
+   "video": "C3896.MP4",
+   "label": "jaywalking",
+   "start": 167.768,
+   "end": 168.769,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3896.MP4",
+   "label": "stopped_vehicle",
+   "start": 200.6,
+   "end": 217.217,
+   "kind": "TP",
+   "iou": 0.99
+  },
+  {
+   "video": "C3896.MP4",
+   "label": "jaywalking",
+   "start": 204.204,
+   "end": 205.205,
+   "kind": "FP"
+  },
+  {
+   "video": "C3896.MP4",
+   "label": "congestion",
+   "start": 230.23,
+   "end": 240.54,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3896.MP4",
+   "label": "jaywalking",
+   "start": 242.843,
+   "end": 247.147,
+   "kind": "TP",
+   "iou": 0.57
+  },
+  {
+   "video": "C3896.MP4",
+   "label": "congestion",
+   "start": 268.668,
+   "end": 296.196,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3896.MP4",
+   "label": "stopped_vehicle",
+   "start": 287.687,
+   "end": 329.029,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3896.MP4",
+   "label": "stop_line",
+   "start": 288.688,
+   "end": 327.427,
+   "kind": "TP",
+   "iou": 0.88
+  },
+  {
+   "video": "C3897.MP4",
+   "label": "stop_line",
+   "start": 0.0,
+   "end": 20.02,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3897.MP4",
+   "label": "stopped_vehicle",
+   "start": 0.0,
+   "end": 52.853,
+   "kind": "TP",
+   "iou": 0.5
+  },
+  {
+   "video": "C3897.MP4",
+   "label": "jaywalking",
+   "start": 4.605,
+   "end": 8.709,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3897.MP4",
+   "label": "jaywalking",
+   "start": 11.812,
+   "end": 19.119,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3897.MP4",
+   "label": "congestion",
+   "start": 39.439,
+   "end": 62.863,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3897.MP4",
+   "label": "stop_line",
+   "start": 56.156,
+   "end": 94.795,
+   "kind": "FP"
+  },
+  {
+   "video": "C3897.MP4",
+   "label": "red_light",
+   "start": 57.457,
+   "end": 65.457,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3897.MP4",
+   "label": "jaywalking",
+   "start": 79.279,
+   "end": 88.488,
+   "kind": "TP",
+   "iou": 0.87
+  },
+  {
+   "video": "C3897.MP4",
+   "label": "congestion",
+   "start": 129.129,
+   "end": 137.638,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3897.MP4",
+   "label": "stop_line",
+   "start": 133.433,
+   "end": 169.87,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3897.MP4",
+   "label": "stopped_vehicle",
+   "start": 145.846,
+   "end": 171.171,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3897.MP4",
+   "label": "jaywalking",
+   "start": 150.751,
+   "end": 153.353,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3897.MP4",
+   "label": "failure_to_yield",
+   "start": 157.958,
+   "end": 158.658,
+   "kind": "FP"
+  },
+  {
+   "video": "C3897.MP4",
+   "label": "jaywalking",
+   "start": 161.762,
+   "end": 162.963,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3897.MP4",
+   "label": "jaywalking",
+   "start": 166.266,
+   "end": 167.968,
+   "kind": "FP"
+  },
+  {
+   "video": "C3897.MP4",
+   "label": "jaywalking",
+   "start": 171.772,
+   "end": 174.274,
+   "kind": "FP"
+  },
+  {
+   "video": "C3897.MP4",
+   "label": "failure_to_yield",
+   "start": 177.277,
+   "end": 178.178,
+   "kind": "FP"
+  },
+  {
+   "video": "C3897.MP4",
+   "label": "stopped_vehicle",
+   "start": 193.994,
+   "end": 204.004,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3897.MP4",
+   "label": "stopped_vehicle",
+   "start": 211.111,
+   "end": 247.547,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3897.MP4",
+   "label": "jaywalking",
+   "start": 221.621,
+   "end": 224.825,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3897.MP4",
+   "label": "congestion",
+   "start": 226.827,
+   "end": 236.436,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3897.MP4",
+   "label": "jaywalking",
+   "start": 241.341,
+   "end": 242.642,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3897.MP4",
+   "label": "jaywalking",
+   "start": 265.766,
+   "end": 267.267,
+   "kind": "FP"
+  },
+  {
+   "video": "C3897.MP4",
+   "label": "stopped_vehicle",
+   "start": 266.366,
+   "end": 284.384,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3897.MP4",
+   "label": "failure_to_yield",
+   "start": 307.908,
+   "end": 308.508,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3897.MP4",
+   "label": "failure_to_yield",
+   "start": 309.309,
+   "end": 310.11,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3897.MP4",
+   "label": "failure_to_yield",
+   "start": 312.012,
+   "end": 312.812,
+   "kind": "FP"
+  },
+  {
+   "video": "C3897.MP4",
+   "label": "jaywalking",
+   "start": 312.412,
+   "end": 317.517,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3902.MP4",
+   "label": "failure_to_yield",
+   "start": 23.624,
+   "end": 26.426,
+   "kind": "TP",
+   "iou": 0.78
+  },
+  {
+   "video": "C3902.MP4",
+   "label": "failure_to_yield",
+   "start": 52.752700000000004,
+   "end": 54.054,
+   "kind": "FN"
+  },
+  {
+   "video": "C3902.MP4",
+   "label": "stopped_vehicle",
+   "start": 54.154,
+   "end": 81.982,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3902.MP4",
+   "label": "jaywalking",
+   "start": 82.482,
+   "end": 97.798,
+   "kind": "TP",
+   "iou": 0.69
+  },
+  {
+   "video": "C3902.MP4",
+   "label": "failure_to_yield",
+   "start": 91.992,
+   "end": 93.493,
+   "kind": "FP"
+  },
+  {
+   "video": "C3902.MP4",
+   "label": "stop_line",
+   "start": 100.801,
+   "end": 117.317,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3902.MP4",
+   "label": "congestion",
+   "start": 145.746,
+   "end": 162.462,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3902.MP4",
+   "label": "failure_to_yield",
+   "start": 174.875,
+   "end": 175.475,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3902.MP4",
+   "label": "stopped_vehicle",
+   "start": 179.68,
+   "end": 189.89,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3902.MP4",
+   "label": "jaywalking",
+   "start": 180.08,
+   "end": 190.69,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3902.MP4",
+   "label": "congestion",
+   "start": 216.0158,
+   "end": 244.01043333333334,
+   "kind": "FN"
+  },
+  {
+   "video": "C3902.MP4",
+   "label": "jaywalking",
+   "start": 220.98743333333334,
+   "end": 227.49393333333333,
+   "kind": "FN"
+  },
+  {
+   "video": "C3902.MP4",
+   "label": "failure_to_yield",
+   "start": 243.844,
+   "end": 249.85,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3902.MP4",
+   "label": "jaywalking",
+   "start": 259.659,
+   "end": 274.174,
+   "kind": "FP"
+  },
+  {
+   "video": "C3902.MP4",
+   "label": "jaywalking",
+   "start": 261.9950666666667,
+   "end": 269.0020666666667,
+   "kind": "FN"
+  },
+  {
+   "video": "C3902.MP4",
+   "label": "jaywalking",
+   "start": 287.888,
+   "end": 289.389,
+   "kind": "FP"
+  },
+  {
+   "video": "C3902.MP4",
+   "label": "jaywalking",
+   "start": 290.991,
+   "end": 292.092,
+   "kind": "FP"
+  },
+  {
+   "video": "C3902.MP4",
+   "label": "stopped_vehicle",
+   "start": 298.899,
+   "end": 309.209,
+   "kind": "FP"
+  },
+  {
+   "video": "C3905.MP4",
+   "label": "jaywalking",
+   "start": 14.915,
+   "end": 23.123,
+   "kind": "TP",
+   "iou": 0.67
+  },
+  {
+   "video": "C3905.MP4",
+   "label": "failure_to_yield",
+   "start": 39.339,
+   "end": 40.14,
+   "kind": "FP"
+  },
+  {
+   "video": "C3905.MP4",
+   "label": "failure_to_yield",
+   "start": 39.50613333333333,
+   "end": 41.00763333333333,
+   "kind": "FN"
+  },
+  {
+   "video": "C3905.MP4",
+   "label": "stopped_vehicle",
+   "start": 68.068,
+   "end": 78.278,
+   "kind": "FP"
+  },
+  {
+   "video": "C3905.MP4",
+   "label": "jaywalking",
+   "start": 72.673,
+   "end": 76.977,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3905.MP4",
+   "label": "stop_line",
+   "start": 74.374,
+   "end": 114.614,
+   "kind": "TP",
+   "iou": 0.83
+  },
+  {
+   "video": "C3905.MP4",
+   "label": "stopped_vehicle",
+   "start": 81.01426666666667,
+   "end": 108.0079,
+   "kind": "FN"
+  },
+  {
+   "video": "C3905.MP4",
+   "label": "failure_to_yield",
+   "start": 81.882,
+   "end": 84.384,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3905.MP4",
+   "label": "congestion",
+   "start": 86.386,
+   "end": 117.117,
+   "kind": "TP",
+   "iou": 1.0
+  },
+  {
+   "video": "C3905.MP4",
+   "label": "failure_to_yield",
+   "start": 99.7,
+   "end": 100.701,
+   "kind": "FP"
+  }
+ ]
+}

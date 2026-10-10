@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import Hero from "./sections/Hero.jsx";
-import Demo from "./sections/Demo.jsx";
+import Analyze from "./sections/Analyze.jsx";
+import Business from "./sections/Business.jsx";
 import Samples from "./sections/Samples.jsx";
 import Evaluation from "./sections/Evaluation.jsx";
 import EDA from "./sections/EDA.jsx";
@@ -12,11 +13,11 @@ import BuiltWith from "./sections/BuiltWith.jsx";
 import { REPO_URL, TEAM_NAME } from "./team.js";
 
 const NAV = [
-  ["demo", "Live demo"],
-  ["samples", "Sample videos"],
-  ["evaluation", "Error analysis"],
-  ["eda", "Data (EDA)"],
-  ["approach", "Approach & report"],
+  ["analyze", "Try it"],
+  ["samples", "Results"],
+  ["evaluation", "Quality"],
+  ["approach", "How it works"],
+  ["business", "Business"],
   ["team", "Team"],
   ["links", "Links"],
 ];
@@ -70,11 +71,12 @@ export default function App() {
       </header>
       <main id="top">
         <Hero />
-        <Demo />
+        <Analyze />
         <Samples />
         <Evaluation />
         <EDA />
         <Approach />
+        <Business />
         <BuiltWith />
         <Team />
         <Links />

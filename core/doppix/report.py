@@ -39,11 +39,16 @@ def build(p: Perception, events: list, curve: list, ff: FlowField) -> dict:
     risk_stats = {"max": round(float(c[:, 1].max()), 3) if len(c) else 0.0,
                   "share_above_0_3": round(float((c[:, 1] >= 0.3).mean()), 4) if len(c) else 0.0}
 
+    # rates per hour from a short clip are noise: below 5 min only counts are reported
+    reliable = p.duration >= 300
+    if not reliable:
+        for v in per_class.values():
+            v["per_hour"] = None
     severity = {"red_light": 3, "wrong_way": 3, "failure_to_yield": 3, "near_miss": 3, "jaywalking": 2,
                 "stop_line": 1, "stopped_vehicle": 1, "congestion": 1}
     score = sum(severity.get(k, 1) * v["count"] for k, v in per_class.items()) / dur_h
     recs = []
-    pc = lambda k: per_class.get(k, {}).get("per_hour", 0)
+    pc = lambda k: per_class.get(k, {}).get("per_hour") or 0
     if pc("red_light") >= 6:
         recs.append(f"Red-light running at {pc('red_light')}/h: check the amber and all-red clearance times; consider an enforcement camera on this approach.")
     if pc("failure_to_yield") >= 6:
@@ -56,8 +61,11 @@ def build(p: Perception, events: list, curve: list, ff: FlowField) -> dict:
         recs.append(f"Wrong-way driving seen ({per_class['wrong_way']['count']}×): add 'no entry' signs and lane arrows at the entry where it starts.")
     if pc("congestion") >= 6:
         recs.append(f"Congestion {per_class['congestion']['seconds']:.0f} s in {p.duration / 60:.0f} min: review the signal cycle split for this direction.")
-    if not recs:
+    if not reliable:
+        recs = [f"Clip is {p.duration:.0f} s long: events are listed, but hourly rates and recommendations need "
+                "at least 5 minutes (a pilot camera collects whole days)."]
+    elif not recs:
         recs.append("No rule crossed its threshold in this clip; keep monitoring to collect a full day.")
     return {"duration_min": round(p.duration / 60, 2), "per_class": per_class, "vehicles_seen": veh,
-            "pedestrians_seen": ped, "risk": risk_stats, "safety_index": round(score, 1),
-            "recommendations": recs}
+            "pedestrians_seen": ped, "risk": risk_stats, "safety_index": round(score, 1) if reliable else None,
+            "rates_reliable": reliable, "recommendations": recs}

@@ -11,6 +11,7 @@ const LAYERS = [
   ["ids", "Track IDs"],
   ["trails", "Trails"],
   ["zones", "Scene zones"],
+  ["flow", "Learned lane directions"],
 ];
 
 /** Bitta video natijasi: annotatsiyali video + timeline + risk + hodisalar ro'yxati.
@@ -18,7 +19,7 @@ const LAYERS = [
 export default function ResultViewer({ doc, videoUrl, jump }) {
   const player = useRef(null);
   const [time, setTime] = useState(0);
-  const [layers, setLayers] = useState({ highlight: true, boxes: true, ids: false, trails: true, zones: false });
+  const [layers, setLayers] = useState({ highlight: true, boxes: true, ids: false, trails: true, zones: false, flow: false });
   const frames = useMemo(() => parseTracks(doc), [doc]);
   const seek = (t) => { player.current?.seek(t); setTime(t); };
   const events = doc.events || [];

@@ -108,8 +108,12 @@ def process(jid: str) -> None:
         a, b = weights.get(stage, (0, 1))
         update(jid, stage=stage, progress=round(a + (b - a) * min(1.0, frac), 3))
 
-    analyze.analyze_video(str(src), d, zones=jobs[jid].get("zones"), max_sec=MAX_SEC,
+    analyze.analyze_video(str(src), d, zones=lambda: jobs[jid].get("zones"), max_sec=MAX_SEC,
                           stride_sec=STRIDE, imgsz=IMGSZ, progress=say)
+    doc_path = d / "result.json"
+    doc = json.loads(doc_path.read_text(encoding="utf-8"))
+    doc["device"] = DEVICE
+    doc_path.write_text(json.dumps(doc, separators=(",", ":")), encoding="utf-8")
     update(jid, status="done", stage="done", progress=1.0)
 
 
