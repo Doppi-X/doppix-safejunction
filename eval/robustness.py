@@ -73,7 +73,7 @@ CONDITIONS = {"clean (day)": None, "night": night, "rain": rain, "fog": fog,
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--val", required=True, help="folder with images/ and labels/ (YOLO format)")
+    ap.add_argument("--val", required=True, help="YOLO dataset root with images/val and labels/val")
     ap.add_argument("--out", required=True)
     ap.add_argument("--work", default=str(ROOT / "_robustness"))
     ap.add_argument("--samples", default=str(ROOT / "eval" / "results" / "robustness_samples"))
@@ -91,8 +91,8 @@ def main():
         if d.exists():
             shutil.rmtree(d)
         (d / "images" / "val").mkdir(parents=True)
-        shutil.copytree(val / "labels", d / "labels" / "val") if (val / "labels").exists() else None
-        imgs = sorted((val / "images").glob("*.jpg"))
+        shutil.copytree(val / "labels" / "val", d / "labels" / "val")
+        imgs = sorted((val / "images" / "val").glob("*.jpg"))
         for i, p in enumerate(imgs):
             img = cv2.imread(str(p))
             out = img if fn is None else fn(img)
