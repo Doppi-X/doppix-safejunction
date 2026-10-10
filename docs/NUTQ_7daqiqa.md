@@ -19,7 +19,12 @@ Kim gapiradi (o'zgartirsangiz bo'ladi): **Eldor**: 1, 2, 5, 6, 7 · **Shohruh**:
 Hech kim jarohatlanmagan, shuning uchun bularning birortasi statistikaga tushmaydi. Foydalanuvchimiz: tuman yo'l harakati muhandisi. Pul to'lovchi: shahar yo'l xavfsizligi budjeti, kamera boshiga oylik obuna."
 
 ### 3-slayd · 1:05–1:35 · Shohruh
-"Yangi kamera 2 daqiqada ulanadi. Videoni yuklaysiz, xohlasangiz zebra va stop-chiziqni chizasiz, natijada hisobot olasiz. Zona chizilmasa ham ishlaydi: yo'l va harakat yo'nalishini transportning o'zidan o'rganadi."
+"Bitta kameradan butun shahar reytingigacha:
+- videoni yuklaysiz, xohlasangiz zebra va stop-chiziqni chizasiz;
+- muhandis hisobot, xavf xaritasi va PDF oladi;
+- har bir kamera shahar dashboard'iga tushadi va xavf bo'yicha tartiblanadi. Muhandis qaysi chorrahani birinchi tuzatishni ko'radi.
+
+O'zgarishdan oldin va keyin yuklab, natijani foizda solishtirish mumkin. Zona chizilmasa ham ishlaydi: yo'l va harakat yo'nalishini transportning o'zidan o'rganadi."
 
 ### 4-slayd · 1:35–3:05 · Shohruh · JONLI DEMO
 1. QR kodni ko'rsating: "Telefoningizda sinab ko'ring."
@@ -28,8 +33,11 @@ Hech kim jarohatlanmagan, shuning uchun bularning birortasi statistikaga tushmay
 4. Natija:
    - **Safety report**: hodisalar soni;
    - **Learned lane directions** tugmasi: ko'k strelkalar, "tizim buni o'zi o'rgandi";
-   - videoda yuzlar va raqamlar xiralashtirilgan.
-5. Hakam video bersa, shu yerda uni yuklang.
+   - videoda yuzlar va raqamlar xiralashtirilgan;
+   - **Hotspot map**: hodisalar aynan qayerda bo'lgani;
+   - **PDF report** tugmasi: muhandis uchun hisobot.
+5. **City dashboard**: yuklangan kamera reytingda paydo bo'ldi.
+6. Hakam video bersa, shu yerda uni yuklang.
 
 Vaqt yetmasa: **Results** bo'limida tayyor misol ("Best example of → Red-light running").
 
@@ -37,7 +45,7 @@ Vaqt yetmasa: **Results** bo'limida tayyor misol ("Best example of → Red-light
 "Bu birovning modeliga bitta so'rov emas, to'liq tizim:
 - o'zimiz o'qitgan YOLO26m va kuzatuv (tracking);
 - sahna: chizilgan zonalar, tanilgan kamera yoki transportdan o'rganilgan yo'nalishlar;
-- 10 ta tushunarli qoida;
+- 10 ta tushunarli qoida va **PET**: xalqaro yo'l xavfsizligi tadqiqotlarida ishlatiladigan o'lchov. Bitta yo'l harakati ishtirokchisi biror nuqtani tark etgandan keyin ikkinchisi u yerga necha soniyada keladi; 1.5 soniyadan kam bo'lsa, jiddiy holat;
 - yuz va raqamlarni xiralashtirish;
 - hisobot.
 
@@ -47,13 +55,16 @@ Hammasi shahar serverida, bitta RTX 3060'da ishlaydi va real vaqtdan 2 barobar t
 "Nima uchun buni bir dam olish kunida nusxalab bo'lmaydi?
 1. **Data:** o'zimiz labellagan 12,990 ta box: Toshkent mashinalari, bizning svetoforlar. Buning uchun o'z labellash dasturimizni yozdik.
 2. **Pipeline:** yo'nalishlarni transportdan o'rganish. Mashina o'z izi chiqarib tashlangan holda tekshiriladi, shuning uchun bitta teskari yurgan mashina tizimni adashtira olmaydi.
-3. Har bir qoida o'zimiz labellagan test to'plamida o'lchangan."
+3. **Sohaning standart usullari:** PET, 1000 piyodaga nisbat va AQSh Highway Safety Manual'dagi Empirical Bayes reytingi. Miovision va Transoft aynan shu narsalarni sotadi, lekin bitta chorrahani bir marta tekshirish ~8 ming dollar turadi. Biz mavjud kamerada doimiy ishlaymiz."
 
 ### 7-slayd · 4:45–5:25 · Eldor
 "Raqamlar halol:
 - teskari harakat: 18 daqiqa real trafikda **0 ta yolg'on signal**, sun'iy teskari yurgizilgan 60 mashinaning **93%** i topildi;
-- zaif tomonimiz **tun**: aniqlik 0.39. Kadrni yorqinlashtirish yordam bermadi, yomonlashtirdi. Yechim: tungi data bilan o'qitish, bu pilotning birinchi oyi."
-*(Agar qayta o'qitish natijasi kelgan bo'lsa: "tun uchun qayta o'qitib, 0.39 dan X ga ko'tardik".)*
+- zaif tomonimiz **tun** edi: aniqlik 0.39. Kadrni yorqinlashtirish yordam bermadi, yomonlashtirdi.
+- Finalda sun'iy tun, yomg'ir va xiralik bilan qayta o'qitdik: tun **0.39 dan 0.92 ga** ko'tarildi.
+- Lekin bu model kunduzgi hodisa bahosini 0.83 dan 0.77 ga tushirdi. Shuning uchun har bir kamera ulanganda tizim 6 ta kadrda uchta modelni sinaydi: bizning kunduzgi, bizning tungi va umumiy COCO modeli. Qaysi biri ishonchliroq ko'rsa, o'sha tanlanadi.
+- Boshqa shaharlardan 7 ta ochiq video bilan sinadik: tungi dron ko'rinishida model 3 ta emas, 137 ta obyekt ko'rdi.
+- Ochiq aytamiz: bu sun'iy tungi test. Haqiqiy tungi video pilotning birinchi oyida yig'iladi."
 
 ### 8-slayd · 5:25–6:20 · Ibodulla
 "3 oylik pilot 12,400 dollar turadi: 8 kamera, 3 chorraha. Bunga 3 kishilik jamoa, 2 ta server va labellash kiradi. Obuna kamera boshiga oyiga 40 dollar, infratuzilma 12.7 dollar, ya'ni marja 68%. 110 kamerada o'zini qoplaydi. 300 kamerada pilot 2.4 oyda qaytadi. Barcha farazlar saytdagi kalkulyatorda, o'zingiz o'zgartirib ko'rishingiz mumkin."
@@ -73,8 +84,8 @@ Video shahar serveridan chiqmaydi, yuz va raqamlar xiralashtiriladi, faqat hodis
 
 ## Kutilayotgan savollar va qisqa javoblar
 - **"LLM bilan yozilganmi?"** — "Ha, AI assistent bilan yozdik, bu README'da yozilgan. Lekin arxitektura, data va qoidalar bizniki. Har bir qismni tushuntira olamiz." *(Kodni oching: `core/doppix/generic.py`, `autoscene.py`.)*
-- **"Tunda ishlaydimi?"** — "Hozir zaif (0.39), raqam bilan ko'rsatdik. Yechim: tungi data. Yorqinlashtirishni sinadik, ishlamadi."
-- **"Boshqa kamerada ishlaydimi?"** — "Ha, zero-config rejimida ishlaydi. Begona kamerani ko'zgu aylantirib va kesib sinadik: tizim uni tanimadi va yo'nalishlarni o'zi o'rgandi."
+- **"Tunda ishlaydimi?"** — "Sun'iy tungi testda 0.39 edi. Finalda qayta o'qitib, 0.92 ga chiqardik. Har bir kamera uchun model avtomatik tanlanadi. Haqiqiy tungi video bilan tekshirish pilotning 1-oyida."
+- **"Boshqa kamerada ishlaydimi?"** — "Ha. Nyu-York, Tokio, Ottava, dron, tun, yomg'ir: 7 ta ochiq litsenziyali video dashboard'da turibdi. Ochiq aytamiz: qisqa videoda zona chizilmasa, kam hodisa topiladi; kunduzgi dron ko'rinishida hali ikkala model ham zaif. Shuning uchun zona chizish 2 daqiqa va pilotda shu kameralarda qayta o'qitish bor."
 - **"Deploy tarixi?"** — GitHub → Actions bo'limi (har bir push = deploy). Server: `deploy/serve.py`.
 - **"Shaxsiy ma'lumotlar?"** — Yuzlar va raqamlar serverda xiralashtiriladi, videolar 6 soatdan keyin o'chiriladi, faqat metadata saqlanadi.
 - **"Nega qoidalar, nega neural tarmoq emas?"** — "Har bir hodisa turi uchun bir necha misol bor, neural tarmoq o'rganishi uchun yetmaydi. Qoidani esa videoga qarab tekshirsa bo'ladi, muhandis unga ishonadi."

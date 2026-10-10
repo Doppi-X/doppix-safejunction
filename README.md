@@ -32,6 +32,12 @@ during the final, as the git history shows.
 | Causal TTC accident risk | Privacy: two-stage plate blur + head blur (`privacy.py`) |
 | Elimination website | End-to-end analysis API: video jobs, images, re-run rules with new zones (`analyze.py`, `backend/app.py`) |
 | | City report with rule-based recommendations (`report.py`) |
+| | City dashboard: every analysed camera ranked by a severity-weighted risk index, with hotspot maps and a before/after comparison (`/api/network`, `Network.jsx`) |
+| | Hotspot map (where each event's road users stood) and a printable PDF report for the engineer (`report.hotspots`, `printReport.js`) |
+| | Site sample clips and frames re-rendered with faces and plates blurred (`deploy/privacy_site_assets.py`) |
+| | Post-encroachment-time (PET) conflicts with severity bins and exposure-normalised rates (`conflicts.py`) |
+| | Empirical Bayes (Highway Safety Manual) ranking in the dashboard |
+| | Low-light detector and day/night routing (`perception.weights_for`) |
 | | Robustness test (night, rain, fog, blur, low bit-rate) and a robust fine-tune (`eval/`) |
 | | Wrong-way injection test, unit economics, CI/CD to our GPU server |
 
@@ -53,6 +59,16 @@ The frontend finds the API through `data/api.json`, which `deploy/serve.py` publ
 ## How it works
 
 1. **Perception:** our YOLO26m fine-tune detects 6 road-user classes and the traffic-light state (`light_red` / `light_not_red`). The input is resized to 1920 px, the detector runs at imgsz 1280 on every 3rd frame (~10 fps), and ByteTrack tracks each object.
+   **Detector choice per camera (final, `perception.choose_weights`):** there are three candidates:
+   * our daylight fine-tune `detector.pt`;
+   * our night/rain/blur fine-tune `detector_lowlight.pt`;
+   * the general COCO-pretrained YOLO26m `general_coco.pt`.
+
+   Each scores 6 frames spread over the clip, counting confident (≥ 0.5) road users. The daylight model, which the rules were tuned on, is kept unless another finds more than 1.25× + 2 as many.
+
+   Why: on 7 open-licence clips from other cities (below), our fine-tune barely saw anything from a drone at night (3 confident road users in 4 frames, COCO 137). On our own junction it beats COCO (261 vs 172), and at the Shibuya crossing too (294 vs 72). A brightness threshold could not separate lit night streets from day (both had a mean HSV value of about 90), so we dropped it.
+
+   With the COCO model there is no traffic-light state, so red-light rules need our model or a drawn light plus our light classifier.
 2. **Scene:** there are three sources, in this order.
    * **Drawn zones:** the user outlines the road, crossings, stop line and traffic light on the first frame in the web app. This takes about 2 minutes.
    * **Known camera:** the video background is matched to our reference intersection (ORB + RANSAC). Its calibrated zones are then re-aligned to this video.
@@ -62,8 +78,19 @@ The frontend finds the API through `data/api.json`, which `deploy/serve.py` publ
    * Zero-config rules (always): **wrong-way**, **near miss**, and stopped vehicle and congestion when there are no zones.
    * Wrong-way is judged leave-one-out: a car's own samples are removed from the flow field before it is checked against it.
 4. **Risk:** pairwise time to closest approach between road users, calibrated so that normal traffic stays below 0.5.
-5. **Privacy:** our detector finds vehicles, and an open plate detector runs only inside each vehicle crop. The top 22 % of every person box is blurred. Only the blurred video and event metadata leave the server.
-6. **Report:** per-class counts and hourly rates (only for clips of 5 min or more), a severity-weighted safety index, and recommendations. Each recommendation names the number that triggered it.
+5. **Conflicts, post-encroachment time (final, `conflicts.py`):** the surrogate safety measure that city video-safety studies use (e.g. Bellevue WA with Brisk Synergies / AMAG). PET is the time between one road user leaving a spot and another arriving there. Bins: < 1.5 s serious (driver reaction time), 1.5–3 s moderate, 3–5 s interaction (FHWA SSAM upper limit 5 s).
+   * Image-plane version: a pedestrian occupies its foot cell, a vehicle the cells under the lower 15 % of its box.
+   * Only learned-carriageway cells count. Both users must be moving.
+   * Motorcycle/bicycle riders are not pedestrians, and vehicle–vehicle pairs need headings more than 30° apart, so car-following is excluded.
+   * Exposure is the number of pedestrians and vehicles on the carriageway. Rates are given per 1,000 pedestrians.
+6. **Privacy:** our detector finds vehicles, and an open plate detector runs only inside each vehicle crop. The top 22 % of every person box is blurred. Only the blurred video and event metadata leave the server.
+7. **Report:** per-class counts and hourly rates (only for clips of 5 min or more), PET conflicts, a severity-weighted safety index, a hotspot map, recommendations (each names the number that triggered it), and a printable PDF.
+8. **City dashboard (final):** every analysed camera, ranked by one of:
+   * our risk index;
+   * serious conflicts per 1,000 pedestrians;
+   * the Highway Safety Manual **Empirical Bayes** "excess expected" conflicts: predicted = city rate × pedestrians, w = 1/(1 + k·predicted), expected = w·predicted + (1−w)·observed, with k = 0.5 as an **assumption** until a pilot gives enough cameras to estimate it. Short or quiet clips are then not ranked first by chance.
+
+   The dashboard also has a before/after comparison.
 
 ## Quality, measured on test sets we built
 
@@ -75,20 +102,48 @@ The frontend finds the API through `data/api.json`, which `deploy/serve.py` publ
 | Wrong-way, zero-config | 60 real cars whose trajectories were played backwards (synthetic) | **93 %** caught (56/60) |
 | Stopped vehicle / congestion, zero-config | our labels, 4 videos | F1 0.0–0.67: weak without zones, so drawing zones is recommended |
 | Detector at night / rain / blur | the 22 frames with synthetic corruptions | see table below |
+| Low-light model on daylight video | same 4 videos, same rules, fresh perception for both models | Score A **0.771** vs **0.828** for the daylight model (`eval/eval_events.py`, `eval/results/events_*.json`), hence day/night routing |
+| PET conflicts | all 9 labeled failure-to-yield events in 4 videos | 7/9 have a pedestrian conflict with PET < 3 s within ±1 s. No PET ground truth exists. We reviewed the 12 first serious pedestrian conflicts of C3905 by eye: 11 real interactions (motorcycle through a crowded crossing, pedestrians stepping out right after a car), 1 artefact (pedestrian behind a car). |
 
 Robustness (`eval/robustness.py`; synthetic corruptions, because all our footage is daytime), mAP@50:
 
-| clean day | fog | 540p low bit-rate | rain | motion blur | night |
-|---|---|---|---|---|---|
-| 0.975 | 0.971 | 0.881 | 0.793 | 0.712 | **0.390** |
+| model | clean day | fog | 540p low bit-rate | rain | motion blur | night |
+|---|---|---|---|---|---|---|
+| daylight `detector.pt` | **0.975** | **0.971** | **0.881** | **0.793** | **0.712** | 0.390 |
+| low-light `detector_lowlight.pt` (final) | 0.978 | 0.976 | 0.857 | 0.967 | 0.959 | **0.916** |
+
+Bold = the better model in that condition. The app picks per camera from sample frames (see How it works), not from a condition label.
 
 * **Tried and rejected:** brightening dark frames (gamma + CLAHE) made night detection worse, 0.390 → 0.266, because it amplifies noise (`eval/lowlight_enhance.py`).
-* **In progress:** fine-tuning with synthetic night, rain and blur copies of the training frames (`eval/train_robust.py`).
-* Real night footage is the first thing a pilot collects.
+* **Done in the final:** fine-tuning with synthetic night, rain and blur copies of the training frames (`eval/train_robust.py`, 12 epochs, RTX 3060). Night 0.39 → 0.92.
+* **Caveat:** the low-light model is tested on the same kind of synthetic night it was trained on, so real night footage may score lower. Real night footage is the first thing a pilot collects.
+
+### Seven cameras we had never seen (final)
+
+These are open-licence clips from other cities (`eval/new_videos_sources.json`). Each was uploaded through the live API without drawing zones, exactly as a new user would (`eval/results/new_cameras.json`). There are no labels, so this table shows what the system did, not its accuracy.
+
+| clip | condition | length | detector chosen | events (zero-config) | PET conflicts serious / moderate | pedestrians / vehicles on carriageway |
+|---|---|---|---|---|---|---|
+| day_intersection_trafficlight_nyc | day | 27 s | general_coco.pt | congestion | 0 / 0 | 0 / 15 |
+| day_crossing_tokyo_shibuya | day | 20 s | detector.pt | none | 9 / 10 | 44 / 16 |
+| day_intersection_topdown_drone | day | 36 s | detector.pt | none | 0 / 0 | 0 / 38 |
+| night_intersection_topdown_drone | night | 82 s | general_coco.pt | congestion | 1 / 5 | 0 / 226 |
+| night_crosswalk_trafficlight_street | night | 17 s | detector.pt | none | 0 / 0 | 2 / 2 |
+| rain_night_crossing_nyc_timessquare | rain | 20 s | general_coco.pt | none | 19 / 15 | 43 / 35 |
+| snow_intersection_ottawa | snow | 17 s | general_coco.pt | none | 0 / 0 | 0 / 3 |
+
+What this shows:
+* **Detector choice matters.** The general COCO model was picked for the night drone view, Times Square in rain, Ottawa in snow and New York. Our own model was kept for Shibuya and the day drone view.
+* **Short zero-config clips find few events.** Lane directions need traffic over time; drawing zones (about 2 minutes) or a longer clip is the fix.
+* **PET finds conflicts where crowds meet cars** (Shibuya, Times Square) even without zones.
+* **Weak spots:**
+  * In the day drone view (straight down), both detectors are weak, which rules out top-down drone footage today.
+  * In the night street-level clip, few road users were detected.
 
 ### Known failure cases
 
-* At night and in heavy rain, pedestrians are missed (see above).
+* Real night and rain footage is untested by labels (see above); rain is routed to the daylight model because brightness does not reveal it.
+* PET is computed in the image plane: a pedestrian partly hidden behind a vehicle can create a false conflict. A 4-point ground homography is the next step.
 * At a signalised junction, zero-config congestion also fires on the normal queue at red. Drawing a stop line fixes this.
 * Light-state classes were trained on one intersection's lights. On a new camera the light box must be drawn, and the colour reading is unverified there.
 * Plates far away or at a steep angle can be missed by the plate detector. Heads are always blurred by the tracker, not by a face detector.
@@ -117,6 +172,8 @@ editable, are on the website's **Business** section.
 | YOLO26m COCO-pretrained (Ultralytics) | detector initialisation | AGPL-3.0 |
 | `morsetechlab/yolov11-license-plate-detection` (v1s) | plate detector for blurring | AGPL-3.0; trained on Roboflow "License Plate Recognition" (CC BY 4.0) |
 | Synthetic night, rain, blur and fog copies | robustness test and fine-tune | generated by `eval/robustness.py` |
+| YOLO26m COCO-pretrained, unchanged (`weights/general_coco.pt`) | detector for unfamiliar viewpoints | AGPL-3.0 (Ultralytics) |
+| 7 test clips from other cities: New York, Tokyo, Ottawa, two drone views, night and rain (`eval/new_videos_sources.json` lists page, author and licence; videos not stored in the repo) | unseen-camera test, city dashboard | Pexels licence / Mixkit Free licence (commercial use allowed, no attribution required; credited anyway) |
 
 No personal data is stored or published. Faces and plates are blurred before any frame
 leaves the server, and uploaded videos are deleted after 6 hours.
