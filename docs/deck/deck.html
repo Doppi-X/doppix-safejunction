@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Do'ppiX SafeJunction — defence deck</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  @page { size: 1280px 720px; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #030712; font-family: Inter, Arial, sans-serif; color: #cbd5e1; }
+  .s { width: 1280px; height: 720px; position: relative; overflow: hidden; page-break-after: always; padding: 56px 64px;
+       background: radial-gradient(900px 500px at 92% 0%, rgba(245,158,11,.13), transparent 60%),
+                   radial-gradient(700px 500px at 0% 100%, rgba(59,130,246,.10), transparent 60%), #030712; }
+  .k { font-family: "Space Grotesk"; color: #fbbf24; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; font-size: 15px; }
+  h1 { font-family: "Space Grotesk"; color: #fff; font-size: 64px; line-height: 1.04; letter-spacing: -.02em; }
+  h2 { font-family: "Space Grotesk"; color: #fff; font-size: 38px; line-height: 1.12; letter-spacing: -.01em; margin-top: 8px; }
+  h3 { color: #fff; font-size: 19px; font-weight: 600; }
+  p, li { font-size: 17px; line-height: 1.45; }
+  .muted { color: #94a3b8; }
+  .small { font-size: 13px; color: #94a3b8; line-height: 1.4; }
+  .amber { color: #fbbf24; } .red { color: #f87171; } .green { color: #4ade80; } .blue { color: #38bdf8; }
+  .grad { background: linear-gradient(90deg,#fcd34d,#f87171); -webkit-background-clip: text; color: transparent; }
+  .card { border: 1px solid rgba(255,255,255,.09); background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+          border-radius: 16px; padding: 18px 20px; }
+  .row { display: flex; gap: 20px; } .col { display: flex; flex-direction: column; gap: 14px; }
+  .big { font-family: "Space Grotesk"; font-size: 46px; font-weight: 700; color: #fff; line-height: 1; }
+  .chip { display: inline-block; border: 1px solid rgba(251,191,36,.45); color: #fcd34d; border-radius: 999px; padding: 4px 12px; font-size: 14px; }
+  img.shot { border-radius: 12px; border: 1px solid rgba(255,255,255,.12); display: block; }
+  table { border-collapse: collapse; width: 100%; } td, th { padding: 7px 8px; font-size: 15px; text-align: left; border-top: 1px solid rgba(255,255,255,.07); }
+  th { color: #64748b; font-weight: 500; font-size: 13px; border-top: 0; }
+  .num { font-family: "Space Grotesk"; font-weight: 600; color: #fff; }
+  .foot { position: absolute; left: 64px; right: 64px; bottom: 22px; display: flex; justify-content: space-between; font-size: 12px; color: #475569; }
+  ul { padding-left: 20px; } li { margin: 4px 0; }
+  .step { font-family: "Space Grotesk"; color: #fbbf24; font-weight: 700; font-size: 15px; }
+  .bar { height: 14px; border-radius: 7px; background: rgba(255,255,255,.07); position: relative; }
+  .bar > div { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 7px; }
+</style>
+</head>
+<body>
+
+<!-- 1 title -->
+<section class="s" style="padding-top:150px">
+  <div class="row" style="align-items:center;gap:40px">
+    <div style="flex:1.05">
+      <span class="chip">Mode: Startup</span>
+      <h1 style="margin-top:22px">Do'ppiX<br><span class="grad">SafeJunction</span></h1>
+      <p style="font-size:24px;margin-top:20px;color:#e2e8f0">Turn any traffic camera into a road-safety auditor</p>
+      <p class="muted" style="margin-top:14px">It finds red-light running, drivers not yielding to pedestrians, wrong-way driving and near misses on the CCTV a city already has, and tells the traffic engineer what to change, before the crash.</p>
+    </div>
+    <div style="flex:1"><img class="shot" src="img/redlight.jpg" style="width:100%"></div>
+  </div>
+  <div class="row" style="margin-top:34px;align-items:center">
+    <p class="muted" style="font-size:15px">Eldor Musayev · Shohruh Gulmirodov · Ibodulla Obidjonov &nbsp;|&nbsp; WIUT Hackathon 2026 Final · Computer Vision</p>
+  </div>
+</section>
+
+<!-- 2 problem -->
+<section class="s">
+  <div class="k">Problem and user</div>
+  <h2>Cities learn which junction is dangerous<br>from crash reports. That is too late</h2>
+  <div class="row" style="margin-top:28px">
+    <div class="card" style="flex:1.25">
+      <h3>Evidence: one Tashkent intersection, 18.4 min of video, labeled by us</h3>
+      <table style="margin-top:10px">
+        <tr><th>What we saw</th><th>Count</th><th>Per hour</th></tr>
+        <tr><td>Pedestrians on the roadway, off the crossing</td><td class="num">16</td><td class="num amber">52 / h</td></tr>
+        <tr><td>Vehicles not yielding to pedestrians on the crossing</td><td class="num">9</td><td class="num amber">29 / h</td></tr>
+        <tr><td>Vehicles stopped on the crossing on red</td><td class="num">6</td><td class="num">20 / h</td></tr>
+        <tr><td>Red-light running</td><td class="num">2</td><td class="num">7 / h</td></tr>
+      </table>
+      <p class="small" style="margin-top:10px">Nobody was hurt in these 18 minutes, and none of it appears in any crash statistic.</p>
+    </div>
+    <div class="col" style="flex:1">
+      <div class="card"><h3>User</h3><p class="muted">The traffic engineer of a city district, who must decide where to change signals, markings or crossings.</p></div>
+      <div class="card"><h3>Who pays</h3><p class="muted">The city road-safety budget: a monthly subscription per existing camera. Second customer: insurers buying risk per intersection.</p></div>
+      <div class="card"><h3>Today</h3><p class="muted">Manual site surveys and crash reports. The cameras record, but nobody watches for near misses.</p></div>
+    </div>
+  </div>
+  <div class="foot"><span>Counts: our own event labels of the organizer sample videos (elimination round)</span><span>2</span></div>
+</section>
+
+<!-- 3 product -->
+<section class="s">
+  <div class="k">Product</div>
+  <h2>A new camera is onboarded in about two minutes</h2>
+  <div class="row" style="margin-top:22px;align-items:flex-start">
+    <div style="flex:1.15">
+      <img class="shot" src="img/zones_crop.jpg" style="width:100%;height:330px;object-fit:cover;object-position:50% 40%">
+      <p class="small" style="margin-top:8px"><b class="amber">1 · Upload</b> a video or photo. <b class="amber">2 · Optionally draw</b> road, crossing, stop line and light while it processes.</p>
+    </div>
+    <div style="flex:1">
+      <img class="shot" src="img/report_crop.jpg" style="width:100%;height:330px;object-fit:contain;background:#0b1120">
+      <p class="small" style="margin-top:8px"><b class="amber">3 · Report:</b> events with time stamps, rates per hour, recommendations, CSV, and video with faces and plates blurred.</p>
+    </div>
+  </div>
+  <div class="row" style="margin-top:18px">
+    <div class="card" style="flex:1"><h3 class="green">No zones drawn</h3><p class="small">Learns the road and lane directions from the traffic: wrong-way, near miss, stopped vehicles, slow traffic.</p></div>
+    <div class="card" style="flex:1"><h3 class="amber">Zones drawn</h3><p class="small">Adds red light, stop line, pedestrians on the roadway and failure to yield.</p></div>
+    <div class="card" style="flex:1"><h3 class="blue">Known camera</h3><p class="small">Recognised automatically and re-aligned, even if the camera shifted.</p></div>
+  </div>
+  <div class="foot"><span>Screens from the live app</span><span>3</span></div>
+</section>
+
+<!-- 4 live demo -->
+<section class="s">
+  <div class="k">Live demo</div>
+  <h2>Try it on your phone now</h2>
+  <div class="row" style="margin-top:26px;align-items:center;gap:36px">
+    <div class="card" style="flex:0 0 300px;text-align:center">
+      <img src="img/qr.png" style="width:240px;border-radius:10px;background:#fff;padding:6px">
+      <p class="num" style="font-size:16px;margin-top:10px">giyos1212-safejunction.static.hf.space</p>
+      <p class="small">Frontend on Hugging Face; API on our RTX 3060 server; deployed by GitHub Actions</p>
+    </div>
+    <div style="flex:1">
+      <img class="shot" src="img/flow.jpg" style="width:100%">
+      <p class="small" style="margin-top:8px">A camera it has never seen (zero-config): blue arrows are lane directions learned from the traffic in 40 s; boxes are tracked road users; heads and plates blurred.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Backup: recorded demo video in the repository</span><span>4</span></div>
+</section>
+
+<!-- 5 technology -->
+<section class="s">
+  <div class="k">Technology</div>
+  <h2>A system, not a call to someone else's model</h2>
+  <div class="row" style="margin-top:28px;gap:12px;align-items:stretch">
+    <div class="card" style="flex:1"><div class="step">1</div><h3>Detect + track</h3><p class="small">Our YOLO26m fine-tune: 6 road-user classes + light state. ByteTrack. ~10 fps.</p></div>
+    <div class="card" style="flex:1"><div class="step">2</div><h3>Scene</h3><p class="small">Drawn zones, or known camera re-aligned (ORB + RANSAC), or learned flow field: drivable area + lane directions.</p></div>
+    <div class="card" style="flex:1"><div class="step">3</div><h3>Events</h3><p class="small">10 interpretable rules over tracks: red light, yielding, wrong-way (leave-one-out), near miss (time-to-collision)…</p></div>
+    <div class="card" style="flex:1"><div class="step">4</div><h3>Privacy</h3><p class="small">Plate detector run only inside each vehicle box + head blur, on the server.</p></div>
+    <div class="card" style="flex:1"><div class="step">5</div><h3>Report</h3><p class="small">Rates, safety index, recommendations that name the number behind them.</p></div>
+  </div>
+  <div class="row" style="margin-top:22px">
+    <div class="card" style="flex:1">
+      <h3>Where it runs, how fast, what it costs</h3>
+      <table style="margin-top:6px">
+        <tr><td>Inference</td><td>on-premise GPU server next to the city's video archive (ours: RTX 3060)</td></tr>
+        <tr><td>Speed, measured</td><td class="num">2× faster than real time at 10 fps · 1 photo in 0.5–0.7 s</td></tr>
+        <tr><td>Capacity</td><td>5 fps loses no accuracy (ablation 0.828 → 0.827), so <b class="num">≈ 4 cameras per GPU</b></td></tr>
+        <tr><td>Cost per camera</td><td class="num amber">≈ $12.7 / month infrastructure (server + power; assumptions on slide 8)</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="foot"><span>Code: github.com/ubaydullayevgiyosiddin7-eng/doppix-safejunction</span><span>5</span></div>
+</section>
+
+<!-- 6 moat -->
+<section class="s">
+  <div class="k">Innovation · what is hard to copy</div>
+  <h2>Our advantage is data, pipeline and local knowledge</h2>
+  <div class="row" style="margin-top:24px">
+    <div class="col" style="flex:1.1">
+      <div class="card"><h3><span class="amber">Data:</span> 12,990 boxes labeled by us</h3><p class="small">Tashkent traffic: Cobalts, Damas, articulated buses, our traffic lights. We built our own labeling tool (event timeline, scene editor, YOLO pre-labels) to make it.</p></div>
+      <div class="card"><h3><span class="amber">Pipeline:</span> zero-config scene learning</h3><p class="small">Lane directions learned per grid cell from traffic. A car is judged against the field with its own samples removed, so one wrong-way driver cannot teach the system its direction.</p></div>
+      <div class="card"><h3><span class="amber">Tested, not just prompted:</span> 4 videos labeled to the task's rules</h3><p class="small">Every rule was tuned and measured on our own labels; every number in this deck comes from them.</p></div>
+    </div>
+    <div style="flex:1">
+      <img class="shot" src="img/labeler_bbox.jpg" style="width:100%">
+      <p class="small" style="margin-top:8px">Our labeling tool: YOLO pre-labels, human review, export.</p>
+    </div>
+  </div>
+  <div class="foot"><span>Replication test: the data and the measured rules take weeks, not a weekend</span><span>6</span></div>
+</section>
+
+<!-- 7 quality -->
+<section class="s">
+  <div class="k">Quality on test sets we built</div>
+  <h2>Honest numbers, including where it fails</h2>
+  <div class="row" style="margin-top:20px">
+    <div class="card" style="flex:1.1">
+      <table>
+        <tr><th>What</th><th>Test set</th><th>Result</th></tr>
+        <tr><td>Detector</td><td>22 held-out frames, 1,386 boxes</td><td class="num">mAP50 0.978</td></tr>
+        <tr><td>Event rules (zones)</td><td>our labels, 4 videos, 18 min</td><td class="num">Score A 0.83*</td></tr>
+        <tr><td>Wrong-way, zero-config</td><td>18 min real traffic</td><td class="num green">0 false alarms / h</td></tr>
+        <tr><td>Wrong-way, zero-config</td><td>60 real cars played backwards</td><td class="num green">93 % caught</td></tr>
+        <tr><td>Stopped / congestion, zero-config</td><td>our labels</td><td class="num red">F1 0.0–0.67</td></tr>
+      </table>
+      <p class="small" style="margin-top:8px">* Optimistic: tuned on the same videos. Zero-config congestion fires on red-light queues; drawing a stop line fixes it.</p>
+    </div>
+    <div class="card" style="flex:1">
+      <h3>Detector under synthetic weather and light (mAP50)</h3>
+      <div class="col" style="gap:9px;margin-top:12px">
+        <div><div class="row" style="justify-content:space-between"><span>Day</span><span class="num">0.975</span></div><div class="bar"><div style="width:97.5%;background:#4ade80"></div></div></div>
+        <div><div class="row" style="justify-content:space-between"><span>Fog</span><span class="num">0.971</span></div><div class="bar"><div style="width:97.1%;background:#4ade80"></div></div></div>
+        <div><div class="row" style="justify-content:space-between"><span>540p low bit-rate</span><span class="num">0.881</span></div><div class="bar"><div style="width:88.1%;background:#a3e635"></div></div></div>
+        <div><div class="row" style="justify-content:space-between"><span>Rain</span><span class="num">0.793</span></div><div class="bar"><div style="width:79.3%;background:#fbbf24"></div></div></div>
+        <div><div class="row" style="justify-content:space-between"><span>Motion blur</span><span class="num">0.712</span></div><div class="bar"><div style="width:71.2%;background:#fbbf24"></div></div></div>
+        <div><div class="row" style="justify-content:space-between"><span>Night</span><span class="num red">0.390</span></div><div class="bar"><div style="width:39%;background:#f87171"></div></div></div>
+      </div>
+      <p class="small" style="margin-top:10px">Tried and rejected: brightening night frames (0.390 → 0.266). Fix: train on night data, and real night video is pilot month 1.</p>
+    </div>
+  </div>
+  <div class="foot"><span>All methods and raw results: eval/ in the repository</span><span>7</span></div>
+</section>
+
+<!-- 8 budget roi -->
+<section class="s">
+  <div class="k">Budget and ROI</div>
+  <h2>$12.4k pilot; profitable from 110 cameras</h2>
+  <div class="row" style="margin-top:20px">
+    <div class="card" style="flex:1">
+      <h3>3-month pilot (8 cameras, 3 junctions)</h3>
+      <table style="margin-top:6px">
+        <tr><td>Team: 3 people × 3 months × $900</td><td class="num">$8,100</td></tr>
+        <tr><td>2 GPU servers (RTX 3060 class) × $1,200</td><td class="num">$2,400</td></tr>
+        <tr><td>Labeling local footage (own tool)</td><td class="num">$1,500</td></tr>
+        <tr><td>Power, hosting, network</td><td class="num">$400</td></tr>
+        <tr><td>Licences: Ultralytics AGPL-3.0, open source</td><td class="num">$0</td></tr>
+        <tr><td><b>Total</b></td><td class="num amber">$12,400</td></tr>
+      </table>
+    </div>
+    <div class="card" style="flex:1.05">
+      <h3>Unit economics per camera per month</h3>
+      <table style="margin-top:6px">
+        <tr><td>Price (assumption)</td><td class="num">$40</td></tr>
+        <tr><td>Server $1,200 / 36 mo / 4 cameras</td><td class="num">$8.3</td></tr>
+        <tr><td>Power 0.3 kW × 720 h × $0.08 / 4 cameras</td><td class="num">$4.3</td></tr>
+        <tr><td>Gross margin</td><td class="num green">$27.3 (68 %)</td></tr>
+        <tr><td>Fixed costs: team $2,700 + other $300</td><td class="num">$3,000 / mo</td></tr>
+      </table>
+      <div class="row" style="margin-top:12px;gap:10px">
+        <div style="flex:1" class="card"><div class="num" style="font-size:24px">110</div><div class="small">cameras to break even</div></div>
+        <div style="flex:1" class="card"><div class="num" style="font-size:24px">300 → $5.2k</div><div class="small">monthly profit</div></div>
+        <div style="flex:1" class="card"><div class="num amber" style="font-size:24px">2.4 mo</div><div class="small">pilot payback at 300 cameras</div></div>
+      </div>
+    </div>
+  </div>
+  <p class="small" style="margin-top:12px">Every number except "4 cameras per GPU" (measured) is an assumption; each can be changed in the Business calculator on the live site. A closed-source commercial release needs an Ultralytics Enterprise licence or a permissively licensed detector.</p>
+  <div class="foot"><span>Customer ROI is measured in the pilot: violations per hour before and after one change</span><span>8</span></div>
+</section>
+
+<!-- 9 pilot + next -->
+<section class="s">
+  <div class="k">Pilot in three months · next steps</div>
+  <h2>Inside existing rules and processes</h2>
+  <div class="row" style="margin-top:24px">
+    <div class="card" style="flex:1"><div class="step">Month 1</div><h3>Connect 8 cameras at 3 junctions</h3><p class="small">On-premise server at the city's video centre. Draw zones, start collecting, and record real night and rain footage.</p></div>
+    <div class="card" style="flex:1"><div class="step">Month 2</div><h3>Label 2 weeks per site, retrain</h3><p class="small">Night and weather fine-tune; per-site precision checked by the engineer in the app.</p></div>
+    <div class="card" style="flex:1"><div class="step">Month 3</div><h3>One change, measured</h3><p class="small">For example a leading pedestrian interval: violations per hour before and after, from the same camera.</p></div>
+  </div>
+  <div class="row" style="margin-top:18px">
+    <div class="card" style="flex:1.1"><h3>Privacy and regulation</h3><ul class="small" style="margin-top:6px"><li>Video never leaves the city server; faces and plates are blurred before any frame is shown.</li><li>Only event metadata is stored; no identification of people or vehicles.</li><li>Uploaded videos are deleted after 6 hours.</li></ul></div>
+    <div class="card" style="flex:1"><h3>Next</h3><ul class="small" style="margin-top:6px"><li>Night model from real footage</li><li>Lane-level rules: illegal turns, solid lines</li><li>City dashboard across many junctions</li></ul></div>
+  </div>
+  <div class="foot"><span></span><span>9</span></div>
+</section>
+
+<!-- 10 team -->
+<section class="s">
+  <div class="k">Team Do'ppiX</div>
+  <h2>Built during the final on our own elimination work</h2>
+  <div class="row" style="margin-top:30px">
+    <div class="card" style="flex:1;text-align:center"><img src="img/eldor.jpg" style="width:150px;height:150px;border-radius:18px;object-fit:cover"><h3 style="margin-top:12px">Eldor Musayev</h3><p class="amber" style="font-size:15px">Team captain · ML Engineer</p></div>
+    <div class="card" style="flex:1;text-align:center"><img src="img/shohruh.jpg" style="width:150px;height:150px;border-radius:18px;object-fit:cover"><h3 style="margin-top:12px">Shohruh Gulmirodov</h3><p class="amber" style="font-size:15px">Web Developer</p></div>
+    <div class="card" style="flex:1;text-align:center"><img src="img/ibodulla.jpg" style="width:150px;height:150px;border-radius:18px;object-fit:cover"><h3 style="margin-top:12px">Ibodulla Obidjonov</h3><p class="amber" style="font-size:15px">Cybersecurity Engineer</p></div>
+  </div>
+  <p class="small" style="margin-top:26px">Before the final (declared in the README): detector, tracker, zone rules for one intersection. During the final: any-camera mode, privacy, report, robustness tests, CI/CD. Git history shows both. Built with an AI coding assistant; open source: Ultralytics, PyTorch, OpenCV, FastAPI, React.</p>
+  <p class="num" style="margin-top:14px">Try it: giyos1212-safejunction.static.hf.space</p>
+</section>
+
+</body>
+</html>

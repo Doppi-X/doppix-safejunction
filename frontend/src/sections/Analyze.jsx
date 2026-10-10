@@ -96,6 +96,16 @@ export default function Analyze() {
     } catch { setZoneState(""); setError("Could not save zones."); }
   };
 
+  // while the video is processing, zones drawn are sent automatically (debounced): no button to forget
+  useEffect(() => {
+    if (!job?.id || job.status === "done" || !Object.values(zones).some((v) => v?.length)) return;
+    const t = setTimeout(() => {
+      fetch(`${api}/api/jobs/${job.id}/zones`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(zones) })
+        .then(() => setZoneState("saved")).catch(() => {});
+    }, 600);
+    return () => clearTimeout(t);
+  }, [zones]);
+
   const reset = () => { setJob(null); setDoc(null); setImg(null); setError(""); setZones({}); setZoneState(""); };
   const busy = job && !["done", "error"].includes(job.status);
   const pct = job?.stage === "upload" ? upload : job?.progress || 0;
@@ -148,7 +158,7 @@ export default function Analyze() {
             <div className="card p-4">
               <h4 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-white"><MapPin size={15} className="text-amber-300" /> Optional: draw zones while it runs</h4>
               <ZoneEditor frameUrl={`${api}/api/jobs/${job.id}/frame`} value={zones} onChange={(z) => { setZones(z); setZoneState(""); }} />
-              <button onClick={saveZones} className="btn mt-2 bg-white/10 text-white hover:bg-white/15">{zoneState === "saved" ? "Zones saved ✓" : zoneState === "saving" ? "Saving…" : "Use these zones"}</button>
+              <p className="mt-2 text-xs text-slate-400">{zoneState === "saved" ? "✓ Zones saved: they will be used when detection finishes." : "Zones are saved automatically as you draw."}</p>
             </div>
           )}
         </div>

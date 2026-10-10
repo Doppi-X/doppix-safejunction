@@ -4,7 +4,7 @@ import Section from "./Section.jsx";
 // Every number is either MEASURED (our benchmark) or an ASSUMPTION the viewer can change.
 const DEFAULTS = {
   price: 40,          // $/camera/month, assumption
-  cams: 50,           // cameras after the pilot, assumption
+  cams: 300,          // cameras after the pilot, assumption (deck scenario)
   camsPerGpu: 4,      // measured: 10 fps pipeline runs at 2x real time on an RTX 3060; 5 fps loses no accuracy (ablation)
   serverCost: 1200,   // $ per GPU server, assumption (RTX 3060 class)
   serverMonths: 36,   // amortisation, assumption
