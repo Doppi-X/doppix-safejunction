@@ -56,7 +56,7 @@ def main():
     from ultralytics import YOLO
     YOLO(str(config.WEIGHTS)).train(data=str(yaml), epochs=a.epochs, imgsz=a.imgsz, batch=a.batch, seed=42,
                                     deterministic=True, flipud=0, degrees=0, perspective=0, fliplr=0.5,
-                                    project=str(work / "runs"), name="robust", patience=50, workers=4)
+                                    project=str(work / "runs"), name="robust", patience=50, workers=0)   # no dataloader subprocesses (Windows service context)
 
 
 if __name__ == "__main__":   # Windows spawns dataloader workers: guard required
