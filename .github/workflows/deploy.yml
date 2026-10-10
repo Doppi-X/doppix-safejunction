@@ -17,10 +17,9 @@ jobs:
       PYTHON: D:\My_projects\Train_yolo\venv\Scripts\python.exe
       HF_TOKEN_FILE: D:\My_projects\safejunction_state\hf_token.txt
       # the server's C: drive is full: keep npm cache and temp files on D:
-      npm_config_cache: D:
-pm-cache
-      TEMP: D:\My_projects\safejunction_state	mp
-      TMP: D:\My_projects\safejunction_state	mp
+      npm_config_cache: D:\npm-cache
+      TEMP: D:\My_projects\safejunction_state\tmp
+      TMP: D:\My_projects\safejunction_state\tmp
       NODE_OPTIONS: --use-system-ca
     steps:
       - uses: actions/checkout@v4
