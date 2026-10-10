@@ -84,6 +84,20 @@
     "light_red": 0.777,
     "light_not_red": 0.638
    }
+  },
+  "night + enhance (rejected)": {
+   "mAP50": 0.266,
+   "mAP50_95": 0.173,
+   "precision": 0.482,
+   "recall": 0.264,
+   "per_class_mAP50_95": {
+    "person": 0.063,
+    "car": 0.283,
+    "bus": 0.001,
+    "truck": 0.287,
+    "light_red": 0.312,
+    "light_not_red": 0.09
+   }
   }
  }
 }
