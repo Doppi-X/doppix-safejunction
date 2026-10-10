@@ -30,7 +30,7 @@ jobs:
           git -c safe.directory=* -C "%SERVER_CHECKOUT%" log --oneline -1
 
       - name: Backend - restart the service
-        shell: powershell
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: powershell -NoProfile -ExecutionPolicy Bypass -File deploy\restart.ps1
 
       - name: Frontend - build
@@ -45,7 +45,7 @@ jobs:
         run: '"%PYTHON%" deploy\push_site.py'
 
       - name: Smoke test
-        shell: powershell
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -Command ". '{0}'"
         run: |
           $h = Invoke-WebRequest -UseBasicParsing http://127.0.0.1:7870/api/health
           $h.Content
