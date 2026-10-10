@@ -21,6 +21,7 @@ jobs:
       TEMP: D:\My_projects\safejunction_state\tmp
       TMP: D:\My_projects\safejunction_state\tmp
       NODE_OPTIONS: --use-system-ca
+      HF_HOME: D:\hf-home
     steps:
       - uses: actions/checkout@v4
         with:
