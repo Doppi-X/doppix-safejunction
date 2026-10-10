@@ -42,7 +42,7 @@ jobs:
         shell: cmd
         working-directory: frontend
         run: |
-          call npm ci --no-audit --no-fund
+          call npm install --no-audit --no-fund
           call npm run build
 
       - name: Frontend - publish to Hugging Face
