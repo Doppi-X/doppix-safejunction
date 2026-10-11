@@ -15,6 +15,12 @@ export function getApiBase() {
   return apiPromise;
 }
 
+// The GPU server's tunnel address can change while a page is open (tunnel restart): re-read api.json.
+export function refreshApiBase() {
+  apiPromise = null;
+  return getApiBase();
+}
+
 const cache = new Map();
 export function fetchJSON(url) {
   if (!cache.has(url)) {

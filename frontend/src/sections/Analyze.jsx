@@ -4,7 +4,7 @@ import Section from "./Section.jsx";
 import ResultViewer from "../components/ResultViewer.jsx";
 import ReportPanel from "../components/ReportPanel.jsx";
 import ZoneEditor from "../components/ZoneEditor.jsx";
-import { getApiBase } from "../lib/data.js";
+import { getApiBase, refreshApiBase } from "../lib/data.js";
 
 const STAGES = {
   upload: "Uploading", queued: "Waiting in queue", perception: "Detecting and tracking road users",
@@ -18,12 +18,18 @@ function useServer() {
   useEffect(() => {
     if (api === null) return;
     let alive = true, tries = 0, t;
-    const ping = () => fetch(`${api}/api/health`).then((r) => r.json()).then((d) => alive && setServer(d))
-      .catch(() => { if (!alive) return; setServer(++tries < 4 ? false : "offline"); t = setTimeout(ping, 5000); });
+    // keep checking every 30 s; on failure re-read api.json, because a tunnel restart changes the address
+    const ping = () => fetch(`${api}/api/health`).then((r) => r.json())
+      .then((d) => { if (!alive) return; tries = 0; setServer(d); t = setTimeout(ping, 30000); })
+      .catch(() => {
+        if (!alive) return;
+        setServer(++tries < 4 ? false : "offline");
+        refreshApiBase().then((a) => { if (alive && a && a !== api) setApi(a); else t = setTimeout(ping, 5000); });
+      });
     ping();
     return () => { alive = false; clearTimeout(t); };
   }, [api]);
-  return [api, server];
+  return [api, server, setApi];
 }
 
 function post(url, file, onProgress, name = "") {
@@ -45,7 +51,7 @@ function post(url, file, onProgress, name = "") {
 }
 
 export default function Analyze() {
-  const [api, server] = useServer();
+  const [api, server, setApi] = useServer();
   const [job, setJob] = useState(null);
   const [doc, setDoc] = useState(null);
   const [img, setImg] = useState(null);
@@ -66,7 +72,8 @@ export default function Analyze() {
       fetch(`${api}/api/jobs/${job.id}/result?t=${Date.now()}`).then((r) => r.json()).then(setDoc).catch(() => setError("Could not load the result."));
       return;
     }
-    const t = setTimeout(() => fetch(`${api}/api/jobs/${job.id}`).then((r) => r.json()).then(setJob).catch(() => setJob({ ...job })), 1500);
+    const t = setTimeout(() => fetch(`${api}/api/jobs/${job.id}`).then((r) => r.json()).then(setJob)
+      .catch(() => refreshApiBase().then((a) => { if (a && a !== api) setApi(a); setJob({ ...job }); })), 1500);
     return () => clearTimeout(t);
   }, [job]);
 
