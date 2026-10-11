@@ -4,7 +4,7 @@
 
 **Havolalar**
 - **Sayt (prototip):** https://doppix-safejunction.static.hf.space
-- **Kod:** https://github.com/ubaydullayevgiyosiddin7-eng/doppix-safejunction
+- **Kod:** https://github.com/Doppi-X/doppix-safejunction
 - **Taqdimot:** `docs/DoppiX_SafeJunction_deck.pdf`
 - **Nutq:** `docs/NUTQ_7daqiqa.md`
 - **Zaxira demo:** `docs/demo_backup.mp4`

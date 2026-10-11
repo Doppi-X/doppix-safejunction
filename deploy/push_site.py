@@ -27,7 +27,7 @@ sdk: static
 pinned: true
 short_description: Road-safety auditor for any traffic camera
 ---
-Built from https://github.com/ubaydullayevgiyosiddin7-eng/doppix-safejunction
+Built from https://github.com/Doppi-X/doppix-safejunction
 """
 token = os.environ.get("HF_TOKEN") or Path(os.environ["HF_TOKEN_FILE"]).read_text().strip()
 api = HfApi(token=token)
