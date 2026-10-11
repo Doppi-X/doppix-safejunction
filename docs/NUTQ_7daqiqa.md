@@ -1,7 +1,7 @@
 # Do'ppiX SafeJunction — 7 daqiqalik nutq
 
 Rejim: **Startup**. Tavsiya etilgan taqsimot: muammo 1 min, demo 2 min, texnologiya 2 min, budjet 1.5 min, keyingi qadamlar 0.5 min.
-Kim gapiradi (o'zgartirsangiz bo'ladi): **Eldor**: 1, 2, 5, 6, 7 · **Shohruh**: 3, 4 (jonli demo) · **Ibodulla**: 8, 9, 10.
+Kim gapiradi (o'zgartirsangiz bo'ladi): **Eldor**: 1, 2, 5, 6, 7 · **Shohruh**: 3, 4 (jonli demo) · **Soibnazar**: 8, 9, 10.
 
 > Jonli demo uchun oldindan: saytni telefon/noutbukda ochib qo'ying. 40 soniyalik video tayyor tursin. Internet uzilsa, zaxira video bor (`docs/demo_backup.mp4`).
 
@@ -66,10 +66,10 @@ Hammasi shahar serverida, bitta RTX 3060'da ishlaydi va real vaqtdan 2 barobar t
 - Boshqa shaharlardan 9 ta kamera bilan sinadik: tungi dron ko'rinishida 6 ta kadrda bizning model 7 ta, umumiy model 211 ta ishonchli obyekt ko'rdi, shuning uchun umumiy model tanlandi.
 - Ochiq aytamiz: bu sun'iy tungi test. Haqiqiy tungi video pilotning birinchi oyida yig'iladi."
 
-### 8-slayd · 5:25–6:20 · Ibodulla
+### 8-slayd · 5:25–6:20 · Soibnazar
 "3 oylik pilot 12,400 dollar turadi: 8 kamera, 3 chorraha. Bunga 3 kishilik jamoa, 2 ta server va labellash kiradi. Obuna kamera boshiga oyiga 40 dollar, infratuzilma 12.7 dollar, ya'ni marja 68%. 110 kamerada o'zini qoplaydi. 300 kamerada pilot 2.4 oyda qaytadi. Barcha farazlar saytdagi kalkulyatorda, o'zingiz o'zgartirib ko'rishingiz mumkin."
 
-### 9-slayd · 6:20–6:50 · Ibodulla
+### 9-slayd · 6:20–6:50 · Soibnazar
 "Pilot uch oyda, mavjud qoidalar doirasida:
 - 1-oy: kameralarni ulash va tungi video yig'ish;
 - 2-oy: qayta o'qitish;
@@ -77,7 +77,7 @@ Hammasi shahar serverida, bitta RTX 3060'da ishlaydi va real vaqtdan 2 barobar t
 
 Video shahar serveridan chiqmaydi, yuz va raqamlar xiralashtiriladi, faqat hodisa metadatasi saqlanadi."
 
-### 10-slayd · 6:50–7:00 · Ibodulla
+### 10-slayd · 6:50–7:00 · Soibnazar
 "Final oldidan qilingan ish (elimination) va finalda qilingan ish README'da va git tarixida alohida ko'rsatilgan. Rahmat!"
 
 ---

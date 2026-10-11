@@ -227,6 +227,6 @@ weights/          detector.pt (ours), plate.pt
 |---|---|
 | Eldor Musayev | Team captain · ML Engineer |
 | Shohruh Gulmirodov | Web Developer |
-| Ibodulla Obidjonov | Cybersecurity Engineer · Cyber University |
+| Berdimurodov Soibnazar | Cybersecurity Engineer · Cyber University |
 
 Built with help from an AI coding assistant (Claude). Open-source libraries: Ultralytics, PyTorch, OpenCV, FastAPI, React, Vite, Tailwind.

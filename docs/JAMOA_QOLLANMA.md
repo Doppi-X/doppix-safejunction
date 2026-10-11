@@ -429,7 +429,7 @@ Video → [1] Model tanlash → [2] Aniqlash + kuzatish → [3] Sahna → [4] Ho
 |---|---|---|
 | **Eldor Musayev** (kapitan, ML) | 1, 2, 5, 6, 7-slaydlar | Model, data, qoidalar, PET, raqamlar |
 | **Shohruh Gulmirodov** (web) | 3, 4-slaydlar, **jonli demo** | Sayt, API, deploy, dashboard |
-| **Ibodulla Obidjonov** (kiberxavfsizlik) | 8, 9, 10-slaydlar | Biznes, pilot, **maxfiylik va xavfsizlik** |
+| **Berdimurodov Soibnazar** (kiberxavfsizlik) | 8, 9, 10-slaydlar | Biznes, pilot, **maxfiylik va xavfsizlik** |
 
 ---
 

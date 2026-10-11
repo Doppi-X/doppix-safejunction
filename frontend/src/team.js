@@ -6,5 +6,5 @@ export const MEMBERS = [
     about: "YOLO detector: dataset, fine-tuning and evaluation; the perception pipeline.", github: "", linkedin: "", portfolio: "" },
   { name: "Shohruh Gulmirodov", role: "Web Developer", photo: "./data/team/shohruh.jpg",
     about: "Team website and the live demo.", github: "", linkedin: "", portfolio: "" },
-  { name: "Ibodulla Obidjonov", role: "Cybersecurity Engineer · Cyber University", photo: "./data/team/ibodulla.jpg", about: "", github: "", linkedin: "", portfolio: "" },
+  { name: "Berdimurodov Soibnazar", role: "Cybersecurity Engineer · Cyber University", photo: "./data/team/soibnazar.jpg", about: "", github: "", linkedin: "", portfolio: "" },
 ];
