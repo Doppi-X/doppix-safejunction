@@ -3,6 +3,8 @@
 > **▶ Watch the 3-minute explainer:** https://doppix-safejunction.static.hf.space/data/video/explainer.mp4
 > (the problem, the scheme, the live system on new cameras, the numbers, the business case)
 >
+> Same video on Google Drive: https://drive.google.com/file/d/12ZFC5eAkEX6gexgb9mviBqJaXClARSQV/view?usp=sharing
+>
 > **Try it live:** https://doppix-safejunction.static.hf.space (the "Live demo" button runs a camera in Korea on our GPU server)
 
 
