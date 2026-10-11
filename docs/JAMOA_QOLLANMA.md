@@ -3,7 +3,7 @@
 > Bu hujjatni o'qigan har bir a'zo loyihani boshidan oxirigacha tushuntira oladi, demoni o'tkaza oladi va hakamlarning texnik savollariga javob bera oladi. Hakamlar **istalgan a'zodan**, jumladan AI bilan yozilgan kod haqida ham so'rashi mumkin.
 
 **Havolalar**
-- **Sayt (prototip):** https://giyos1212-safejunction.static.hf.space
+- **Sayt (prototip):** https://doppix-safejunction.static.hf.space
 - **Kod:** https://github.com/ubaydullayevgiyosiddin7-eng/doppix-safejunction
 - **Taqdimot:** `docs/DoppiX_SafeJunction_deck.pdf`
 - **Nutq:** `docs/NUTQ_7daqiqa.md`

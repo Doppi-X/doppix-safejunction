@@ -17,7 +17,7 @@ except ImportError:
 from huggingface_hub import HfApi
 
 ROOT = Path(__file__).resolve().parents[1]
-SPACE = sys.argv[1] if len(sys.argv) > 1 else os.environ.get("SJ_SPACE", "giyos1212/safejunction")
+SPACE = sys.argv[1] if len(sys.argv) > 1 else os.environ.get("SJ_SPACE", "doppix/safejunction")
 README = """---
 title: Do'ppiX SafeJunction
 emoji: 🚦

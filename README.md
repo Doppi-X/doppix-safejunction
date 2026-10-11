@@ -1,9 +1,9 @@
 # Do'ppiX SafeJunction
 
-> **▶ Watch the 3-minute explainer:** https://giyos1212-safejunction.static.hf.space/data/video/explainer.mp4
+> **▶ Watch the 3-minute explainer:** https://doppix-safejunction.static.hf.space/data/video/explainer.mp4
 > (the problem, the scheme, the live system on new cameras, the numbers, the business case)
 >
-> **Try it live:** https://giyos1212-safejunction.static.hf.space (the "Live demo" button runs a camera in Korea on our GPU server)
+> **Try it live:** https://doppix-safejunction.static.hf.space (the "Live demo" button runs a camera in Korea on our GPU server)
 
 
 **Turn any traffic camera into a road-safety auditor.** WIUT Hackathon 2026 Final · Computer Vision track · mode: **Startup**
@@ -13,7 +13,7 @@ not yielding to pedestrians, wrong-way driving, stopped vehicles, congestion and
 misses, and tells the traffic engineer what to change, before anyone is hurt. Faces
 and number plates are blurred on the server before any video is shown.
 
-* **Live app:** https://giyos1212-safejunction.static.hf.space (frontend: Hugging Face; API: our GPU server)
+* **Live app:** https://doppix-safejunction.static.hf.space (frontend: Hugging Face; API: our GPU server)
 * **Deploys:** every push to `main` runs [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) on our self-hosted GPU runner. The Actions tab is the deployment history.
 
 ```

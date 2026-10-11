@@ -55,5 +55,5 @@ jobs:
         run: |
           $h = Invoke-WebRequest -UseBasicParsing http://127.0.0.1:7870/api/health
           $h.Content
-          $s = Invoke-WebRequest -UseBasicParsing https://giyos1212-safejunction.static.hf.space/
+          $s = Invoke-WebRequest -UseBasicParsing https://doppix-safejunction.static.hf.space/
           "site HTTP $($s.StatusCode)"

@@ -26,7 +26,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent                                   # repo checkout
 STATE = Path(os.environ.get("SJ_STATE", ROOT.parent / "safejunction_state"))   # logs, jobs, token (outside git)
 STATE.mkdir(parents=True, exist_ok=True)
-SPACE = os.environ.get("SJ_SPACE", "giyos1212/safejunction")
+SPACE = os.environ.get("SJ_SPACE", "doppix/safejunction")
 PORT = int(os.environ.get("SJ_PORT", 7870))
 CLOUDFLARED = Path(os.environ.get("CLOUDFLARED", ROOT.parent / "doppix_site" / "cloudflared.exe"))
 CHECK_EVERY = 300          # s — tunnelni tashqaridan tekshirish

@@ -69,7 +69,7 @@ export default function Jury() {
         <div>
           <h3 className="flex items-center gap-1.5 font-semibold text-white"><Smartphone size={17} className="text-amber-300" /> Test it on your phone in 30 seconds</h3>
           <ol className="mt-2 space-y-1.5 text-sm text-slate-300">
-            <li><b className="text-white">1.</b> Open <span className="font-mono text-amber-200">giyos1212-safejunction.static.hf.space</span> (the QR code), then <a href="#analyze" className="text-amber-300 underline">Try it</a>.</li>
+            <li><b className="text-white">1.</b> Open <span className="font-mono text-amber-200">doppix-safejunction.static.hf.space</span> (the QR code), then <a href="#analyze" className="text-amber-300 underline">Try it</a>.</li>
             <li><b className="text-white">2.</b> Upload any traffic video or photo, or tap <i>Run our 40 s sample clip</i>. Drawing a crossing and stop line while it runs is optional.</li>
             <li><b className="text-white">3.</b> Read the safety report, hotspot map and PDF, then see your camera appear in the <a href="#network" className="text-amber-300 underline">City dashboard</a>.</li>
           </ol>
