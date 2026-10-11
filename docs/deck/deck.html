@@ -137,7 +137,7 @@
         <tr><td>Inference</td><td>on-premise GPU server next to the city's video archive (ours: RTX 3060)</td></tr>
         <tr><td>Speed, measured</td><td class="num">2× faster than real time at 10 fps · 1 photo in 0.5–0.7 s</td></tr>
         <tr><td>Capacity</td><td>5 fps loses no accuracy (ablation 0.828 → 0.827), so <b class="num">≈ 4 cameras per GPU</b></td></tr>
-        <tr><td>Night, rain, local vehicles</td><td>each camera auto-picks a detector: ours (Tashkent), our low-light fine-tune (synthetic night 0.39 → 0.92) or general COCO (night drone view: 7 → 211 confident detections in 6 frames); plates blurred, never read</td></tr>
+        <tr><td>Night, rain, local vehicles</td><td>measured on 35 REAL night frames from 3 unseen cameras (our labels): ours 0.19, general COCO 0.58 mAP50, so each camera auto-picks its detector (ours by day: 0.97); plates blurred, never read</td></tr>
         <tr><td>Cost per camera</td><td class="num amber">≈ $12.7 / month infrastructure (server + power; assumptions on slide 8)</td></tr>
       </table>
     </div>
@@ -181,17 +181,18 @@
       <p class="small" style="margin-top:8px">* Optimistic: tuned on the same videos. Zero-config congestion fires on red-light queues; drawing a stop line fixes it.</p>
     </div>
     <div class="card" style="flex:1">
-      <h3>Detector under synthetic weather and light (mAP50)</h3>
+      <h3>Synthetic weather vs real night (mAP50)</h3>
       <table style="margin-top:6px">
-        <tr><th>Condition</th><th>Daylight model</th><th>Low-light fine-tune (final)</th></tr>
-        <tr><td>Day</td><td class="num" style="color:#4ade80;">0.975 ✓</td><td class="num" style="color:#4ade80;opacity:.55">0.978</td></tr>
-        <tr><td>Fog</td><td class="num" style="color:#4ade80;">0.971 ✓</td><td class="num" style="color:#4ade80;opacity:.55">0.976</td></tr>
-        <tr><td>540p low bit-rate</td><td class="num" style="color:#a3e635;">0.881 ✓</td><td class="num" style="color:#a3e635;opacity:.55">0.857</td></tr>
-        <tr><td>Rain</td><td class="num" style="color:#fbbf24;">0.793 ✓</td><td class="num" style="color:#4ade80;opacity:.55">0.967</td></tr>
-        <tr><td>Motion blur</td><td class="num" style="color:#fbbf24;">0.712 ✓</td><td class="num" style="color:#4ade80;opacity:.55">0.959</td></tr>
-        <tr><td>Night</td><td class="num" style="color:#f87171;opacity:.55">0.390</td><td class="num" style="color:#4ade80;">0.916 ✓</td></tr>
+        <tr><th>Condition</th><th>Daylight model</th><th>Synthetic-night fine-tune</th></tr>
+        <tr><td>Day</td><td class="num" style="color:#4ade80;">0.975</td><td class="num" style="color:#4ade80;opacity:.55">0.978</td></tr>
+        <tr><td>Fog</td><td class="num" style="color:#4ade80;">0.971</td><td class="num" style="color:#4ade80;opacity:.55">0.976</td></tr>
+        <tr><td>540p low bit-rate</td><td class="num" style="color:#a3e635;">0.881</td><td class="num" style="color:#a3e635;opacity:.55">0.857</td></tr>
+        <tr><td>Rain</td><td class="num" style="color:#fbbf24;">0.793</td><td class="num" style="color:#4ade80;opacity:.55">0.967</td></tr>
+        <tr><td>Motion blur</td><td class="num" style="color:#fbbf24;">0.712</td><td class="num" style="color:#4ade80;opacity:.55">0.959</td></tr>
+        <tr><td>Night</td><td class="num" style="color:#f87171;opacity:.55">0.390</td><td class="num" style="color:#4ade80;">0.916</td></tr>
+        <tr><td><b class="amber">REAL night (labeled)</b></td><td class="num" style="color:#f87171">0.19</td><td class="num" style="color:#f87171">0.06</td></tr>
       </table>
-      <p class="small" style="margin-top:8px">Night <b class="red">0.39</b> → <b class="green">0.92</b> after fine-tuning on synthetic night/rain/blur copies. It lowered the daylight event score (0.83 → 0.77), so <b class="amber">each camera auto-picks its detector</b> (ours, low-light or general COCO) from 6 sample frames (✓ = expected). Brightening frames was tried and rejected (0.27). Caveat: synthetic night; real night video is pilot month 1.</p>
+      <p class="small" style="margin-top:8px"><b class="amber">Real night, labeled, 3 unseen cameras (35 frames):</b> ours 0.19 · synthetic-night fine-tune <b class="red">0.06</b> · general COCO <b class="green">0.58</b> · our 4-epoch multi-domain 0.33. Synthetic night (0.92) did not transfer, so the app picks the detector per camera.</p>
     </div>
   </div>
   <div class="foot"><span>All methods and raw results: eval/ in the repository</span><span>7</span></div>

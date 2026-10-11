@@ -115,8 +115,26 @@ Robustness (`eval/robustness.py`; synthetic corruptions, because all our footage
 Bold = the better model in that condition. The app picks per camera from sample frames (see How it works), not from a condition label.
 
 * **Tried and rejected:** brightening dark frames (gamma + CLAHE) made night detection worse, 0.390 → 0.266, because it amplifies noise (`eval/lowlight_enhance.py`).
-* **Done in the final:** fine-tuning with synthetic night, rain and blur copies of the training frames (`eval/train_robust.py`, 12 epochs, RTX 3060). Night 0.39 → 0.92.
-* **Caveat:** the low-light model is tested on the same kind of synthetic night it was trained on, so real night footage may score lower. Real night footage is the first thing a pilot collects.
+* **Done in the final:** fine-tuning with synthetic night, rain and blur copies of the training frames (`eval/train_robust.py`). On synthetic night it went 0.39 → 0.92, but see the real-night test below: on real night it scored 0.06. Synthetic darkening does not teach real night.
+
+### Real night, labeled, on cameras never trained on (final)
+
+We labeled frames of 15 open-licence clips in our labeling tool. The team labeled some; an AI annotator (Claude) corrected YOLO drafts on others, and every file records its annotator. C3896 and C3905 are the only old-junction videos used; the team does not trust the box labels of C3897 and C3902.
+
+**Held out entirely as the test set:** three night cameras. They are a street crossing, a raised Philadelphia junction and foggy Moscow: 35 frames, 585 boxes.
+
+**Trained on:** all other cameras, 281 frames. Scored with one AP50 evaluator for every model (`eval/train_multidomain.py`, `eval/results/real_night.json`):
+
+| detector | real night, road users mAP50 | person | car | day, our junction, road users |
+|---|---|---|---|---|
+| our daylight `detector.pt` | 0.19 | 0.30 | 0.60 | **0.97** |
+| our synthetic-night fine-tune | 0.06 | 0.13 | 0.17 | 0.97 |
+| general COCO YOLO26m | **0.58** | 0.35 | 0.94 | 0.89 |
+| our multi-domain fine-tune (4 epochs, stopped: GPU memory) | 0.33 | 0.48 | 0.83 | 0.95 |
+
+* The per-camera detector choice therefore picks the general model at night and ours by day on our junction.
+* The multi-domain checkpoint is not shipped. It was trained for only 4 epochs: training at 1280 px with batch 6 overflowed the 12 GB GPU while the service was running. A full run is pilot month 2.
+
 
 ### Seven cameras we had never seen (final)
 
@@ -144,7 +162,7 @@ What this shows:
 
 ### Known failure cases
 
-* Real night and rain footage is untested by labels (see above); rain is routed to the daylight model because brightness does not reveal it.
+* Real night: the best detector reaches 0.58 road-user mAP50 on our labeled night test, so night counts are lower-bound estimates; persons at night are hardest (AP50 0.35–0.48).
 * PET is computed in the image plane: a pedestrian partly hidden behind a vehicle can create a false conflict. A 4-point ground homography is the next step.
 * At a signalised junction, zero-config congestion also fires on the normal queue at red. Drawing a stop line fixes this.
 * Light-state classes were trained on one intersection's lights. On a new camera the light box must be drawn, and the colour reading is unverified there.

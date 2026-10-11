@@ -49,7 +49,7 @@
 | **Inference qayerda** | Shahar video arxivi yonidagi GPU serverda (on-premise). Bizda bitta RTX 3060 12 GB. Brauzer faqat yuklaydi va ko'radi, hech qanday bulutli AI API chaqirilmaydi | o'lchangan |
 | **O'z apparatimizdagi tezlik** | Aniqlash + kuzatish 10 fps'da **real vaqtdan 2× tez**. Rasm 0.5–0.7 s. 40 s video yuklashdan hisobotgacha ~50–60 s | o'lchangan |
 | **Kamera boshiga narx** | Infratuzilma ~**13 $/oy**: server 1,200 $ / 36 oy / 4 kamera = 8.3 $, elektr 0.3 kW × 720 soat × 0.08 $ / 4 = 4.3 $ | hisob + farazlar |
-| **Tunda** | Sintetik tunda: bizning model 0.39 → tungi model **0.92** (mAP50). Haqiqiy tungi dron videosida bizning model 6 kadrda 7 ta, umumiy COCO model 211 ta ishonchli obyekt topdi, shuning uchun model har kamera uchun avtomatik tanlanadi | sintetik test + haqiqiy video (labelsiz) |
+| **Tunda** | **Haqiqiy tunda o'lchangan:** 3 ta hech ko'rilmagan kameradan 35 ta kadr, 585 box. Bizning model **0.19**, umumiy COCO model **0.58** (mAP50). Shuning uchun tunda tizim COCO'ni o'zi tanlaydi, kunduzi bizning chorrahada esa o'z modelimizni (0.97) | o'lchangan (bizning labellar) |
 | **Yomg'irda** | Sintetik yomg'ir 0.79 → **0.97**, tuman 0.97, xiralik 0.71 → 0.96. Haqiqiy yomg'ir (Times Square, Shenzhen, Tehron) va qor (Ottava) videolarida sinaldi | sintetik + haqiqiy (labelsiz) |
 | **Mahalliy avtomobillar** | Toshkent chorrahasida o'zimiz labellagan **12,990 box**: Cobalt, Damas, bo'g'inli avtobuslar, bizning svetoforlar | o'lchangan |
 | **Mahalliy raqamlar** | Raqamlarni **o'qimaymiz**, faqat xiralashtiramiz (maxfiylik). Ochiq raqam detektori har bir mashina boxi ichida ishlaydi | — |
@@ -258,7 +258,16 @@ Video → [1] Model tanlash → [2] Aniqlash + kuzatish → [3] Sahna → [4] Ho
 | Tungi model | 0.978 | 0.976 | 0.857 | **0.967** | **0.959** | **0.916** |
 
 - **Nima ishlamadi:** kadrni yorqinlashtirish (gamma + CLAHE) tunni **yomonlashtirdi**: 0.39 → 0.27.
-- **Ehtiyot:** tungi model qanday sun'iy tunda o'qitilgan bo'lsa, xuddi shunday sun'iy tunda sinaldi. Hozir jamoa **haqiqiy tungi kadrlarni labellayapti**. Natija kelgach, haqiqiy tun aniqligi qo'shiladi.
+- **Haqiqiy tun testi (eng muhim natija):** labellangan 35 ta tungi kadr, ular 3 ta hech o'qitishda ishlatilmagan kameradan:
+
+| Model | Haqiqiy tun | Kunduz |
+|---|---|---|
+| Bizning kunduzgi | 0.19 | **0.97** |
+| Sun'iy tun bilan o'qitilgan | **0.06** | 0.97 |
+| Umumiy COCO | **0.58** | 0.89 |
+| Yangi multi-domain (4 epoch) | 0.33 | 0.95 |
+
+- **Hikoya:** "sun'iy testga ishonmadik, haqiqiy tunni labellab o'lchadik. Sun'iy tun yordam bermadi, shuning uchun tizim har kamera uchun eng yaxshi modelni o'zi tanlaydi."
 
 **Boshqa shaharlardagi 7 kamera** (labelsiz, faqat tizim nima qilgani ko'rsatiladi):
 
@@ -403,7 +412,7 @@ Video → [1] Model tanlash → [2] Aniqlash + kuzatish → [3] Sahna → [4] Ho
 - **"Overfitting bo'lmadimi?"** — Detektor o'qitishda ishlatilmagan kadrlarda sinalgan. Qoidalarning 0.83 bahosi optimistik ekanini o'zimiz aytamiz. Shuning uchun boshqa shahar videolarida ham sinadik va hozir haqiqiy tungi test to'plamini qilyapmiz.
 - **"Kamera siljisa-chi?"** — Tanilgan kamerada ORB + RANSAC bilan avtomatik moslashadi. Yangi kamerada yo'l transportdan qayta o'rganiladi.
 - **"PET qanchalik ishonchli?"** — 9 ta labellangan "yo'l bermaslik"dan 7 tasini topdi, 12 tadan 11 tasi ko'z bilan tasdiqlandi. Tasvir tekisligida ishlaydi, metrga o'tish (homografiya) keyingi qadam.
-- **"Tunda ishlaydimi?"** — Sintetik tunda 0.39 dan 0.92 ga ko'tardik. Har kamera uchun model avtomatik tanlanadi. Haqiqiy tungi kadrlarni hozir labellayapmiz.
+- **"Tunda ishlaydimi?"** — Haqiqiy tunda labellangan test qildik: 3 ta notanish kamera, 35 kadr. Eng yaxshi model 0.58, tizim tunda uni o'zi tanlaydi. Sun'iy tunda 0.92 chiqqan model haqiqiy tunda 0.06 ko'rsatdi, shuning uchun sun'iy testga ishonmaymiz. To'liq tungi data pilotning 1–2-oyida.
 - **"Narx qayerdan?"** — Tezlik o'lchangan (1 GPU = 4 kamera). Server, elektr va maosh farazlari saytdagi kalkulyatorda, istalganini o'zgartirib ko'rsa bo'ladi.
 - **"Deploy tarixini ko'rsating."** — GitHub → Actions. Har push GPU serverga va saytga deploy qiladi, smoke test bilan.
 

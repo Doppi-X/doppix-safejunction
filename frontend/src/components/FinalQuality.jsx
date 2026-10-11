@@ -11,6 +11,7 @@ const COND_IMG = {
 export default function FinalQuality() {
   const { data: gen } = useJSON("./data/generic.json", fetchJSON);
   const { data: rob } = useJSON("./data/robustness.json", fetchJSON);
+  const { data: rn } = useJSON("./data/real_night.json", fetchJSON);
   const [cond, setCond] = useState("night");
   if (!gen || !rob) return null;
   const rows = Object.entries(rob.results);
@@ -62,14 +63,37 @@ export default function FinalQuality() {
           </figure>
         </div>
         <p className="mt-2 text-xs text-slate-500">
-          mAP50 on our 22 held-out frames. All our footage is daytime, so night was the weak spot (0.39). Brightening frames made it worse (rejected).
-          During the final we fine-tuned a low-light model on synthetic night, rain and blur copies of the training frames: night 0.39 → 0.92.
-          On daylight video it lowered our event score (0.83 → 0.77), so each camera picks its detector at upload: our daylight model, the low-light model
-          or a general COCO model, whichever finds clearly more confident road users in 6 sample frames (underlined = expected choice).
-          On 7 open-licence clips from other cities a night drone view went from 7 to 211 confident detections in 6 sample frames.
-          Caveat: night numbers are on synthetic night; real night video is pilot month 1.
+          Synthetic corruptions of our 22 held-out frames. Our low-light fine-tune looked great here (night 0.39 → 0.92),
+          but on REAL night it collapsed (0.06, table below): synthetic darkening does not teach real night. Brightening frames was also rejected.
         </p>
       </div>
+      {rn && (
+        <div className="card p-4 lg:col-span-2">
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <h3 className="font-semibold text-white">Real night, labeled: 3 cameras never trained on</h3>
+            <span className="text-[11px] text-slate-500">{rn.results["general COCO"].real_night_unseen.frames} frames · {Object.values(rn.results["general COCO"].real_night_unseen.gt_boxes).reduce((a, b) => a + b, 0)} boxes · AP50, one evaluator for all models</span>
+          </div>
+          <table className="mt-2 w-full text-sm">
+            <thead className="text-left text-xs text-slate-500"><tr><th className="py-1">Detector</th><th>Real night: road users</th><th>person</th><th>car</th><th>Day (our junction): road users</th></tr></thead>
+            <tbody>
+              {Object.entries(rn.results).map(([k, v]) => (
+                <tr key={k} className="border-t border-white/5">
+                  <td className="py-1.5 pr-2 text-slate-200">{k}</td>
+                  <td className={`font-mono ${v.real_night_unseen.road_users_mAP50 >= 0.5 ? "text-emerald-300" : v.real_night_unseen.road_users_mAP50 >= 0.3 ? "text-amber-300" : "text-red-300"}`}>{v.real_night_unseen.road_users_mAP50}</td>
+                  <td className="font-mono text-slate-400">{v.real_night_unseen.per_class_AP50.person}</td>
+                  <td className="font-mono text-slate-400">{v.real_night_unseen.per_class_AP50.car}</td>
+                  <td className="font-mono text-slate-300">{v.day_old_junction.road_users_mAP50}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="mt-2 text-xs text-slate-500">
+            Test cameras: a night street crossing, a raised Philadelphia junction at night and foggy night Moscow (open-licence clips), labeled by our team and an AI annotator correcting YOLO drafts.
+            Training used other cameras only (rain, snow, dusk, drone, New York, our junction C3896 and C3905). The multi-domain fine-tune ran only 4 epochs (GPU memory limit), so a full run is pilot month 2.
+            Decision: at night the app picks the general model by its own per-camera check.
+          </p>
+        </div>
+      )}
     </div>
   );
 }

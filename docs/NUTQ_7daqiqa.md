@@ -61,7 +61,7 @@ Hammasi shahar serverida, bitta RTX 3060'da ishlaydi va real vaqtdan 2 barobar t
 "Raqamlar halol:
 - teskari harakat: 18 daqiqa real trafikda **0 ta yolg'on signal**, sun'iy teskari yurgizilgan 60 mashinaning **93%** i topildi;
 - zaif tomonimiz **tun** edi: aniqlik 0.39. Kadrni yorqinlashtirish yordam bermadi, yomonlashtirdi.
-- Finalda sun'iy tun, yomg'ir va xiralik bilan qayta o'qitdik: tun **0.39 dan 0.92 ga** ko'tarildi.
+- Finalda sun'iy tun bilan qayta o'qitdik: sun'iy testda 0.39 dan 0.92 ga chiqdi. Lekin biz bunga ishonmadik: 3 ta hech ko'rilmagan kameradan 35 ta **haqiqiy tungi** kadrni labelladik. U yerda bu model atigi **0.06** ko'rsatdi, ya'ni sun'iy tun haqiqiy tunni o'rgatmaydi. Haqiqiy tunda eng yaxshisi umumiy model: **0.58**.
 - Lekin bu model kunduzgi hodisa bahosini 0.83 dan 0.77 ga tushirdi. Shuning uchun har bir kamera ulanganda tizim 6 ta kadrda uchta modelni sinaydi: bizning kunduzgi, bizning tungi va umumiy COCO modeli. Qaysi biri ishonchliroq ko'rsa, o'sha tanlanadi.
 - Boshqa shaharlardan 7 ta ochiq video bilan sinadik: tungi dron ko'rinishida 6 ta kadrda bizning model 7 ta, umumiy model 211 ta ishonchli obyekt ko'rdi, shuning uchun umumiy model tanlandi.
 - Ochiq aytamiz: bu sun'iy tungi test. Haqiqiy tungi video pilotning birinchi oyida yig'iladi."
@@ -84,7 +84,7 @@ Video shahar serveridan chiqmaydi, yuz va raqamlar xiralashtiriladi, faqat hodis
 
 ## Kutilayotgan savollar va qisqa javoblar
 - **"LLM bilan yozilganmi?"** — "Ha, AI assistent bilan yozdik, bu README'da yozilgan. Lekin arxitektura, data va qoidalar bizniki. Har bir qismni tushuntira olamiz." *(Kodni oching: `core/doppix/generic.py`, `autoscene.py`.)*
-- **"Tunda ishlaydimi?"** — "Sun'iy tungi testda 0.39 edi. Finalda qayta o'qitib, 0.92 ga chiqardik. Har bir kamera uchun model avtomatik tanlanadi. Haqiqiy tungi video bilan tekshirish pilotning 1-oyida."
+- **"Tunda ishlaydimi?"** — "Haqiqiy tunda labellangan testimiz bor: 3 ta notanish kamera, 35 kadr. Eng yaxshi model 0.58. Tizim tunda o'sha modelni o'zi tanlaydi. Sun'iy tunda 0.92 chiqqan edi, haqiqiy tunda 0.06 bo'ldi. Shuning uchun haqiqiy data yig'ish pilotning 1-oyida."
 - **"Boshqa kamerada ishlaydimi?"** — "Ha. Nyu-York, Tokio, Ottava, dron, tun, yomg'ir: 7 ta ochiq litsenziyali video dashboard'da turibdi. Ochiq aytamiz: qisqa videoda zona chizilmasa, kam hodisa topiladi; kunduzgi dron ko'rinishida hali ikkala model ham zaif. Shuning uchun zona chizish 2 daqiqa va pilotda shu kameralarda qayta o'qitish bor."
 - **"Deploy tarixi?"** — GitHub → Actions bo'limi (har bir push = deploy). Server: `deploy/serve.py`.
 - **"Shaxsiy ma'lumotlar?"** — Yuzlar va raqamlar serverda xiralashtiriladi, videolar 6 soatdan keyin o'chiriladi, faqat metadata saqlanadi.

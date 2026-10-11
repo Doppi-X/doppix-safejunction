@@ -9,7 +9,7 @@ const STATS = [
   ["2× real time", "on one RTX 3060 next to the video archive; about $13 per camera per month for infrastructure"],
   ["0.83", "event score (macro F1, 6 classes) on our own labels of a Tashkent junction"],
   ["7", "cameras it had never seen, tested: New York, Tokyo, Ottawa, night, rain, snow, drone views"],
-  ["0.39 → 0.92", "night detection after our low-light fine-tune (synthetic test); each camera auto-picks its detector"],
+  ["0.19 → 0.58", "detector mAP50 on 35 REAL night frames from 3 cameras never trained on (our labels): each camera auto-picks the detector that sees it"],
 ];
 
 const FEATURES = [
