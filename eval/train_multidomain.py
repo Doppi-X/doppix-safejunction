@@ -124,6 +124,8 @@ def main():
     ap.add_argument("--epochs", type=int, default=30)
     ap.add_argument("--batch", type=int, default=6)
     ap.add_argument("--skip-train", action="store_true")
+    ap.add_argument("--init", default=str(config.WEIGHTS), help="weights to start from")
+    ap.add_argument("--name", default="multidomain")
     a = ap.parse_args()
     ann, frames, work = Path(a.ann), Path(a.frames), Path(a.work)
     work.mkdir(parents=True, exist_ok=True)
@@ -147,7 +149,7 @@ def main():
         annotators[d.get("annotator")] = annotators.get(d.get("annotator"), 0) + 1
     print("annotators", annotators, flush=True)
 
-    best = work / "runs" / "multidomain" / "weights" / "best.pt"
+    best = work / "runs" / a.name / "weights" / "best.pt"
     if not a.skip_train:
         if work.exists():
             shutil.rmtree(work / "data", ignore_errors=True)
@@ -160,8 +162,8 @@ def main():
         yaml.write_text(f"path: {(work / 'data').as_posix()}\ntrain: images/train\nval: images/val\nnames:\n" +
                         "".join(f"  {i}: {n}\n" for i, n in enumerate(NAMES)))
         from ultralytics import YOLO
-        YOLO(str(config.WEIGHTS)).train(data=str(yaml), epochs=a.epochs, imgsz=1280, batch=a.batch, seed=42, workers=0,
-                                        project=str(work / "runs"), name="multidomain", exist_ok=True, patience=10,
+        YOLO(a.init).train(data=str(yaml), epochs=a.epochs, imgsz=1280, batch=a.batch, seed=42, workers=0,
+                                        project=str(work / "runs"), name=a.name, exist_ok=True, patience=10,
                                         hsv_v=0.6, degrees=0, mosaic=1.0, verbose=False)
 
     cands = {"daylight (ours)": (config.WEIGHTS, None), "low-light (ours)": (config.LOWLIGHT_WEIGHTS, None),

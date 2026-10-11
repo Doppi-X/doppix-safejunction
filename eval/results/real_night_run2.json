@@ -1,0 +1,226 @@
+{
+ "test_videos": [
+  "night_crosswalk_trafficlight_street",
+  "night_raised_philadelphia",
+  "fog_night_moscow"
+ ],
+ "train_frames": 281,
+ "annotators": {
+  "G'IYOSIDDIN": 85,
+  "G'iyosiddin": 65,
+  "G'iyosiddinsd": 20,
+  "Giyosiddin": 11,
+  "Claude": 65,
+  "Shohruh": 70
+ },
+ "results": {
+  "daylight (ours)": {
+   "real_night_unseen": {
+    "road_users_mAP50": 0.185,
+    "lights_mAP50": 0.002,
+    "per_class_AP50": {
+     "person": 0.304,
+     "bicycle": 0.0,
+     "car": 0.601,
+     "motorcycle": null,
+     "bus": 0.0,
+     "truck": 0.019,
+     "light_red": 0.004,
+     "light_not_red": 0.001
+    },
+    "gt_boxes": {
+     "person": 83,
+     "bicycle": 6,
+     "car": 411,
+     "motorcycle": 0,
+     "bus": 1,
+     "truck": 16,
+     "light_red": 45,
+     "light_not_red": 23
+    },
+    "frames": 35
+   },
+   "day_old_junction": {
+    "road_users_mAP50": 0.966,
+    "lights_mAP50": 1.0,
+    "per_class_AP50": {
+     "person": 0.975,
+     "bicycle": null,
+     "car": 0.997,
+     "motorcycle": null,
+     "bus": 0.978,
+     "truck": 0.915,
+     "light_red": 1.0,
+     "light_not_red": 1.0
+    },
+    "gt_boxes": {
+     "person": 1152,
+     "bicycle": 0,
+     "car": 1227,
+     "motorcycle": 0,
+     "bus": 94,
+     "truck": 45,
+     "light_red": 46,
+     "light_not_red": 42
+    },
+    "frames": 44
+   }
+  },
+  "low-light (ours)": {
+   "real_night_unseen": {
+    "road_users_mAP50": 0.06,
+    "lights_mAP50": 0.102,
+    "per_class_AP50": {
+     "person": 0.132,
+     "bicycle": 0.0,
+     "car": 0.169,
+     "motorcycle": null,
+     "bus": 0.0,
+     "truck": 0.001,
+     "light_red": 0.195,
+     "light_not_red": 0.01
+    },
+    "gt_boxes": {
+     "person": 83,
+     "bicycle": 6,
+     "car": 411,
+     "motorcycle": 0,
+     "bus": 1,
+     "truck": 16,
+     "light_red": 45,
+     "light_not_red": 23
+    },
+    "frames": 35
+   },
+   "day_old_junction": {
+    "road_users_mAP50": 0.974,
+    "lights_mAP50": 1.0,
+    "per_class_AP50": {
+     "person": 0.976,
+     "bicycle": null,
+     "car": 0.996,
+     "motorcycle": null,
+     "bus": 0.978,
+     "truck": 0.946,
+     "light_red": 1.0,
+     "light_not_red": 1.0
+    },
+    "gt_boxes": {
+     "person": 1152,
+     "bicycle": 0,
+     "car": 1227,
+     "motorcycle": 0,
+     "bus": 94,
+     "truck": 45,
+     "light_red": 46,
+     "light_not_red": 42
+    },
+    "frames": 44
+   }
+  },
+  "general COCO": {
+   "real_night_unseen": {
+    "road_users_mAP50": 0.582,
+    "lights_mAP50": null,
+    "per_class_AP50": {
+     "person": 0.353,
+     "bicycle": 0.667,
+     "car": 0.939,
+     "motorcycle": null,
+     "bus": 0.5,
+     "truck": 0.451,
+     "light_red": 0.0,
+     "light_not_red": 0.0
+    },
+    "gt_boxes": {
+     "person": 83,
+     "bicycle": 6,
+     "car": 411,
+     "motorcycle": 0,
+     "bus": 1,
+     "truck": 16,
+     "light_red": 45,
+     "light_not_red": 23
+    },
+    "frames": 35
+   },
+   "day_old_junction": {
+    "road_users_mAP50": 0.886,
+    "lights_mAP50": null,
+    "per_class_AP50": {
+     "person": 0.905,
+     "bicycle": null,
+     "car": 0.984,
+     "motorcycle": null,
+     "bus": 0.932,
+     "truck": 0.724,
+     "light_red": 0.0,
+     "light_not_red": 0.0
+    },
+    "gt_boxes": {
+     "person": 1152,
+     "bicycle": 0,
+     "car": 1227,
+     "motorcycle": 0,
+     "bus": 94,
+     "truck": 45,
+     "light_red": 46,
+     "light_not_red": 42
+    },
+    "frames": 44
+   }
+  },
+  "multi-domain (new)": {
+   "real_night_unseen": {
+    "road_users_mAP50": 0.256,
+    "lights_mAP50": 0.23,
+    "per_class_AP50": {
+     "person": 0.336,
+     "bicycle": 0.1,
+     "car": 0.751,
+     "motorcycle": null,
+     "bus": 0.0,
+     "truck": 0.093,
+     "light_red": 0.333,
+     "light_not_red": 0.128
+    },
+    "gt_boxes": {
+     "person": 83,
+     "bicycle": 6,
+     "car": 411,
+     "motorcycle": 0,
+     "bus": 1,
+     "truck": 16,
+     "light_red": 45,
+     "light_not_red": 23
+    },
+    "frames": 35
+   },
+   "day_old_junction": {
+    "road_users_mAP50": 0.942,
+    "lights_mAP50": 1.0,
+    "per_class_AP50": {
+     "person": 0.985,
+     "bicycle": null,
+     "car": 0.993,
+     "motorcycle": null,
+     "bus": 0.997,
+     "truck": 0.791,
+     "light_red": 1.0,
+     "light_not_red": 1.0
+    },
+    "gt_boxes": {
+     "person": 1152,
+     "bicycle": 0,
+     "car": 1227,
+     "motorcycle": 0,
+     "bus": 94,
+     "truck": 45,
+     "light_red": 46,
+     "light_not_red": 42
+    },
+    "frames": 44
+   }
+  }
+ }
+}
