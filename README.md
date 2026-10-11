@@ -1,5 +1,11 @@
 # Do'ppiX SafeJunction
 
+> **▶ Watch the 3-minute explainer:** https://giyos1212-safejunction.static.hf.space/data/video/explainer.mp4
+> (the problem, the scheme, the live system on new cameras, the numbers, the business case)
+>
+> **Try it live:** https://giyos1212-safejunction.static.hf.space (the "Live demo" button runs a camera in Korea on our GPU server)
+
+
 **Turn any traffic camera into a road-safety auditor.** WIUT Hackathon 2026 Final · Computer Vision track · mode: **Startup**
 
 SafeJunction watches the CCTV a city already has. It finds red-light running, drivers

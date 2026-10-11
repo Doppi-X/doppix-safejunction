@@ -3,6 +3,7 @@ import { ArrowRight, Github, MapPin, PlayCircle, ShieldCheck, TrafficCone, Uploa
 import { eventColor, fetchJSON, getApiBase } from "../lib/data.js";
 import { useJSON } from "../lib/hooks.js";
 import { REPO_URL } from "../team.js";
+import ExplainerButton from "../components/ExplainerButton.jsx";
 
 const STATS = [
   ["2× real time", "on one RTX 3060 next to the video archive; about $13 per camera per month for infrastructure"],
@@ -83,6 +84,7 @@ export default function Hero() {
             pedestrians, wrong-way driving and near misses, and tells the traffic engineer what to change, before
             the crash, with faces and plates blurred.
           </p>
+          <ExplainerButton className="mt-5" />
           <ul className="mt-5 grid max-w-xl grid-cols-2 gap-2 text-sm text-slate-200">
             {FEATURES.map(([I, t]) => <li key={t} className="flex items-center gap-2"><I size={16} className="shrink-0 text-amber-300" />{t}</li>)}
           </ul>
