@@ -97,6 +97,15 @@ def events_for(p: Perception, zones: dict | None):
     return events, involved, scene, scene_mode, ff, light
 
 
+def jsonable(o):
+    """json.dumps default: numpy scalars and arrays (e.g. counts computed with numpy) to plain Python."""
+    if hasattr(o, "tolist"):
+        return o.tolist()
+    if hasattr(o, "item"):
+        return o.item()
+    raise TypeError(f"not JSON serializable: {type(o).__name__}")
+
+
 def render_private_video(src: str, p: Perception, dst: Path, max_sec: float | None = None, progress=None) -> dict:
     """Second pass over the video: blur heads and plates, write a small H.264 for the browser."""
     cap = cv2.VideoCapture(src)
@@ -170,7 +179,7 @@ def analyze_video(src: str, workdir: Path, zones=None, max_sec: float | None = N
                      "stride_s": stride_sec, "imgsz": imgsz}
     doc["detector"] = getattr(p, "detector", "detector.pt")
     doc["detector_scores"] = getattr(p, "detector_scores", None)
-    (workdir / "result.json").write_text(json.dumps(doc, separators=(",", ":")), encoding="utf-8")
+    (workdir / "result.json").write_text(json.dumps(doc, separators=(",", ":"), default=jsonable), encoding="utf-8")
     say("done", 1.0)
     return doc
 

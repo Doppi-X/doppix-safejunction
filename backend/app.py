@@ -108,7 +108,7 @@ def register(jid: str) -> None:
     row = report.summary_row(doc, id=jid, name=jobs[jid].get("name") or f"Camera {jid[:4].upper()}",
                              created=jobs[jid]["created"], source="upload", privacy=doc.get("privacy"))
     shutil.copy(d / "frame.jpg", NET / f"{jid}.jpg")
-    (NET / f"{jid}.json").write_text(json.dumps(row, separators=(",", ":")), encoding="utf-8")
+    (NET / f"{jid}.json").write_text(json.dumps(row, separators=(",", ":"), default=analyze.jsonable), encoding="utf-8")
 
 
 def process(jid: str) -> None:
@@ -126,7 +126,7 @@ def process(jid: str) -> None:
     doc_path = d / "result.json"
     doc = json.loads(doc_path.read_text(encoding="utf-8"))
     doc["device"] = DEVICE
-    doc_path.write_text(json.dumps(doc, separators=(",", ":")), encoding="utf-8")
+    doc_path.write_text(json.dumps(doc, separators=(",", ":"), default=analyze.jsonable), encoding="utf-8")
     register(jid)
     update(jid, status="done", stage="done", progress=1.0)
 
@@ -234,7 +234,7 @@ async def job_zones(jid: str, request: Request):
         doc = analyze.build_doc(p, zones)
         for k in ("privacy", "timing", "detector", "detector_scores"):
             doc[k] = old.get(k)
-        (d / "result.json").write_text(json.dumps(doc, separators=(",", ":")), encoding="utf-8")
+        (d / "result.json").write_text(json.dumps(doc, separators=(",", ":"), default=analyze.jsonable), encoding="utf-8")
         register(jid)
     return status(jid)
 
