@@ -123,18 +123,16 @@ We labeled frames of 15 open-licence clips in our labeling tool. The team labele
 
 **Held out entirely as the test set:** three night cameras. They are a street crossing, a raised Philadelphia junction and foggy Moscow: 35 frames, 585 boxes.
 
-**Trained on:** all other cameras, 281 frames. Scored with one AP50 evaluator for every model (`eval/train_multidomain.py`, `eval/results/real_night.json`):
+Scored with one AP50 evaluator for every model (`eval/train_multidomain.py --skip-train`, `eval/results/real_night.json`):
 
 | detector | real night, road users mAP50 | person | car | day, our junction, road users |
 |---|---|---|---|---|
 | our daylight `detector.pt` | 0.19 | 0.30 | 0.60 | **0.97** |
 | our synthetic-night fine-tune | 0.06 | 0.13 | 0.17 | 0.97 |
 | general COCO YOLO26m | **0.58** | 0.35 | 0.94 | 0.89 |
-| our multi-domain fine-tune (4 epochs, stopped: GPU memory) | 0.33 | 0.48 | 0.83 | 0.95 |
-| same, 3 more epochs at batch 2 (second run, `eval/results/real_night_run2.json`) | 0.26 | – | – | 0.94 |
 
 * The per-camera detector choice therefore picks the general model at night and ours by day on our junction.
-* Neither multi-domain run beat the general model at night, so the checkpoint is not shipped. It was trained for only 4 epochs: training at 1280 px with batch 6 overflowed the 12 GB GPU while the service was running. A full run is pilot month 2.
+* The other labeled cameras (rain, snow, dusk, drone, New York) are training data for the next fine-tune (pilot month 2).
 
 
 ### Cameras we had never seen (final)

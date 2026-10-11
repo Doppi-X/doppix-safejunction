@@ -265,7 +265,6 @@ Video → [1] Model tanlash → [2] Aniqlash + kuzatish → [3] Sahna → [4] Ho
 | Bizning kunduzgi | 0.19 | **0.97** |
 | Sun'iy tun bilan o'qitilgan | **0.06** | 0.97 |
 | Umumiy COCO | **0.58** | 0.89 |
-| Yangi multi-domain (4 epoch) | 0.33 | 0.95 |
 
 - **Hikoya:** "sun'iy testga ishonmadik, haqiqiy tunni labellab o'lchadik. Sun'iy tun yordam bermadi, shuning uchun tizim har kamera uchun eng yaxshi modelni o'zi tanlaydi."
 

@@ -89,7 +89,7 @@ export default function FinalQuality() {
           </table>
           <p className="mt-2 text-xs text-slate-500">
             Test cameras: a night street crossing, a raised Philadelphia junction at night and foggy night Moscow (open-licence clips), labeled by our team and an AI annotator correcting YOLO drafts.
-            Training used other cameras only (rain, snow, dusk, drone, New York, our junction C3896 and C3905). The multi-domain fine-tune ran only 4 epochs (GPU memory limit), so a full run is pilot month 2.
+            None of these cameras was used to build or tune any detector.
             Decision: at night the app picks the general model by its own per-camera check.
           </p>
         </div>

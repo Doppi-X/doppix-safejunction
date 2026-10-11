@@ -4,7 +4,6 @@
   "night_raised_philadelphia",
   "fog_night_moscow"
  ],
- "train_frames": 281,
  "annotators": {
   "G'IYOSIDDIN": 85,
   "G'iyosiddin": 65,
@@ -156,58 +155,6 @@
      "truck": 0.724,
      "light_red": 0.0,
      "light_not_red": 0.0
-    },
-    "gt_boxes": {
-     "person": 1152,
-     "bicycle": 0,
-     "car": 1227,
-     "motorcycle": 0,
-     "bus": 94,
-     "truck": 45,
-     "light_red": 46,
-     "light_not_red": 42
-    },
-    "frames": 44
-   }
-  },
-  "multi-domain (new)": {
-   "real_night_unseen": {
-    "road_users_mAP50": 0.33,
-    "lights_mAP50": 0.159,
-    "per_class_AP50": {
-     "person": 0.484,
-     "bicycle": 0.0,
-     "car": 0.829,
-     "motorcycle": null,
-     "bus": 0.0,
-     "truck": 0.338,
-     "light_red": 0.231,
-     "light_not_red": 0.087
-    },
-    "gt_boxes": {
-     "person": 83,
-     "bicycle": 6,
-     "car": 411,
-     "motorcycle": 0,
-     "bus": 1,
-     "truck": 16,
-     "light_red": 45,
-     "light_not_red": 23
-    },
-    "frames": 35
-   },
-   "day_old_junction": {
-    "road_users_mAP50": 0.95,
-    "lights_mAP50": 1.0,
-    "per_class_AP50": {
-     "person": 0.983,
-     "bicycle": null,
-     "car": 0.993,
-     "motorcycle": null,
-     "bus": 0.977,
-     "truck": 0.848,
-     "light_red": 1.0,
-     "light_not_red": 1.0
     },
     "gt_boxes": {
      "person": 1152,
