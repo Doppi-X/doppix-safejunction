@@ -85,12 +85,12 @@
   <h2>From one camera to a city-wide risk ranking</h2>
   <div class="row" style="margin-top:22px;align-items:flex-start">
     <div style="flex:1.15">
-      <img class="shot" src="img/zones_crop.jpg" style="width:100%;height:330px;object-fit:cover;object-position:50% 40%">
-      <p class="small" style="margin-top:8px"><b class="amber">1 · Upload</b> a video or photo. <b class="amber">2 · Optionally draw</b> road, crossing, stop line and light while it processes.</p>
+      <img class="shot" src="img/korea_demo.jpg" style="width:100%;height:330px;object-fit:cover;object-position:0 0">
+      <p class="small" style="margin-top:8px"><b class="amber">1 · Upload</b> any camera (here: a crossing in Korea, no zones drawn). <b class="amber">2 · Report:</b> events, PET conflicts, hotspot map, PDF.</p>
     </div>
     <div style="flex:1">
-      <img class="shot" src="img/hotspot.jpg" style="width:100%;height:330px;object-fit:cover;object-position:50% 60%">
-      <p class="small" style="margin-top:8px"><b class="amber">3 · Report + hotspot map + PDF</b> for the engineer. <b class="amber">4 · City dashboard:</b> every camera ranked by risk, before/after comparison of a fix.</p>
+      <img class="shot" src="img/dash_cities.jpg" style="width:100%;height:330px;object-fit:cover;object-position:0 0">
+      <p class="small" style="margin-top:8px"><b class="amber">3 · City dashboard:</b> every camera ranked by risk (or per 1,000 pedestrians, or Empirical Bayes), hotspots, before/after of a fix.</p>
     </div>
   </div>
   <div class="row" style="margin-top:18px">
@@ -112,8 +112,8 @@
       <p class="small">Frontend on Hugging Face; API on our RTX 3060 server; deployed by GitHub Actions</p>
     </div>
     <div style="flex:1">
-      <img class="shot" src="img/flow.jpg" style="width:100%">
-      <p class="small" style="margin-top:8px">A camera it has never seen (zero-config): blue arrows are lane directions learned from the traffic in 40 s; boxes are tracked road users; heads and plates blurred.</p>
+      <img class="shot" src="img/unseen9.jpg" style="width:100%">
+      <p class="small" style="margin-top:8px">Nine cameras it had never seen, run live with no setup: New York, Tokyo, Tehran, Korea, Ottawa; night, rain, snow, drone. One tap on the site runs the Korea camera for you.</p>
     </div>
   </div>
   <div class="foot"><span>Backup: recorded demo video in the repository</span><span>4</span></div>
@@ -151,13 +151,13 @@
   <h2>Our advantage is data, pipeline and local knowledge</h2>
   <div class="row" style="margin-top:24px">
     <div class="col" style="flex:1.1">
-      <div class="card"><h3><span class="amber">Data:</span> 12,990 boxes labeled by us</h3><p class="small">Tashkent traffic: Cobalts, Damas, articulated buses, our traffic lights. We built our own labeling tool (event timeline, scene editor, YOLO pre-labels) to make it.</p></div>
+      <div class="card"><h3><span class="amber">Data:</span> 12,990 + 4,090 boxes labeled by us</h3><p class="small">Tashkent traffic: Cobalts, Damas, articulated buses, our traffic lights. We built our own labeling tool (event timeline, scene editor, YOLO pre-labels) to make it.</p></div>
       <div class="card"><h3><span class="amber">Pipeline:</span> zero-config scene learning</h3><p class="small">Lane directions learned per grid cell from traffic. A car is judged against the field with its own samples removed, so one wrong-way driver cannot teach the system its direction.</p></div>
       <div class="card"><h3><span class="amber">Industry methods, measured:</span> PET conflicts, per-1,000 exposure, HSM Empirical Bayes</h3><p class="small">The metrics Miovision, Transoft/Brisk and Bellevue WA use, on any existing camera, checked against our own labels of 4 videos.</p></div>
     </div>
     <div style="flex:1">
-      <img class="shot" src="img/labeler_bbox.jpg" style="width:100%">
-      <p class="small" style="margin-top:8px">Our labeling tool: YOLO pre-labels, human review, export.</p>
+      <img class="shot" src="img/new_labels.jpg" style="width:100%">
+      <p class="small" style="margin-top:8px">Labeled during the final: 148 frames, 4,090 boxes on 15 new cameras (night, fog, rain, snow, drone), in our own labeling tool; faces and plates blurred here.</p>
     </div>
   </div>
   <div class="foot"><span>Replication test: the data and the measured rules take weeks, not a weekend</span><span>6</span></div>
@@ -259,7 +259,7 @@
     <div class="card" style="flex:1;text-align:center"><img src="img/shohruh.jpg" style="width:150px;height:150px;border-radius:18px;object-fit:cover"><h3 style="margin-top:12px">Shohruh Gulmirodov</h3><p class="amber" style="font-size:15px">Web Developer</p></div>
     <div class="card" style="flex:1;text-align:center"><img src="img/ibodulla.jpg" style="width:150px;height:150px;border-radius:18px;object-fit:cover"><h3 style="margin-top:12px">Ibodulla Obidjonov</h3><p class="amber" style="font-size:15px">Cybersecurity Engineer</p></div>
   </div>
-  <p class="small" style="margin-top:26px">Before the final (declared in the README): detector, tracker, zone rules for one intersection. During the final: any-camera mode, privacy blur, city report with hotspot map and PDF, city dashboard with before/after, low-light model with day/night routing, robustness tests, CI/CD. Git history shows both. Built with an AI coding assistant; open source: Ultralytics, PyTorch, OpenCV, FastAPI, React.</p>
+  <p class="small" style="margin-top:26px">Before the final (declared in the README): detector, tracker, zone rules for one intersection. During the final: any-camera mode, privacy blur, city report with hotspot map and PDF, city dashboard with before/after, per-camera detector choice, 15 new cameras labeled and a real-night test, speeds, CI/CD. Git history shows both. Built with an AI coding assistant; open source: Ultralytics, PyTorch, OpenCV, FastAPI, React.</p>
   <p class="num" style="margin-top:14px">Try it: giyos1212-safejunction.static.hf.space</p>
 </section>
 
