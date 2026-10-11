@@ -1,14 +1,13 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowRight, Github, MapPin, PlayCircle, ShieldCheck, TrafficCone, Upload } from "lucide-react";
-import VideoOverlay, { parseTracks } from "../components/VideoOverlay.jsx";
-import { fetchJSON, getApiBase } from "../lib/data.js";
+import { eventColor, fetchJSON, getApiBase } from "../lib/data.js";
 import { useJSON } from "../lib/hooks.js";
 import { REPO_URL } from "../team.js";
 
 const STATS = [
   ["2× real time", "on one RTX 3060 next to the video archive; about $13 per camera per month for infrastructure"],
   ["0.83", "event score (macro F1, 6 classes) on our own labels of a Tashkent junction"],
-  ["7", "cameras it had never seen, tested: New York, Tokyo, Ottawa, night, rain, snow, drone views"],
+  ["9", "cameras it had never seen, run live: New York, Tokyo, Tehran, Korea, Ottawa; night, rain, snow, dusk, drone views"],
   ["0.19 → 0.58", "detector mAP50 on 35 REAL night frames from 3 cameras never trained on (our labels): each camera auto-picks the detector that sees it"],
 ];
 
@@ -29,32 +28,30 @@ function useLive() {
   return h;
 }
 
-const CLIP_START = 74;   // hero.mp4 = C3896 dan 74–92 s kesma (~0.8 MB): qizilda o'tish, stop-chiziq, tirbandlik
-
-function HeroPlayer() {
-  const { data: doc } = useJSON("./data/C3896.json", fetchJSON);
-  const frames = useMemo(() => (doc ? parseTracks(doc) : []), [doc]);
-  const ref = useRef(null);
-  useEffect(() => {
-    const v = ref.current?.video;
-    if (!v) return;
-    const start = () => { v.currentTime = 0; v.play().catch(() => {}); };
-    v.addEventListener("loadedmetadata", start, { once: true });
-    v.addEventListener("ended", start);
-    if (v.readyState >= 1) start();
-    return () => v.removeEventListener("ended", start);
-  }, [doc]);
-  if (!doc) return <div className="aspect-video animate-pulse rounded-2xl bg-slate-800/60" />;
+/** Four very different cameras, each with the system's own output: hotspots of events and serious conflicts. */
+function HeroCameras() {
+  const { data: cams } = useJSON("./data/hero/cameras.json", fetchJSON);
+  if (!cams) return <div className="aspect-video animate-pulse rounded-2xl bg-slate-800/60" />;
   return (
     <div className="relative">
       <div className="absolute -inset-3 rounded-3xl bg-gradient-to-tr from-amber-500/20 via-transparent to-red-500/20 blur-2xl" />
-      <div className="relative overflow-hidden rounded-2xl border border-slate-700 shadow-2xl shadow-black/60">
-        <VideoOverlay ref={ref} src="./data/video/hero.mp4" offset={CLIP_START} doc={doc} frames={frames} controls={false}
-          layers={{ highlight: true, boxes: true, ids: false, trails: true, zones: false }} />
-        <div className="absolute bottom-2 left-2 flex items-center gap-1.5 rounded-full bg-slate-950/80 px-2.5 py-1 text-xs text-slate-200">
-          <span className="h-2 w-2 animate-pulse rounded-full bg-red-500" /> Reference intersection · faces and plates blurred
-        </div>
+      <div className="relative grid grid-cols-2 gap-2">
+        {cams.map((c) => (
+          <div key={c.label} className="relative overflow-hidden rounded-xl border border-slate-700 shadow-xl shadow-black/50" style={{ aspectRatio: c.aspect }}>
+            <img src={c.frame} alt={c.label} className="absolute inset-0 h-full w-full object-cover" />
+            <svg viewBox="0 0 1000 1000" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
+              {c.hotspots.map(([x, y, l], i) => (
+                <ellipse key={i} cx={x * 1000} cy={y * 1000} rx="9" ry={9 * c.aspect} fill={eventColor(l)} stroke="#0f172a" strokeWidth="2" />
+              ))}
+            </svg>
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-slate-950/95 to-transparent p-2 pt-6">
+              <div className="text-xs font-semibold text-white">{c.label}</div>
+              <div className="text-[10px] text-slate-300">{c.serious} serious conflicts · {c.events} events · {c.minutes} min</div>
+            </div>
+          </div>
+        ))}
       </div>
+      <p className="relative mt-2 text-center text-[11px] text-slate-400">Real output on four cameras: dots = where events and serious conflicts happened. Faces and plates blurred.</p>
     </div>
   );
 }
@@ -63,7 +60,7 @@ export default function Hero() {
   const live = useLive();
   const runSample = () => {
     document.getElementById("analyze")?.scrollIntoView({ behavior: "smooth" });
-    window.dispatchEvent(new CustomEvent("sj:sample"));
+    window.dispatchEvent(new CustomEvent("sj:sample", { detail: "korea" }));
   };
   return (
     <section className="relative overflow-hidden border-b border-slate-800">
@@ -91,7 +88,7 @@ export default function Hero() {
           </ul>
           <div className="mt-7 flex flex-wrap gap-3">
             <button onClick={runSample} disabled={!live} className="btn bg-amber-500 px-4 py-2.5 text-slate-950 hover:bg-amber-400 disabled:opacity-50">
-              <PlayCircle size={18} /> Live demo: 40 s sample
+              <PlayCircle size={18} /> Live demo: a camera in Korea
             </button>
             <a href="#analyze" className="btn border border-amber-500/50 px-4 py-2.5 text-amber-200 hover:bg-amber-500/10">
               <Upload size={16} /> Upload your video
@@ -106,7 +103,7 @@ export default function Hero() {
             )}
           </div>
         </div>
-        <HeroPlayer />
+        <HeroCameras />
       </div>
       <div className="relative mx-auto grid max-w-7xl grid-cols-2 gap-3 px-4 pb-14 sm:grid-cols-4">
         {STATS.map(([v, l]) => (

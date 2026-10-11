@@ -246,5 +246,82 @@
   "licence": "Pexels License (free to use, modify; attribution not required) https://www.pexels.com/license/",
   "author": "Braeson Holland (Pexels)",
   "page_url": "https://www.pexels.com/video/cars-and-people-in-the-street-during-a-heavy-snowfall-11316066/"
+ },
+ {
+  "file": "dusk_raised_korea",
+  "condition": "dusk",
+  "duration_s": 28.53,
+  "detector": "general_coco.pt",
+  "detector_scores": {
+   "detector.pt": 51,
+   "detector_lowlight.pt": 43,
+   "general_coco.pt": 84
+  },
+  "events": [],
+  "conflicts": {
+   "counts": {
+    "serious": 1,
+    "moderate": 3,
+    "interaction": 5
+   },
+   "exposure_pedestrians": 12,
+   "exposure_vehicles": 29,
+   "vru_serious": 0,
+   "serious_per_1000_pedestrians": 0.0,
+   "serious_per_1000_road_users": 24.4,
+   "method": "PET image-plane, carriageway cells only; bins <1.5 / 1.5-3 / 3-5 s (Bellevue WA screening)"
+  },
+  "privacy": {
+   "plates_blurred": 89,
+   "heads_blurred": 3536,
+   "fps": 11.99
+  },
+  "licence": "Pexels License (free to use, modify; attribution not required) https://www.pexels.com/license/",
+  "author": "Paul Bill (Pexels)",
+  "page_url": "https://www.pexels.com/video/bustling-city-intersection-at-twilight-29122930/"
+ },
+ {
+  "file": "rain_raised_tehran",
+  "condition": "rain",
+  "duration_s": 42.41,
+  "detector": "general_coco.pt",
+  "detector_scores": {
+   "detector.pt": 97,
+   "detector_lowlight.pt": 88,
+   "general_coco.pt": 131
+  },
+  "events": [
+   [
+    7.508,
+    19.92,
+    "stopped_vehicle"
+   ],
+   [
+    19.219,
+    38.939,
+    "congestion"
+   ]
+  ],
+  "conflicts": {
+   "counts": {
+    "serious": 2,
+    "moderate": 1,
+    "interaction": 4
+   },
+   "exposure_pedestrians": 10,
+   "exposure_vehicles": 133,
+   "vru_serious": 2,
+   "serious_per_1000_pedestrians": 200.0,
+   "serious_per_1000_road_users": 14.0,
+   "method": "PET image-plane, carriageway cells only; bins <1.5 / 1.5-3 / 3-5 s (Bellevue WA screening)"
+  },
+  "privacy": {
+   "plates_blurred": 2542,
+   "heads_blurred": 2110,
+   "fps": 14.99
+  },
+  "licence": "Pexels License (free to use, modify; attribution not required) https://www.pexels.com/license/",
+  "author": "Abbas Malek Hosseini (Pexels)",
+  "page_url": "https://www.pexels.com/video/high-angle-view-of-the-city-6113303/"
  }
 ]

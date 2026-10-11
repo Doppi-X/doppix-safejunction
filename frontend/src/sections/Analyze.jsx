@@ -111,10 +111,15 @@ export default function Analyze() {
 
   // hero "Live demo" button: run the sample clip as soon as the server is reachable
   const runSampleRef = useRef(null);
-  runSampleRef.current = () => fetch("./data/demo_sample/video.mp4").then((r) => r.blob())
-    .then((b) => start(new File([b], "sample_40s.mp4", { type: "video/mp4" }))).catch(() => setError("Could not load the sample."));
+  const SAMPLES = { korea: ["./data/demo_sample/korea.mp4", "Crossing in Korea, dusk"], tashkent: ["./data/demo_sample/video.mp4", "Tashkent junction"] };
+  runSampleRef.current = (kind = "korea") => {
+    const [url, label] = SAMPLES[kind] || SAMPLES.korea;
+    if (!name) setName(label + " (sample)");
+    return fetch(url).then((r) => r.blob())
+      .then((b) => start(new File([b], `sample_${kind}.mp4`, { type: "video/mp4" }))).catch(() => setError("Could not load the sample."));
+  };
   useEffect(() => {
-    const go = () => { if (!busyRef.current) runSampleRef.current(); };
+    const go = (e) => { if (!busyRef.current) runSampleRef.current(e?.detail || "korea"); };
     window.addEventListener("sj:sample", go);
     return () => window.removeEventListener("sj:sample", go);
   }, []);
@@ -149,9 +154,14 @@ export default function Analyze() {
           <button disabled={!online} onClick={() => input.current?.click()}
             className="btn bg-amber-500 px-4 py-2 text-slate-950 hover:bg-amber-400 disabled:opacity-40"><Upload size={16} /> Choose file</button>
           <input ref={input} type="file" accept="video/*,image/*" className="hidden" onChange={(e) => start(e.target.files?.[0])} />
-          <button disabled={!online} onClick={() => runSampleRef.current()}
-            className="text-sm text-amber-300 underline decoration-dotted hover:text-amber-200 disabled:opacity-40">
-            No traffic video at hand? Run our 40 s sample clip</button>
+          <div className="flex flex-wrap items-center justify-center gap-2 text-sm">
+            <span className="text-slate-400">No traffic video at hand? Run a sample:</span>
+            <button disabled={!online} onClick={() => runSampleRef.current("korea")}
+              className="text-amber-300 underline decoration-dotted hover:text-amber-200 disabled:opacity-40">crossing in Korea (28 s, dusk)</button>
+            <span className="text-slate-600">·</span>
+            <button disabled={!online} onClick={() => runSampleRef.current("tashkent")}
+              className="text-amber-300 underline decoration-dotted hover:text-amber-200 disabled:opacity-40">our Tashkent junction (40 s)</button>
+          </div>
         </div>
       )}
 

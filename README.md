@@ -66,7 +66,7 @@ The frontend finds the API through `data/api.json`, which `deploy/serve.py` publ
 
    Each scores 6 frames spread over the clip, counting confident (≥ 0.5) road users. The daylight model, which the rules were tuned on, is kept unless another finds more than 1.25× + 2 as many.
 
-   Why: on 7 open-licence clips from other cities (below), our fine-tune barely saw anything from a drone at night (7 confident road users in 6 sample frames, COCO 211). On our own junction it beats COCO (261 vs 172 in 4 sample frames), and at the Shibuya crossing too (443 vs 108 in 6). A brightness threshold could not separate lit night streets from day (both had a mean HSV value of about 90), so we dropped it.
+   Why: on open-licence clips from other cities (below), our fine-tune barely saw anything from a drone at night (7 confident road users in 6 sample frames, COCO 211). On our own junction it beats COCO (261 vs 172 in 4 sample frames), and at the Shibuya crossing too (443 vs 108 in 6). A brightness threshold could not separate lit night streets from day (both had a mean HSV value of about 90), so we dropped it.
 
    With the COCO model there is no traffic-light state, so red-light rules need our model or a drawn light plus our light classifier.
 2. **Scene:** there are three sources, in this order.
@@ -136,7 +136,7 @@ We labeled frames of 15 open-licence clips in our labeling tool. The team labele
 * The multi-domain checkpoint is not shipped. It was trained for only 4 epochs: training at 1280 px with batch 6 overflowed the 12 GB GPU while the service was running. A full run is pilot month 2.
 
 
-### Seven cameras we had never seen (final)
+### Cameras we had never seen (final)
 
 These are open-licence clips from other cities (`eval/new_videos_sources.json`). Each was uploaded through the live API without drawing zones, exactly as a new user would (`eval/results/new_cameras.json`). There are no labels, so this table shows what the system did, not its accuracy.
 
@@ -149,6 +149,8 @@ These are open-licence clips from other cities (`eval/new_videos_sources.json`).
 | night_crosswalk_trafficlight_street | night | 17 s | general_coco.pt (6 / 6 / 12) | none | 2 / 1 | 1 / 3 |
 | rain_night_crossing_nyc_timessquare | rain | 20 s | general_coco.pt (45 / 26 / 97) | none | 19 / 15 | 43 / 35 |
 | snow_intersection_ottawa | snow | 17 s | general_coco.pt (7 / 7 / 22) | none | 0 / 0 | 0 / 3 |
+| dusk_raised_korea | dusk | 29 s | general_coco.pt (51 / 43 / 84) | none | 1 / 3 | 12 / 29 |
+| rain_raised_tehran | rain | 42 s | general_coco.pt (97 / 88 / 131) | congestion, stopped_vehicle | 2 / 1 | 10 / 133 |
 
 What this shows:
 * **Detector choice matters.** The general COCO model was picked for the night drone view, both night street scenes (Times Square in rain, the street crossing), Ottawa in snow and New York. Our own model was kept for Shibuya and the day drone view. Scores count confident road users in 6 sample frames.

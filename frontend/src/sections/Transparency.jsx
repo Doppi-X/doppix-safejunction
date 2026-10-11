@@ -17,7 +17,7 @@ const DURING = [
   "New web app and API: video and photo jobs, re-run with new zones, report, hotspot map, PDF",
   "Post-encroachment-time conflicts and exposure per 1,000 pedestrians",
   "City dashboard: risk index, Empirical Bayes ranking, before/after comparison",
-  "Low-light fine-tune, robustness tests, per-camera detector choice; tests on 7 clips from other cities",
+  "Low-light fine-tune, robustness tests, per-camera detector choice; tests on 9 cameras from other cities; real-night labeled test (148 new labeled frames)",
   "Business model and calculator; CI/CD to our GPU server with GitHub Actions",
 ];
 

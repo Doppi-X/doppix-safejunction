@@ -9,7 +9,7 @@ const ASKED = [
   ["Quality at night, in rain, on local vehicles and plates", "Engineering constraint + Quality", "#engineering"],
   ["Quality measured on a test set we built; known failures", "Quality, measured", "#evaluation"],
   ["A system, not one call to someone else's model", "How it works (8 stages)", "#approach"],
-  ["Innovation: why a weekend copy fails", "How it works · 7 unseen cameras · our 12,990 labels", "#engineering"],
+  ["Innovation: why a weekend copy fails", "How it works · 9 unseen cameras · real-night test · our labels", "#engineering"],
   ["User, payer, evidence, 3-month pilot", "Overview · Business", "#business"],
   ["Budget, ROI, unit economics, payback, assumptions", "Business calculator", "#business"],
   ["Pre-final work declared; data sources and licences", "Data & declaration", "#transparency"],
@@ -31,7 +31,7 @@ const CARDS = [
   },
   {
     icon: CheckCircle2, title: "Evidence",
-    body: "Our detector reaches mAP50 0.978 on held-out frames. Event rules score 0.83 on our labels. Wrong-way detection: 0 false alarms per hour and 93 % caught. PET finds 7 of 9 labeled failures to yield. Tested on 7 clips from other cities. Every number below is measured, and the weak spots are listed.",
+    body: "Our detector reaches mAP50 0.978 on held-out frames. Event rules score 0.83 on our labels. Wrong-way detection: 0 false alarms per hour and 93 % caught. PET finds 7 of 9 labeled failures to yield. Run live on 9 cameras from other cities; real night measured on labeled frames (0.58). Every number below is measured, and the weak spots are listed.",
   },
 ];
 

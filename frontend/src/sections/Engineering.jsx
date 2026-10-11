@@ -32,6 +32,8 @@ const NAMES = {
   night_crosswalk_trafficlight_street: "Street crossing · night",
   rain_night_crossing_nyc_timessquare: "Times Square · rain, night",
   snow_intersection_ottawa: "Ottawa · snow",
+  dusk_raised_korea: "Korea · dusk",
+  rain_raised_tehran: "Tehran · rain",
 };
 const DET = { "detector.pt": "our model", "detector_lowlight.pt": "our low-light", "general_coco.pt": "general COCO" };
 
@@ -41,7 +43,7 @@ function Unseen() {
   if (!data) return null;
   return (
     <div className="mt-6">
-      <h3 className="text-lg font-semibold text-white">Seven cameras we had never seen</h3>
+      <h3 className="text-lg font-semibold text-white">Nine cameras we had never seen</h3>
       <p className="mt-1 max-w-3xl text-sm text-slate-400">
         Open-licence clips from other cities (Pexels and Mixkit free licences), uploaded through the live API with no zones drawn, exactly as a new user would.
         There are no labels for them, so this shows what the system did, not its accuracy. Faces and plates are blurred.
