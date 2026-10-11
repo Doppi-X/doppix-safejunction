@@ -70,7 +70,7 @@ export default function Analyze() {
     return () => clearTimeout(t);
   }, [job]);
 
-  const start = async (file) => {
+  const start = async (file, label) => {
     if (!file) return;
     setError(""); setDoc(null); setImg(null); setJob(null); setZones({}); setZoneState(""); setUpload(0);
     const isImage = file.type.startsWith("image/");
@@ -83,7 +83,7 @@ export default function Analyze() {
       } else {
         if (server?.max_mb && file.size > server.max_mb * 2 ** 20) throw new Error(`File is larger than ${server.max_mb} MB.`);
         setJob({ status: "upload", stage: "upload" });
-        setJob(await post(`${api}/api/jobs`, file, setUpload, name.trim()));
+        setJob(await post(`${api}/api/jobs`, file, setUpload, (label || name).trim()));
       }
     } catch (e) { setError(e.message); setJob(null); }
   };
@@ -114,9 +114,10 @@ export default function Analyze() {
   const SAMPLES = { korea: ["./data/demo_sample/korea.mp4", "Crossing in Korea, dusk"], tashkent: ["./data/demo_sample/video.mp4", "Tashkent junction"] };
   runSampleRef.current = (kind = "korea") => {
     const [url, label] = SAMPLES[kind] || SAMPLES.korea;
-    if (!name) setName(label + " (sample)");
+    const shown = name.trim() || `${label} (sample)`;
+    setName(shown);
     return fetch(url).then((r) => r.blob())
-      .then((b) => start(new File([b], `sample_${kind}.mp4`, { type: "video/mp4" }))).catch(() => setError("Could not load the sample."));
+      .then((b) => start(new File([b], `sample_${kind}.mp4`, { type: "video/mp4" }), shown)).catch(() => setError("Could not load the sample."));
   };
   useEffect(() => {
     const go = (e) => { if (!busyRef.current) runSampleRef.current(e?.detail || "korea"); };
